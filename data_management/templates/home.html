@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+ {% extends "base.html" %}
+<head>
+    <meta charset="utf-8">
+    <title>Hacker Fab</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'data_management.css' %}">
+</head>
+<body>
+    <div class = "message" id="message"> {{ message }} </div>
+</body>
+</html>

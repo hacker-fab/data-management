@@ -1,0 +1,86 @@
+{"ChipList": {
+},
+"Patterning": {
+    "Chip #": [],
+    "Person": [],
+    "Date": [],
+    "Underlying Material": [],
+    "Cleaning Step": [],
+    "HDMS Prebake": [],
+    "HDMS Spin Coat": [],
+    "Pattern Quality": ["-1", "0", "1"],
+    "Contaminants on Chip": ["-1", "0", "1"],
+    "Photoresist Leftover on Exposed Regions": ["yes", "no"],
+    "Photoresist Missing on Non-Exposed Regions": ["yes", "no"]
+},
+"PlasmaEtch": {
+    "Chip #": [],
+    "Person": [],
+    "Date": [],
+    "O2 Flow": [],
+    "SF6 Flow": [],
+    "RF Power": [],
+    "Etch Time": [],
+    "Etch Depth": []
+},
+"PlasmaClean": {
+    "Chip #": [],
+    "Person": [],
+    "Date": [],
+    "O2 Flow": [],
+    "RF Power": [],
+    "Clean Time": [],
+    "Contaminants on Surface": ["-1", "0", "1"]
+},
+"OxideEtch": {
+    "Chip #": [],
+    "Person": [],
+    "Date": [],
+    "Glass Type": [],
+    "Max Temp of Glass": [],
+    "Time": [],
+    "Room Temperature": [],
+    "Etch Depth": []
+},
+"AluminumEtch": {
+    "Chip #": [],
+    "Person": [],
+    "Date": [],
+    "Etch Temp": [],
+    "Etch Time": [],
+    "Stir RPM": [],
+    "Etch Depth": [],
+    "Photoresist Peeling": ["-1", "0", "1"],
+    "Aluminum Peeling": ["-1", "0", "1"]
+},
+"Deposition": {
+    "Chip #": [],
+    "Person": [],
+    "Date": [],
+    "Cleaning Step": ["Acetone + IPA"],
+    "Days of SOG at Room Temp": [],
+    "Prebake Temp": [],
+    "Prebake Time": [],
+    "# of Drops": ["1", "2"],
+    "Spin Coat RPM": [],
+    "Spin Coat Time": [],
+    "Post Bake Temp1": [],
+    "Post Bake Time1": [],
+    "Post Bake Temp2": [],
+    "Post Bake Time2": [],
+    "Room Humidity": [],
+    "Layer Thickness": [],
+    "Cracking": ["-1", "0", "1"],
+    "Particle/Pinhole on Exposure": ["-1", "0", "1"]
+},
+"AluminumEvaporation": {
+    "Chip #": [],
+    "Person": [],
+    "Date": [],
+    "Temp Time Sequence": [],
+    "Pressure before Starting Sequence (hPa)": [],
+    "Pressure before Starting Evaportion (hPa)": [],
+    "Layer Thickness with Profilometer": [],
+    "Layer Thickness with QCM": [],
+    "Deposition Rate": []
+}}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<head>
+    <meta charset="utf-8">
+    <title> Hacker Fab</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'data_management.css' %}">
+    <style>
+        table, th, td {
+          border:1px solid black;
+        }
+        </style>
+</head>
+    <p id="id_page_name"> Profile Page for {{profile.user.first_name}} {{profile.user.last_name}}</p>
+
+    {% if not profile.picture %}
+        {% load static %}
+        <img src="{% static 'cmu.jpg' %}" width="400" height="300" id="id_user_picture">
+    {% else %}
+        <img src="{% url 'photo' 'Profile' profile.user_id %}" id="id_user_picture">
+    {% endif %}
+
+    <div id="id_user_bio">
+        {{profile.text}}
+    </div>
+
+    <div> Chips Owned: </div>
+    <table>
+        <tr>
+            <th>Chip Number</th>
+            <td>Creation Time</td>
+            <td>Notes</td>
+        </tr>
+        {% for chip in chips %}
+            <tr>
+                <th>{{chip.chip_number}}</th>
+                <td>{{chip.creation_time}}</td>
+                <td>{{chip.notes}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}

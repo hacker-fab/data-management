@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+{% extends "base.html" %}
+{% block content %}
+<head>
+    <meta charset="utf-8">
+    <title> Hacker Fab</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'data_management.css' %}">
+    <style>
+        table, th, td {
+          border:1px solid black;
+        }
+        </style>
+</head>
+<body>
+    <div> Chip Summary </div>
+    <table>
+        <tr>
+            <th>Chip Number</th>
+            <td>Chip Owner</td>
+            <td>Creation Time</td>
+            <td>Notes</td>
+        </tr>
+        {% for a in all_entries %}
+            <tr>
+                <th>{{a.chip_number}}</th>
+                <td>
+                    <a href="{% url 'otherpfp' a.chip_owner.id %}"  class="id_post_profile"
+                    id="id_post_profile_{{post.id}}"> {{a.chip_owner}}</a>
+                </td>
+                <td>{{a.creation_time}}</td>
+                <td>{{a.notes}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
+{% endblock %}

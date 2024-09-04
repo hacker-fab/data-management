@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<head>
+    <meta charset="utf-8">
+    <title> Hacker Fab</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'data_management.css' %}">
+    <style>
+        table, th, td {
+          border:1px solid black;
+        }
+        </style>
+</head>
+{% load static %}
+    <p id="id_page_name"> Profile Page for {{request.user.first_name}} {{request.user.last_name}}</p>
+
+    {% if not profile.picture %}
+        <img src="{% static 'cmu.jpg' %}" width="400" height="300" id="id_user_picture">
+    {% else %}
+        <img src="{% url 'photo' 'Profile' request.user.id %}" width="400" height="300" id="id_user_picture">
+    {% endif %}
+
+    <form action="{% url 'mypfp' %}" method=POST enctype="multipart/form-data">
+        <table>
+            {{form}}
+        </table>
+        <button  id="id_update_profile_button">Submit</button>
+        {% csrf_token %}
+    </form>
+
+    <div> My Chips: </div>
+    <table>
+        <tr>
+            <th>Chip Number</th>
+            <td>Creation Time</td>
+            <td>Notes</td>
+        </tr>
+        {% for chip in chips %}
+            <tr>
+                <th>{{chip.chip_number}}</th>
+                <td>{{chip.creation_time}}</td>
+                <td>{{chip.notes}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}
