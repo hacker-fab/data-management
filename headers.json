@@ -53,7 +53,7 @@
     "Photoresist Peeling": ["-1", "0", "1"],
     "Aluminum Peeling": ["-1", "0", "1"]
 },
-"Deposition": {
+"GlassDeposition": {
     "Chip #": [],
     "Person": [],
     "Date": [],
