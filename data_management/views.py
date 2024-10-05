@@ -458,10 +458,9 @@ def input_page(request):
     if saved[0] == "Invalid":
         context = {"message": "Invalid Data Input", "processes": processes, "forms": [saved[1]], "used_process": process}
         return render(request, "input.html", context)
-    processes = get_processes()
-    processes.remove({'id': 'ChipList', 'name': 'ChipList'})
-    context = {"message": "Data Submitted!","processes": processes}
-    return render(request, "input.html", context)
+    all_entries = ChipList.objects.all().order_by('-creation_time')
+    context = {"message": "Data Submitted!","all_entries": all_entries}
+    return render(request, "central.html", context)
 
 # go through search processes and parse into list
 def process_search(request):
