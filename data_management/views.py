@@ -35,18 +35,20 @@ def get_input_meas(processes):
     for process in processes:
         if process == "AluminumEtch":
             form = AluminumEtchInputForm()
-        if process == "AluminumEvaporation":
+        elif process == "AluminumEvaporation":
             form = AluminumEvaporationInputForm()
-        if process == "GlassDeposition":
+        elif process == "GlassDeposition":
             form = GlassDepositionInputForm()
-        if process == "OxideEtch":
+        elif process == "OxideEtch":
             form = OxideEtchInputForm()
-        if process == "Patterning":
+        elif process == "Patterning":
             form = PatterningInputForm()
-        if process == "PlasmaClean":
+        elif process == "PlasmaClean":
             form = PlasmaCleanInputForm()
-        if process == "PlasmaEtch":
+        elif process == "PlasmaEtch":
             form = PlasmaEtchInputForm()
+        else:
+            continue
         f = {"name": f'{process}', "form": form}
         forms.append(f)
     return forms
@@ -58,20 +60,22 @@ def get_search_meas(processes):
     for process in processes:
         if process == "AluminumEtch":
             form = AluminumEtchSearchForm()
-        if process == "AluminumEvaporation":
+        elif process == "AluminumEvaporation":
             form = AluminumEvaporationSearchForm()
-        if process == "GlassDeposition":
+        elif process == "GlassDeposition":
             form = GlassDepositionSearchForm()
-        if process == "OxideEtch":
+        elif process == "OxideEtch":
             form = OxideEtchSearchForm()
-        if process == "Patterning":
+        elif process == "Patterning":
             form = PatterningSearchForm()
-        if process == "PlasmaClean":
+        elif process == "PlasmaClean":
             form = PlasmaCleanSearchForm()
-        if process == "PlasmaEtch":
+        elif process == "PlasmaEtch":
             form = PlasmaEtchSearchForm()
-        if process == "ChipList":
+        elif process == "ChipList":
             form = ChipListSearchForm()
+        else:
+            continue
         f = {"name": f'{process}', "form": form}
         forms.append(f)
     return forms
@@ -419,6 +423,10 @@ def search_page(request):
         processes = get_processes()
         rel_processes = process_search(request.POST)
         measurements = get_search_meas(rel_processes)
+        if not measurements:
+            processes = get_processes()
+            context = {"message": "Search Data here", "processes": processes}
+            return render(request, "search.html", context)
         context = {"message": "Search Data here", "processes": processes, "forms": measurements, "used_process": rel_processes}
         return render(request, "search.html", context)
     used_processes = request.POST['used_process'] #after search values inputted
@@ -450,6 +458,11 @@ def input_page(request):
     if status == "Initial": #if process to input is clicked
         new_process = request.POST["Process"]
         measurements = get_input_meas([new_process])
+        if not measurements:
+            processes = get_processes()
+            processes.remove({'id': 'ChipList', 'name': 'ChipList'})
+            context = {"message": "Input Data here","processes": processes}
+            return render(request, "input.html", context)
         processes = get_processes()
         context = {"processes": processes, "forms": measurements, "used_process": new_process}
         return render(request, "input.html", context)
