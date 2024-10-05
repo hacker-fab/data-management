@@ -106,6 +106,7 @@ def get_photo(request, chip_id, process):
 
 # for all inputs, save the process information as a model
 def save_form(processes, request):
+    timezone.activate("US/Eastern")
     for process in processes:
         if process == "AluminumEtch":
             form = AluminumEtchInputForm(request.POST, request.FILES)
@@ -343,6 +344,7 @@ def display_chip(request, chip_id):
 # chip page possibly change soon
 @login_required
 def chip_page(request):
+    timezone.activate("US/Eastern")
     context = {}
     if request.method == 'GET':
         return render(request, "chip.html", context)
