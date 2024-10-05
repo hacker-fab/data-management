@@ -79,28 +79,28 @@ class AluminumEvaporation(models.Model):
     AluminumEvaporation_metrology_link = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
     AluminumEvaporation_notes = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
 
-class Deposition(models.Model):
+class GlassDeposition(models.Model):
     chip_number = models.ForeignKey(ChipList, on_delete=models.PROTECT, blank=True)
     chip_owner    = models.ForeignKey(User, on_delete=models.PROTECT, blank=True)
     picture = models.FileField(blank=True)
     content_type = models.CharField(max_length=50, blank=True)
-    Deposition_step_time = models.DateTimeField(blank=True)
-    Deposition_glass_type = models.CharField(max_length=400, blank=True, null=True)
-    Deposition_cleaning_step = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
-    Deposition_days_glass_at_room_temp = models.CharField(max_length=400, blank=True, null=True)
-    Deposition_prebake_temp = models.CharField(max_length=400, blank=True, null=True)
-    Deposition_prebake_time = models.CharField(max_length=400, blank=True, null=True)
-    Deposition_amount_drops = models.CharField(max_length=400, blank=True, null=True)
-    Deposition_spin_rpm = models.CharField(max_length=400, blank=True, null=True)
-    Deposition_spin_time = models.CharField(max_length=400, blank=True, null=True)
-    Deposition_bake_temp = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
-    Deposition_bake_time = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
-    Deposition_humidity = models.CharField(max_length=400, blank=True, null=True)
-    Deposition_metric_layer_thickness = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
-    Deposition_metric_cracking = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
-    Deposition_metric_particles = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
-    Deposition_metrology_link = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
-    Deposition_notes = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
+    GlassDeposition_step_time = models.DateTimeField(blank=True)
+    GlassDeposition_glass_type = models.CharField(max_length=400, blank=True, null=True)
+    GlassDeposition_cleaning_step = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
+    GlassDeposition_days_glass_at_room_temp = models.CharField(max_length=400, blank=True, null=True)
+    GlassDeposition_prebake_temp = models.CharField(max_length=400, blank=True, null=True)
+    GlassDeposition_prebake_time = models.CharField(max_length=400, blank=True, null=True)
+    GlassDeposition_amount_drops = models.CharField(max_length=400, blank=True, null=True)
+    GlassDeposition_spin_rpm = models.CharField(max_length=400, blank=True, null=True)
+    GlassDeposition_spin_time = models.CharField(max_length=400, blank=True, null=True)
+    GlassDeposition_bake_temp = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
+    GlassDeposition_bake_time = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
+    GlassDeposition_humidity = models.CharField(max_length=400, blank=True, null=True)
+    GlassDeposition_metric_layer_thickness = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
+    GlassDeposition_metric_cracking = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
+    GlassDeposition_metric_particles = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
+    GlassDeposition_metrology_link = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
+    GlassDeposition_notes = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
 
 class OxideEtch(models.Model):
     chip_number = models.ForeignKey(ChipList, on_delete=models.PROTECT, blank=True)
