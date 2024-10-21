@@ -353,7 +353,7 @@ def chip_page(request):
         context['creation_time'] = chip.creation_time
         context['chip_owner'] = chip.chip_owner
         context['chip_number'] = chip.chip_number
-        context['IVCurrrents_CSV'] = ChipListForm(initial={'IVCurrrents_CSV': chip.IVCurrrents_CSV})
+        context['IVCurrents_CSV'] = ChipListForm(initial={'IVCurrents_CSV': chip.IVCurrents_CSV})
         context['IVVoltages_CSV'] = ChipListForm(initial={'IVVoltages_CSV': chip.IVVoltages_CSV})
         context['form'] = ChipListForm(initial={'notes': chip.notes})
         return render(request, 'chip.html', context)
@@ -362,13 +362,13 @@ def chip_page(request):
         context = {'form': form}
         return render(request, 'chip.html', context)
     chip.notes = form.cleaned_data['notes']
-    chip.IVCurrrents_CSV = form.cleaned_data['IVCurrrents_CSV']
+    chip.IVCurrents_CSV = form.cleaned_data['IVCurrents_CSV']
     chip.IVVoltages_CSV = form.cleaned_data['IVVoltages_CSV']
     chip.save()
     context['creation_time'] = chip.creation_time
     context['chip_owner'] = chip.chip_owner
     context['chip_number'] = chip.chip_number
-    context['IVCurrrents_CSV'] = chip.IVCurrrents_CSV
+    context['IVCurrents_CSV'] = chip.IVCurrents_CSV
     context['IVVoltages_CSV'] = chip.IVVoltages_CSV
     context['form'] = ChipListForm(initial={'notes': chip.notes})
     return render(request, "chip.html", context)
