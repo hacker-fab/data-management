@@ -135,7 +135,6 @@ class Patterning(models.Model):
     Patterning_exposure_pattern = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
     Patterning_exposure_time = models.CharField(max_length=400, blank=True, null=True, default="8000")
     Patterning_develop_time = models.CharField(max_length=400, blank=True, null=True, default="60")
-    Patterning_develop_temp = models.CharField(max_length=400, blank=True, null=True, default="25")
     Patterning_metric_pattern_quality = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
     Patterning_metric_leftover_photoresist = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
     Patterning_metric_missing_photoresist = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
@@ -162,10 +161,10 @@ class PlasmaEtch(models.Model):
     picture = models.FileField(blank=True)
     content_type = models.CharField(max_length=50, blank=True)
     PlasmaEtch_step_time = models.DateTimeField(blank=True)
-    PlasmaEtch_o2_flow_sccm = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
-    PlasmaEtch_sf6_flow_sccm = models.CharField(max_length=400, blank=True, null=True, default="10")  # This field type is a guess.
-    PlasmaEtch_rf_power_Watts = models.CharField(max_length=400, blank=True, null=True, default="100")  # This field type is a guess.
-    PlasmaEtch_etch_time_sec = models.CharField(max_length=400, blank=True, null=True, default="100")
-    PlasmaEtch_etch_depth_nm = models.CharField(max_length=400, blank=True, null=True, default="500")  # This field type is a guess.
+    PlasmaEtch_o2_flow = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
+    PlasmaEtch_sf6_flow = models.CharField(max_length=400, blank=True, null=True, default="10")  # This field type is a guess.
+    PlasmaEtch_rf_power = models.CharField(max_length=400, blank=True, null=True, default="100")  # This field type is a guess.
+    PlasmaEtch_etch_time = models.CharField(max_length=400, blank=True, null=True, default="100")
+    PlasmaEtch_etch_depth = models.CharField(max_length=400, blank=True, null=True, default="500")  # This field type is a guess.
     PlasmaEtch_metrology_link = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
     PlasmaEtch_notes = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
