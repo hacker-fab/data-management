@@ -67,7 +67,7 @@ db.sqlite3-journal
 db.sqlite3
 ./data_management/migrations
 ./data_management/__pycache__
-./csvfiles/
+./csvfiles/*.csv
 ./image_files/
 __pycache__/
 **/__pycache__/
