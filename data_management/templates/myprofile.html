@@ -20,12 +20,23 @@
         <img src="{% url 'photo' 'Profile' request.user.id %}" width="400" height="300" id="id_user_picture">
     {% endif %}
 
+    <!-- Profile Update Form -->
     <form action="{% url 'mypfp' %}" method=POST enctype="multipart/form-data">
         <table>
             {{form}}
         </table>
         <button  id="id_update_profile_button">Submit</button>
         {% csrf_token %}
+    </form>
+
+    <!-- Password Change Form -->
+    <h3>Change Password</h3>
+    <form action="{% url 'mypfp' %}" method="POST">
+        {% csrf_token %}
+        <table>
+            {{ password_form.as_p }} 
+        </table>
+        <button id="id_change_password_button">Change Password</button>
     </form>
 
     <div> My Chips: </div>
@@ -43,5 +54,13 @@
             </tr>
         {% endfor %}
     </table>
+
+    {% if messages %}
+    <div>
+        {% for message in messages %}
+            <p>{{ message }}</p>  <!-- Display messages for success/error -->
+        {% endfor %}
+    </div>
+{% endif %}
 
 {% endblock %}
