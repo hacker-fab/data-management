@@ -186,7 +186,6 @@ class OxideEtchInputForm(forms.ModelForm):
 class PatterningInputForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['chip_number'].required = True
     class Meta:
         model = Patterning
         exclude = (
