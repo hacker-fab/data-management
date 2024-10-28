@@ -101,18 +101,18 @@ class GlassDeposition(models.Model):
     GlassDeposition_metrology_link          = models.CharField(max_length=400, blank=True, null=True, verbose_name="Metrology link")
     GlassDeposition_notes                   = models.CharField(max_length=400, blank=True, null=True, verbose_name="Notes")
 
-class OxideEtch(models.Model):
+class HFOxideEtch(models.Model):
     chip_number                             = models.ForeignKey(ChipList, on_delete=models.PROTECT, blank=False, verbose_name="Chip number *")
     chip_owner                              = models.ForeignKey(User, on_delete=models.PROTECT, blank=False)
     picture                                 = models.FileField(blank=True)
     content_type                            = models.CharField(max_length=50, blank=True)
-    OxideEtch_step_time                     = models.DateTimeField(blank=False)
-    OxideEtch_max_temp_glass_reached        = models.CharField(max_length=400, blank=True, null=True, verbose_name="Max glass temp (°C)")
-    OxideEtch_temp                          = models.IntegerField(blank=False, null=True, verbose_name="Etch temp (°C) *")
-    OxideEtch_time                          = models.PositiveIntegerField(blank=False, null=True, verbose_name="Etch time (sec) *")
-    OxideEtch_metric_oxide_etch_depth       = models.PositiveIntegerField(blank=False, null=True, verbose_name="Etch depth (nm) *")
-    OxideEtch_metrology_link                = models.CharField(max_length=400, blank=True, null=True, verbose_name="Metrology link")
-    OxideEtch_notes                         = models.CharField(max_length=400, blank=True, null=True, verbose_name="Notes")
+    HFOxideEtch_step_time                     = models.DateTimeField(blank=False)
+    HFOxideEtch_max_temp_glass_reached        = models.CharField(max_length=400, blank=True, null=True, verbose_name="Max glass temp (°C)")
+    HFOxideEtch_temp                          = models.IntegerField(blank=False, null=True, verbose_name="Etch temp (°C) *")
+    HFOxideEtch_time                          = models.PositiveIntegerField(blank=False, null=True, verbose_name="Etch time (sec) *")
+    HFOxideEtch_metric_oxide_etch_depth       = models.PositiveIntegerField(blank=False, null=True, verbose_name="Etch depth (nm) *")
+    HFOxideEtch_metrology_link                = models.CharField(max_length=400, blank=True, null=True, verbose_name="Metrology link")
+    HFOxideEtch_notes                         = models.CharField(max_length=400, blank=True, null=True, verbose_name="Notes")
 
 class Patterning(models.Model):
     chip_number                             = models.ForeignKey(ChipList, on_delete=models.PROTECT, blank=False, verbose_name="Chip number *")
