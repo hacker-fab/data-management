@@ -308,15 +308,18 @@ def filter_form(input_dict):
 
 # create csv and add values from query output to it
 def create_csv(query_list):
+    if not os.path.exists("csvfiles"):
+        return 0, "Failed to generate CSV files: csvfiles directory does not exist."
+
     _, _, files = next(os.walk("csvfiles"))
     file_count = len(files)+1
     for i in query_list:
         queryset = i[1]
-        with open(f'search{file_count}.csv', 'w') as file:
+        with open(f'csvfiles/search{file_count}.csv', 'w') as file:
             write = csv.writer(file)
             write.writerows(queryset.values())
             write.writerows(queryset.values_list())
-    return file_count
+    return file_count, None
 
 # create http response output for csv so people can click it to download
 @login_required
@@ -456,7 +459,12 @@ def search_page(request):
         context = {"message": "Invalid Data Input", "processes": processes, "forms": parsed[1], "used_process": used_processes}
         return render(request, "search.html", context)
     query_output = filter_form(parsed[0])
-    csv_link_id = create_csv(query_output)
+    csv_link_id, err = create_csv(query_output)
+    if err != None:
+        # Raise an error if creating the csv fails
+        messages.error(request, err)  # Add error message to messages framework
+        context = {"message": err}
+        return render(request, "search.html", context)
     array_of_dicts = []
     for i in query_output:
         for x in i[1].values():
