@@ -2,7 +2,7 @@ from django import forms
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from data_management.models import Profile, IVCurve, AluminumEtch, AluminumEvaporation, ChipList, ChipListSearch, GlassDeposition, OxideEtch, Patterning, PlasmaClean, PlasmaEtch
+from data_management.models import Profile, IVCurve, AluminumEtch, AluminumEvaporation, ChipList, ChipListSearch, GlassDeposition, HFOxideEtch, Patterning, PlasmaClean, PlasmaEtch
 
 UNIVERSITY_CHOICES =( 
     ("CMU", "Carnegie Mellon University"), 
@@ -83,11 +83,11 @@ class GlassDepositionSearchForm(forms.ModelForm):
             'chip_owner': "Enter Username",
         }
 
-class OxideEtchSearchForm(forms.ModelForm):
+class HFOxideEtchSearchForm(forms.ModelForm):
     class Meta:
-        model = OxideEtch
+        model = HFOxideEtch
         exclude = (
-            'OxideEtch_metrology_link',
+            'HFOxideEtch_metrology_link',
             'picture',
             'content_type',
         )
@@ -174,19 +174,18 @@ class GlassDepositionInputForm(forms.ModelForm):
             'content_type',
         )
 
-class OxideEtchInputForm(forms.ModelForm):
+class HFOxideEtchInputForm(forms.ModelForm):
     class Meta:
-        model = OxideEtch
+        model = HFOxideEtch
         exclude = (
             'chip_owner',
-            'OxideEtch_step_time',
+            'HFOxideEtch_step_time',
             'content_type',
         )
 
 class PatterningInputForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['chip_number'].required = True
     class Meta:
         model = Patterning
         exclude = (
