@@ -7,9 +7,10 @@ from django.utils import timezone
 from django.db.models import Q
 
 from django.contrib import messages
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 
 import re
 import json
@@ -404,7 +405,23 @@ def mypfp_action(request):
         profile.content_type = form.cleaned_data['picture'].content_type
     profile.text = form.cleaned_data['text']
     profile.save()
+
+    # Handle password change
+    password_form = PasswordChangeForm(request.user, request.POST)
+    if password_form.is_valid():
+        user = password_form.save()  # This changes the password
+        update_session_auth_hash(request, user)  # Important! Keep the user logged in
+        messages.success(request, 'Your password was successfully updated!')
+    else:
+        # Add password form errors to context to display in template
+        messages.error(request, 'Please correct the error below.')
+        for field, errors in password_form.errors.items():
+            for error in errors:
+                messages.error(request, f"{field.capitalize()}: {error}")
+
+    # Refresh forms in context
     context['form'] = ProfileForm(initial={'text': profile.text})
+    context['password_form'] = PasswordChangeForm(user=request.user)  # Reset password form
     return render(request, 'myprofile.html', context)
 
 # view other people's profiles
