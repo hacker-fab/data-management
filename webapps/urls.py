@@ -29,6 +29,7 @@ urlpatterns = [
     path('search', views.search_page, name="search"),
     path('chip', views.chip_page, name="chip"),
     path('csv_output/<int:csv_id>/$', views.csv_output, name='csv_output'),
+    path('csv_output_selected/<int:csv_id>/$', views.csv_output_selected, name='csv_output_selected'),
     path('photo/<slug:process>/<int:chip_id>', views.get_photo, name='photo'),
     path('central', views.central_action, name='central'),
     path('chipnum/<int:chip_id>', views.display_chip, name='chipnum'),

@@ -323,10 +323,45 @@ def create_csv(query_list):
 # create http response output for csv so people can click it to download
 @login_required
 def csv_output(request, csv_id):
-    file = open(f'search{csv_id}.csv')
-    response = HttpResponse(file, content_type='text/csv')
+    with open(f'csvfiles/search{csv_id}.csv', 'r') as file:
+        # Read all lines and skip the first line because for some reason the parameter
+        # names were being printed twice before
+        lines = file.readlines()[1:]
+    response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=webscraping_dataset.csv'
+    response.writelines(lines)
     return response
+
+def csv_output_selected(request, csv_id):
+    if request.method == 'POST':
+        selected_row_nums = request.POST.getlist('selected_items')
+        selected_row_nums = list(map(int, selected_row_nums))
+        if len(selected_row_nums) > 0:
+            # Open the source CSV file for reading and a temporary CSV file for writing
+            with open(f'csvfiles/search{csv_id}.csv', mode='r') as src:
+                reader = csv.reader(src)
+
+                # Create a CSV writer object for the output
+                response = HttpResponse(content_type='text/csv')
+                response['Content-Disposition'] = f'attachment; filename=search{csv_id}_selected.csv'
+                writer = csv.writer(response)
+
+                # Skip the first two lines (headers)
+                # For some reason the column names are appended twice to the file.
+                next(reader)
+                headers = next(reader)
+                writer.writerow(headers)  # Write headers to the response
+
+                # Write the selected rows to the response
+                for result_counter, result in enumerate(reader):
+                    if result_counter in selected_row_nums:
+                        writer.writerow(result)
+
+            return response
+        
+    # If no items are selected save all the results to CSV
+    return csv_output(request, csv_id)
+    
     
 # start page, just displays  message now
 @login_required
