@@ -65,10 +65,10 @@ db.sqlite3-journal
 .ipynb_checkpoints
 
 db.sqlite3
-./data_management/migrations
+**/data_management/migrations
 ./data_management/__pycache__
-./csvfiles/*.csv
-./image_files/
+**/csvfiles/*.csv
+**/image_files/
 __pycache__/
 **/__pycache__/
 *.py[cod]
