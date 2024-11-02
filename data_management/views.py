@@ -327,7 +327,11 @@ def filter_form(input_dict):
 # create csv and add values from query output to it
 def create_csv(query_list):
     if not os.path.exists("csvfiles"):
-        return 0, "Failed to generate CSV files: csvfiles directory does not exist."
+        try:
+            # Create the 'csvfiles' directory
+            os.makedirs("csvfiles")
+        except Exception as e:
+            return 0, f"Failed to generate CSV files: {str(e)}"
 
     _, _, files = next(os.walk("csvfiles"))
     file_count = len(files)+1
