@@ -342,7 +342,7 @@ def create_csv(query_list):
 # create http response output for csv so people can click it to download
 @login_required
 def csv_output(request, csv_id):
-    file = open(f'search{csv_id}.csv')
+    file = open(f'csvfiles/search{csv_id}.csv')
     response = HttpResponse(file, content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=webscraping_dataset.csv'
     return response

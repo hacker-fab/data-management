@@ -27,7 +27,11 @@
 
     {% if link_id %}
       <div class="csv"> 
-        <a href="{% url 'csv_output' link_id %}"> Click to Download CSV</a>
+        <a href="{% url 'csv_output' link_id %}"> 
+          <button id="download_csv_button">
+            Download Results as CSV
+          </button>
+        </a>
       </div>
 
       <table style="width:100%">
