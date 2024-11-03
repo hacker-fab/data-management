@@ -2,7 +2,7 @@ from django import forms
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from data_management.models import Profile, IVCurve, AluminumEtch, AluminumEvaporation, ChipList, ChipListSearch, GlassDeposition, HFOxideEtch, Patterning, PlasmaClean, PlasmaEtch
+from data_management.models import Profile, IVCurve, AluminumEtch, AluminumEvaporation, ChipList, ChipListSearch, GlassDeposition_P504, GlassDeposition_700B, HFOxideEtch, Patterning, PlasmaClean, PlasmaEtch
 
 UNIVERSITY_CHOICES =( 
     ("CMU", "Carnegie Mellon University"), 
@@ -44,7 +44,6 @@ class AluminumEtchSearchForm(forms.ModelForm):
     class Meta:
         model = AluminumEtch
         exclude = (
-            'AluminumEtch_metrology_link',
             'picture',
             'content_type',
         )
@@ -56,7 +55,6 @@ class AluminumEvaporationSearchForm(forms.ModelForm):
     class Meta:
         model = AluminumEvaporation
         exclude = (
-            'AluminumEvaporation_metrology_link',
             'picture',
             'content_type',
         )
@@ -71,11 +69,21 @@ class ChipListSearchForm(forms.ModelForm):
         labels = {
         }
 
-class GlassDepositionSearchForm(forms.ModelForm):
+class GlassDeposition_P504SearchForm(forms.ModelForm):
     class Meta:
-        model = GlassDeposition
+        model = GlassDeposition_P504
         exclude = (
-            'GlassDeposition_metrology_link',
+            'picture',
+            'content_type',
+        )
+        labels = {
+            'chip_owner': "Enter Username",
+        }
+
+class GlassDeposition_700BSearchForm(forms.ModelForm):
+    class Meta:
+        model = GlassDeposition_700B
+        exclude = (
             'picture',
             'content_type',
         )
@@ -87,7 +95,6 @@ class HFOxideEtchSearchForm(forms.ModelForm):
     class Meta:
         model = HFOxideEtch
         exclude = (
-            'HFOxideEtch_metrology_link',
             'picture',
             'content_type',
         )
@@ -99,7 +106,6 @@ class PatterningSearchForm(forms.ModelForm):
     class Meta:
         model = Patterning
         exclude = (
-            'Patterning_metrology_link',
             'picture',
             'content_type',
         )
@@ -111,7 +117,6 @@ class PlasmaCleanSearchForm(forms.ModelForm):
     class Meta:
         model = PlasmaClean
         exclude = (
-            'PlasmaClean_metrology_link',
             'picture',
             'content_type',
         )
@@ -123,7 +128,6 @@ class PlasmaEtchSearchForm(forms.ModelForm):
     class Meta:
         model = PlasmaEtch
         exclude = (
-            'PlasmaEtch_metrology_link',
             'picture',
             'content_type',
         )
@@ -165,12 +169,21 @@ class ChipListForm(forms.ModelForm):
         )
 
 
-class GlassDepositionInputForm(forms.ModelForm):
+class GlassDeposition_P504InputForm(forms.ModelForm):
     class Meta:
-        model = GlassDeposition
+        model = GlassDeposition_P504
         exclude = (
             'chip_owner',
-            'GlassDeposition_step_time',
+            'GlassDeposition_P504_step_time',
+            'content_type',
+        )
+
+class GlassDeposition_700BInputForm(forms.ModelForm):
+    class Meta:
+        model = GlassDeposition_700B
+        exclude = (
+            'chip_owner',
+            'GlassDeposition_700B_step_time',
             'content_type',
         )
 

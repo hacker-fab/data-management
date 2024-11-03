@@ -26,6 +26,8 @@
     </form>
 
     {% if link_id %}
+    <form method="post" action="{% url 'csv_output_selected' link_id %}">
+      {% csrf_token %}
       <div class="csv"> 
         <a href="{% url 'csv_output' link_id %}"> 
           <button id="download_csv_button">
@@ -33,10 +35,20 @@
           </button>
         </a>
       </div>
-
+      
+      {% for process_info in output %}
+        <table style="width:100%">
+          {% for column_name, value in process_info.items %}
+            {% if column_name == "picture" %}
       <table style="width:100%">
       {% for process_info in output %}
         {% for column_name, value in process_info.items %}
+          {% if forloop.first %} <!-- Checkbox in the first row of each table -->
+            <tr>
+              <td rowspan="{{ process_info.items|length }}">
+                <input type="checkbox" name="selected_items" value="{{ forloop.parentloop.counter0 }}">
+              </td>
+          {% endif %}
           {% if column_name == "picture" %}
             <tr>
               <th> {{ column_name }} </th>
@@ -46,15 +58,8 @@
           </tr>
           {% else %}
             {% if column_name != "process" %}
-              <tr>
-                  <th> {{ column_name }} </th>
-                  <td> {{ value }} </td>
-              </tr>
-            {% endif %}
-          {% endif %}
-        {% endfor %}
-      {% endfor %}
-    </table>
+      </table>
+    </form>
     {% endif %}
     
     {% if used_process %}
