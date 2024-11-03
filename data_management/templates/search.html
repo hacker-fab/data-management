@@ -29,8 +29,11 @@
     <form method="post" action="{% url 'csv_output_selected' link_id %}">
       {% csrf_token %}
       <div class="csv"> 
-        <button type="submit"> Click to Download CSV</button>
-        <!-- <a href="{% url 'csv_output' link_id %}"> Click to Download CSV</a> -->
+        <a href="{% url 'csv_output' link_id %}"> 
+          <button id="download_csv_button">
+            Download Results as CSV
+          </button>
+        </a>
       </div>
       
       {% for process_info in output %}
