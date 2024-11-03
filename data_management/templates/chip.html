@@ -11,7 +11,7 @@
 <body>
     <form class="chip" action="{% url 'chip' %}" method="POST">
         <label for="chip_text">Enter Chip Number:</label>
-        <input id="chip_text" type="number" min="0" step="1" name="chip_number">
+        <input id="chip_text" type="number" min="0" step="1" name="chip_number" required>
         <button id="start_button">Submit</button>
         <input type="hidden" name="status" value="Initial">
     {% csrf_token %}
