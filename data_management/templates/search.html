@@ -32,7 +32,6 @@
         <button type="submit"> Click to Download CSV</button>
         <!-- <a href="{% url 'csv_output' link_id %}"> Click to Download CSV</a> -->
       </div>
-    
       <table style="width:100%">
       {% for process_info in output %}
         {% for column_name, value in process_info.items %}
