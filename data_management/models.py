@@ -105,7 +105,7 @@ class Diffusion(models.Model):
     chip_owner                              = models.ForeignKey(User, on_delete=models.PROTECT, blank=True)
     Diffusion_step_time                     = models.DateTimeField(blank=True)
     Diffusion_temp                          = models.DecimalField(max_digits=10, decimal_places=3, blank=True, default="1100", verbose_name="Diffusion temp (°C) *")
-    Diffusion_time                          = models.PositiveIntegerField(blank=True, default="1800", verbose_name="Diffusion time (sec) *")
+    Diffusion_time                          = models.PositiveIntegerField(blank=True, default="1800", verbose_name="Diffusion duration (sec) *")
     picture                                 = models.FileField(blank=True)
     content_type                            = models.CharField(max_length=50, blank=True)
     Diffusion_notes                         = models.CharField(max_length=400, blank=True, null=True, verbose_name="Notes")
