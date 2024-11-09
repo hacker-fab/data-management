@@ -2,7 +2,7 @@ from django import forms
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from data_management.models import Profile, IVCurve, AluminumEtch, AluminumEvaporation, ChipList, ChipListSearch, GlassDeposition_P504, GlassDeposition_700B, HFOxideEtch, Patterning, PlasmaClean, PlasmaEtch
+from data_management.models import Profile, IVCurve, AluminumEtch, AluminumEvaporation, ChipList, ChipListSearch, GlassDeposition, Diffusion, HFOxideEtch, Patterning, PlasmaClean, PlasmaEtch
 
 UNIVERSITY_CHOICES =( 
     ("CMU", "Carnegie Mellon University"), 
@@ -69,20 +69,9 @@ class ChipListSearchForm(forms.ModelForm):
         labels = {
         }
 
-class GlassDeposition_P504SearchForm(forms.ModelForm):
+class GlassDepositionSearchForm(forms.ModelForm):
     class Meta:
-        model = GlassDeposition_P504
-        exclude = (
-            'picture',
-            'content_type',
-        )
-        labels = {
-            'chip_owner': "Enter Username",
-        }
-
-class GlassDeposition_700BSearchForm(forms.ModelForm):
-    class Meta:
-        model = GlassDeposition_700B
+        model = GlassDeposition
         exclude = (
             'picture',
             'content_type',
@@ -144,6 +133,17 @@ class AluminumEtchInputForm(forms.ModelForm):
             'content_type',
         )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['chip_number'].required = True
+        self.fields['AluminumEtch_temp'].required = True
+        self.fields['AluminumEtch_time'].required = True
+        self.fields['AluminumEtch_stir_rpm'].required = True
+        self.fields['AluminumEtch_metric_alum_etch_depth'].required = True
+        self.fields['AluminumEtch_metric_photoresist_peeling'].required = True
+        self.fields['AluminumEtch_metric_aluminum_peeling'].required = True
+
 class AluminumEvaporationInputForm(forms.ModelForm):
     class Meta:
         model = AluminumEvaporation
@@ -152,6 +152,17 @@ class AluminumEvaporationInputForm(forms.ModelForm):
             'AluminumEvaporation_step_time',
             'content_type',
         )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['chip_number'].required = True
+        self.fields['AluminumEvaporation_time'].required = True
+        self.fields['AluminumEvaporation_pressure_before_start_seq'].required = True
+        self.fields['AluminumEvaporation_pressure_before_evaporation'].required = True
+        self.fields['AluminumEvaporation_metric_layer_thickness'].required = True
+        self.fields['AluminumEvaporation_metric_layer_thick_qcm'].required = True
+        self.fields['AluminumEvaporation_metric_deposition_rate'].required = True
 
 class ChipListForm(forms.ModelForm):
     #university = forms.ChoiceField(choices = UNIVERSITY_CHOICES,
@@ -169,23 +180,46 @@ class ChipListForm(forms.ModelForm):
         )
 
 
-class GlassDeposition_P504InputForm(forms.ModelForm):
+class GlassDepositionInputForm(forms.ModelForm):
     class Meta:
-        model = GlassDeposition_P504
+        model = GlassDeposition
         exclude = (
             'chip_owner',
-            'GlassDeposition_P504_step_time',
+            'GlassDeposition_step_time',
             'content_type',
         )
 
-class GlassDeposition_700BInputForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['chip_number'].required = True
+        self.fields['GlassDeposition_glass_type'].required = True
+        self.fields['GlassDeposition_cleaning_step'].required = True
+        self.fields['GlassDeposition_prebake_temp'].required = True
+        self.fields['GlassDeposition_prebake_time'].required = True
+        self.fields['GlassDeposition_amount_drops'].required = True
+        self.fields['GlassDeposition_spin_rpm'].required = True
+        self.fields['GlassDeposition_spin_time'].required = True
+        self.fields['GlassDeposition_bake_temp'].required = True
+        self.fields['GlassDeposition_bake_time'].required = True
+        self.fields['GlassDeposition_metric_cracking'].required = True
+        self.fields['GlassDeposition_metric_particles'].required = True
+
+class DiffusionInputForm(forms.ModelForm):
     class Meta:
-        model = GlassDeposition_700B
+        model = Diffusion
         exclude = (
             'chip_owner',
-            'GlassDeposition_700B_step_time',
+            'Diffusion_step_time',
             'content_type',
         )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['chip_number'].required = True
+        self.fields['Diffusion_temp'].required = True
+        self.fields['Diffusion_time'].required = True
 
 class HFOxideEtchInputForm(forms.ModelForm):
     class Meta:
@@ -196,9 +230,15 @@ class HFOxideEtchInputForm(forms.ModelForm):
             'content_type',
         )
 
-class PatterningInputForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        
+        self.fields['chip_number'].required = True
+        self.fields['HFOxideEtch_temp'].required = True
+        self.fields['HFOxideEtch_time'].required = True
+        self.fields['HFOxideEtch_metric_oxide_etch_depth'].required = True
+
+class PatterningInputForm(forms.ModelForm):
     class Meta:
         model = Patterning
         exclude = (
@@ -206,6 +246,29 @@ class PatterningInputForm(forms.ModelForm):
             'Patterning_step_time',
             'content_type',
         )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['chip_number'].required = True
+        self.fields['Patterning_underlying_material'].required = True
+        self.fields['Patterning_cleaning_step'].required = True
+        self.fields['Patterning_hdms_prebake_temp'].required = True
+        self.fields['Patterning_hdms_prebake_time'].required = True
+        self.fields['Patterning_hdms_spin_rpm'].required = True
+        self.fields['Patterning_hdms_spin_time'].required = True
+        self.fields['Patterning_hdms_bake_temp'].required = True
+        self.fields['Patterning_hdms_bake_time'].required = True
+        self.fields['Patterning_photoresist_spin_rpm'].required = True
+        self.fields['Patterning_photoresist_spin_time'].required = True
+        self.fields['Patterning_photoresist_bake_temp'].required = True
+        self.fields['Patterning_photoresist_bake_time'].required = True
+        self.fields['Patterning_exposure_pattern'].required = True
+        self.fields['Patterning_exposure_time'].required = True
+        self.fields['Patterning_develop_time'].required = True
+        self.fields['Patterning_metric_pattern_quality'].required = True
+        self.fields['Patterning_metric_development'].required = True
+        self.fields['Patterning_metric_contaminants'].required = True
 
 class PlasmaCleanInputForm(forms.ModelForm):
     class Meta:
@@ -216,6 +279,14 @@ class PlasmaCleanInputForm(forms.ModelForm):
             'content_type',
         )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['chip_number'].required = True
+        self.fields['PlasmaClean_o2_flow'].required = True
+        self.fields['PlasmaClean_rf_power'].required = True
+        self.fields['PlasmaClean_clean_time'].required = True
+
 class PlasmaEtchInputForm(forms.ModelForm):
     class Meta:
         model = PlasmaEtch
@@ -224,6 +295,14 @@ class PlasmaEtchInputForm(forms.ModelForm):
             'PlasmaEtch_step_time',
             'content_type',
         )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['chip_number'].required = True
+        self.fields['PlasmaEtch_rf_power'].required = True
+        self.fields['PlasmaEtch_etch_time'].required = True
+        self.fields['PlasmaEtch_etch_depth'].required = True
 
 
 class LoginForm(forms.Form):

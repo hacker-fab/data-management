@@ -15,9 +15,9 @@ import json
 import os
 import csv
 
-from data_management.forms import ProfileForm, IVCurveForm, LoginForm, RegisterForm, ChipListSearchForm, AluminumEtchInputForm, AluminumEvaporationInputForm, ChipListForm, GlassDeposition_P504InputForm, GlassDeposition_700BInputForm, HFOxideEtchInputForm, PatterningInputForm, PlasmaCleanInputForm, PlasmaEtchInputForm
-from data_management.models import Profile, SMU_capture, IVCurve, AluminumEtch, AluminumEvaporation, ChipList, GlassDeposition_P504, GlassDeposition_700B, HFOxideEtch, Patterning, PlasmaClean, PlasmaEtch
-from data_management.forms import AluminumEtchSearchForm, AluminumEvaporationSearchForm, GlassDeposition_P504SearchForm, GlassDeposition_700BSearchForm, HFOxideEtchSearchForm, PatterningSearchForm, PlasmaCleanSearchForm, PlasmaEtchSearchForm
+from data_management.forms import ProfileForm, IVCurveForm, LoginForm, RegisterForm, ChipListSearchForm, AluminumEtchInputForm, AluminumEvaporationInputForm, ChipListForm, GlassDepositionInputForm, DiffusionInputForm, HFOxideEtchInputForm, PatterningInputForm, PlasmaCleanInputForm, PlasmaEtchInputForm
+from data_management.models import Profile, SMU_capture, IVCurve, AluminumEtch, AluminumEvaporation, ChipList, GlassDeposition, Diffusion, HFOxideEtch, Patterning, PlasmaClean, PlasmaEtch
+from data_management.forms import AluminumEtchSearchForm, AluminumEvaporationSearchForm, GlassDepositionSearchForm, HFOxideEtchSearchForm, PatterningSearchForm, PlasmaCleanSearchForm, PlasmaEtchSearchForm
 
 # gets a list of all processes from json file
 def get_processes():
@@ -37,10 +37,10 @@ def get_input_meas(processes):
             form = AluminumEtchInputForm()
         elif process == "AluminumEvaporation":
             form = AluminumEvaporationInputForm()
-        elif process == "GlassDeposition_P504":
-            form = GlassDeposition_P504InputForm()
-        elif process == "GlassDeposition_700B":
-            form = GlassDeposition_700BInputForm()
+        elif process == "GlassDeposition":
+            form = GlassDepositionInputForm()
+        elif process == "Diffusion":
+            form = DiffusionInputForm()
         elif process == "HFOxideEtch":
             form = HFOxideEtchInputForm()
         elif process == "Patterning":
@@ -64,10 +64,8 @@ def get_search_meas(processes):
             form = AluminumEtchSearchForm()
         elif process == "AluminumEvaporation":
             form = AluminumEvaporationSearchForm()
-        elif process == "GlassDeposition_P504":
-            form = GlassDeposition_P504SearchForm()
-        elif process == "GlassDeposition_700B":
-            form = GlassDeposition_700BSearchForm()
+        elif process == "GlassDeposition":
+            form = GlassDepositionSearchForm()
         elif process == "HFOxideEtch":
             form = HFOxideEtchSearchForm()
         elif process == "Patterning":
@@ -93,10 +91,10 @@ def get_photo(request, chip_id, process):
         p = get_object_or_404(AluminumEtch, id=chip_id)
     elif process == "AluminumEvaporation":
         p = get_object_or_404(AluminumEvaporation, id=chip_id)
-    elif process == "GlassDeposition_P504":
-        p = get_object_or_404(GlassDeposition_P504, id=chip_id)
-    elif process == "GlassDeposition_700B":
-        p = get_object_or_404(GlassDeposition_700B, id=chip_id)
+    elif process == "GlassDeposition":
+        p = get_object_or_404(GlassDeposition, id=chip_id)
+    elif process == "Diffusion":
+        p = get_object_or_404(Diffusion, id=chip_id)
     elif process == "HFOxideEtch":
         p = get_object_or_404(HFOxideEtch, id=chip_id)
     elif process == "PlasmaClean":
@@ -144,47 +142,36 @@ def save_form(processes, request):
                 AluminumEvaporation_notes=request.POST['AluminumEvaporation_notes'], 
                 chip_owner=request.user, AluminumEvaporation_step_time=timezone.now()
             )
-        if process == "GlassDeposition_P504":
-            form = GlassDeposition_P504InputForm(request.POST, request.FILES)
+        if process == "GlassDeposition":
+            form = GlassDepositionInputForm(request.POST, request.FILES)
             if not form.is_valid():
                 return ["Invalid", form]
-            new_model = GlassDeposition_P504(
+            new_model = GlassDeposition(
                 chip_number = ChipList.objects.get(chip_number=request.POST["chip_number"]),
-                GlassDeposition_P504_cleaning_step=request.POST['GlassDeposition_P504_cleaning_step'], 
-                GlassDeposition_P504_days_glass_at_room_temp=request.POST['GlassDeposition_P504_days_glass_at_room_temp'], 
-                GlassDeposition_P504_bake_temp=request.POST['GlassDeposition_P504_bake_temp'], 
-                GlassDeposition_P504_bake_time=request.POST['GlassDeposition_P504_bake_time'], 
-                GlassDeposition_P504_amount_drops=request.POST['GlassDeposition_P504_amount_drops'], 
-                GlassDeposition_P504_spin_rpm=request.POST['GlassDeposition_P504_spin_rpm'], 
-                GlassDeposition_P504_spin_time=request.POST['GlassDeposition_P504_spin_time'], 
-                GlassDeposition_P504_diffusion_temp=request.POST['GlassDeposition_P504_diffusion_temp'], 
-                GlassDeposition_P504_diffusion_time=request.POST['GlassDeposition_P504_diffusion_time'], 
-                GlassDeposition_P504_humidity=request.POST['GlassDeposition_P504_humidity'], 
-                GlassDeposition_P504_metric_layer_thickness=request.POST['GlassDeposition_P504_metric_layer_thickness'], 
-                GlassDeposition_P504_metric_cracking=request.POST['GlassDeposition_P504_metric_cracking'], 
-                GlassDeposition_P504_metric_particles=request.POST['GlassDeposition_P504_metric_particles'], 
-                GlassDeposition_P504_notes=request.POST['GlassDeposition_P504_notes'], 
-                chip_owner=request.user, GlassDeposition_P504_step_time=timezone.now()
+                GlassDeposition_cleaning_step=request.POST['GlassDeposition_cleaning_step'], 
+                GlassDeposition_days_glass_at_room_temp=request.POST['GlassDeposition_days_glass_at_room_temp'], 
+                GlassDeposition_bake_temp=request.POST['GlassDeposition_bake_temp'], 
+                GlassDeposition_bake_time=request.POST['GlassDeposition_bake_time'], 
+                GlassDeposition_amount_drops=request.POST['GlassDeposition_amount_drops'], 
+                GlassDeposition_spin_rpm=request.POST['GlassDeposition_spin_rpm'], 
+                GlassDeposition_spin_time=request.POST['GlassDeposition_spin_time'], 
+                GlassDeposition_humidity=request.POST['GlassDeposition_humidity'], 
+                GlassDeposition_metric_layer_thickness=request.POST['GlassDeposition_metric_layer_thickness'], 
+                GlassDeposition_metric_cracking=request.POST['GlassDeposition_metric_cracking'], 
+                GlassDeposition_metric_particles=request.POST['GlassDeposition_metric_particles'], 
+                GlassDeposition_notes=request.POST['GlassDeposition_notes'], 
+                chip_owner=request.user, GlassDeposition_step_time=timezone.now()
             )
-        if process == "GlassDeposition_700B":
-            form = GlassDeposition_700BInputForm(request.POST, request.FILES)
+        if process == "Diffusion":
+            form = DiffusionInputForm(request.POST, request.FILES)
             if not form.is_valid():
                 return ["Invalid", form]
-            new_model = GlassDeposition_700B(
+            new_model = Diffusion(
                 chip_number = ChipList.objects.get(chip_number=request.POST["chip_number"]),
-                GlassDeposition_700B_cleaning_step=request.POST['GlassDeposition_700B_cleaning_step'], 
-                GlassDeposition_700B_days_glass_at_room_temp=request.POST['GlassDeposition_700B_days_glass_at_room_temp'], 
-                GlassDeposition_700B_bake_temp=request.POST['GlassDeposition_700B_bake_temp'], 
-                GlassDeposition_700B_bake_time=request.POST['GlassDeposition_700B_bake_time'], 
-                GlassDeposition_700B_amount_drops=request.POST['GlassDeposition_700B_amount_drops'], 
-                GlassDeposition_700B_spin_rpm=request.POST['GlassDeposition_700B_spin_rpm'], 
-                GlassDeposition_700B_spin_time=request.POST['GlassDeposition_700B_spin_time'], 
-                GlassDeposition_700B_humidity=request.POST['GlassDeposition_700B_humidity'], 
-                GlassDeposition_700B_metric_layer_thickness=request.POST['GlassDeposition_700B_metric_layer_thickness'], 
-                GlassDeposition_700B_metric_cracking=request.POST['GlassDeposition_700B_metric_cracking'], 
-                GlassDeposition_700B_metric_particles=request.POST['GlassDeposition_700B_metric_particles'], 
-                GlassDeposition_700B_notes=request.POST['GlassDeposition_700B_notes'], 
-                chip_owner=request.user, GlassDeposition_700B_step_time=timezone.now()
+                Diffusion_temp=request.POST['Diffusion_temp'], 
+                Diffusion_time=request.POST['Diffusion_time'], 
+                Diffusion_notes=request.POST['Diffusion_notes'], 
+                chip_owner=request.user, Diffusion_step_time=timezone.now()
             )
         if process == "HFOxideEtch":
             form = HFOxideEtchInputForm(request.POST, request.FILES)
@@ -196,7 +183,8 @@ def save_form(processes, request):
                 HFOxideEtch_temp=request.POST['HFOxideEtch_temp'], 
                 HFOxideEtch_metric_oxide_etch_depth=request.POST['HFOxideEtch_metric_oxide_etch_depth'], 
                 HFOxideEtch_notes=request.POST['HFOxideEtch_notes'], 
-                chip_owner=request.user, HFOxideEtch_step_time=timezone.now())
+                chip_owner=request.user, HFOxideEtch_step_time=timezone.now()
+            )
         if process == "Patterning":
             form = PatterningInputForm(request.POST, request.FILES)
             if not form.is_valid():
@@ -270,10 +258,8 @@ def parse_forms(used_processes, request):
             form = AluminumEtchSearchForm(request.POST, request.FILES)
         if process == "AluminumEvaporation":
             form = AluminumEvaporationSearchForm(request.POST, request.FILES)
-        if process == "GlassDeposition_P504":
-            form = GlassDeposition_P504SearchForm(request.POST, request.FILES)
-        if process == "GlassDeposition_700B":
-            form = GlassDeposition_700BSearchForm(request.POST, request.FILES)
+        if process == "GlassDeposition":
+            form = GlassDepositionSearchForm(request.POST, request.FILES)
         if process == "HFOxideEtch":
             form = HFOxideEtchSearchForm(request.POST, request.FILES)
         if process == "Patterning":
@@ -307,10 +293,8 @@ def filter_form(input_dict):
             q_obj = (proc, AluminumEtch.objects.filter(query).order_by('{0}_step_time'.format(proc)))
         if proc == "AluminumEvaporation":
             q_obj = (proc, AluminumEvaporation.objects.filter(query).order_by('{0}_step_time'.format(proc)))
-        if proc == "GlassDeposition_P504":
-            q_obj = (proc, GlassDeposition_P504.objects.filter(query).order_by('{0}_step_time'.format(proc)))
-        if proc == "GlassDeposition_700B":
-            q_obj = (proc, GlassDeposition_700B.objects.filter(query).order_by('{0}_step_time'.format(proc)))
+        if proc == "GlassDeposition":
+            q_obj = (proc, GlassDeposition.objects.filter(query).order_by('{0}_step_time'.format(proc)))
         if proc == "HFOxideEtch":
             q_obj = (proc, HFOxideEtch.objects.filter(query).order_by('{0}_step_time'.format(proc)))
         if proc == "Patterning":
