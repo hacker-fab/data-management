@@ -138,7 +138,7 @@ class Patterning(models.Model):
     Patterning_photoresist_bake_temp        = models.DecimalField(max_digits=10, decimal_places=3, blank=True, default="100", verbose_name="PR bake temp (°C) *")
     Patterning_photoresist_bake_time        = models.PositiveIntegerField(blank=True, default="90", verbose_name="PR bake time (sec) *")
     Patterning_exposure_pattern             = models.FileField(blank=True, null=True, verbose_name="Exposure pattern *")
-    Patterning_exposure_time                = models.PositiveIntegerField(blank=True, default="8000", verbose_name="Exposure time (sec) *")
+    Patterning_exposure_time                = models.PositiveIntegerField(blank=True, default="8000", verbose_name="Exposure time (ms) *")
     Patterning_develop_time                 = models.PositiveIntegerField(blank=True, default="60", verbose_name="Develop time (sec) *")
     Patterning_metric_pattern_quality       = models.CharField(max_length=400, blank=True, null=True, choices=QUALITY_CHOICES, verbose_name="Pattern quality *")
     Patterning_metric_development           = models.CharField(max_length=400, blank=True, null=True, choices=DEVELOPMENT_CHOICES, verbose_name="Development quality *")
