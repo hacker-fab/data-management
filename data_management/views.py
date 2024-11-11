@@ -326,7 +326,27 @@ def csv_output(request, csv_id):
     with open(f'csvfiles/search{csv_id}.csv', 'r') as file:
         # Read all lines and skip the first line because for some reason the parameter
         # names were being printed twice before
-        lines = file.readlines()[1:]
+        lines = file.readlines()
+
+    headers = lines[0]
+
+    data_start_index = 0
+    found_data = False
+    for row_i, line in enumerate(lines):
+        # Keep track of rows and skip any duplicate headers
+        # If the row matches the header, skip it
+        for col_i in range(len(line)):
+            if headers[col_i] != line[col_i]:
+                data_start_index = row_i
+                found_data = True
+                break
+        if found_data:
+            break
+    
+    data_start_index = max(0, data_start_index-1)
+
+    lines = lines[data_start_index:]
+
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=webscraping_dataset.csv'
     response.writelines(lines)
@@ -341,19 +361,31 @@ def csv_output_selected(request, csv_id):
             with open(f'csvfiles/search{csv_id}.csv', mode='r') as src:
                 reader = csv.reader(src)
 
-                # Create a CSV writer object for the output
+                # Read the first row (header)
+                headers = next(reader)  # Store the first row as headers
+                
+                # Create a CSV response with content type for CSV file download
                 response = HttpResponse(content_type='text/csv')
-                response['Content-Disposition'] = f'attachment; filename=search{csv_id}_selected.csv'
+                response['Content-Disposition'] = f'attachment; filename="webscraping_dataset.csv"'
+                
+                # Create a CSV writer object
                 writer = csv.writer(response)
-
-                # Skip the first two lines (headers)
-                # For some reason the column names are appended twice to the file.
-                next(reader)
-                headers = next(reader)
-                writer.writerow(headers)  # Write headers to the response
-
-                # Write the selected rows to the response
+                
+                # Write the headers to the CSV response
+                writer.writerow(headers)
+                
+                # Keep track of rows and skip any duplicate headers
                 for result_counter, result in enumerate(reader):
+                    # If the row matches the header, skip it
+                    is_header = True
+                    for i in range(result):
+                        if headers[i] != result[i]:
+                            is_header = False
+                            break
+                    if is_header:
+                        continue
+                    
+                    # If the row is in the selected rows, write it to the response
                     if result_counter in selected_row_nums:
                         writer.writerow(result)
 
