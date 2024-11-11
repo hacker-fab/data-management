@@ -347,9 +347,9 @@ def create_csv(query_list):
 @login_required
 def csv_output(request, csv_id):
     with open(f'csvfiles/search{csv_id}.csv', 'r') as file:
-        # Read all lines and skip the first line because for some reason the parameter
+        # Read all lines and skip the first two lines because for some reason the parameter
         # names were being printed twice before
-        lines = file.readlines()[1:]
+        lines = file.readlines()[2:]
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=webscraping_dataset.csv'
     response.writelines(lines)
@@ -359,6 +359,7 @@ def csv_output_selected(request, csv_id):
     if request.method == 'POST':
         selected_row_nums = request.POST.getlist('selected_items')
         selected_row_nums = list(map(int, selected_row_nums))
+        print(selected_row_nums)
         if len(selected_row_nums) > 0:
             # Open the source CSV file for reading and a temporary CSV file for writing
             with open(f'csvfiles/search{csv_id}.csv', mode='r') as src:
@@ -369,8 +370,9 @@ def csv_output_selected(request, csv_id):
                 response['Content-Disposition'] = f'attachment; filename=search{csv_id}_selected.csv'
                 writer = csv.writer(response)
 
-                # Skip the first two lines (headers)
+                # Skip the first 3 lines (headers)
                 # For some reason the column names are appended twice to the file.
+                next(reader)
                 next(reader)
                 headers = next(reader)
                 writer.writerow(headers)  # Write headers to the response
