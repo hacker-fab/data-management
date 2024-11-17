@@ -138,7 +138,7 @@ class AluminumEtchInputForm(forms.ModelForm):
         
         self.fields['chip_number'].required = True
         self.fields['AluminumEtch_temp'].required = True
-        self.fields['AluminumEtch_time'].required = True
+        self.fields['AluminumEtch_duration'].required = True
         self.fields['AluminumEtch_stir_rpm'].required = True
         self.fields['AluminumEtch_metric_alum_etch_depth'].required = True
         self.fields['AluminumEtch_metric_photoresist_peeling'].required = True
@@ -157,7 +157,7 @@ class AluminumEvaporationInputForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         
         self.fields['chip_number'].required = True
-        self.fields['AluminumEvaporation_time'].required = True
+        self.fields['AluminumEvaporation_duration'].required = True
         self.fields['AluminumEvaporation_pressure_before_start_seq'].required = True
         self.fields['AluminumEvaporation_pressure_before_evaporation'].required = True
         self.fields['AluminumEvaporation_metric_layer_thickness'].required = True
@@ -196,12 +196,12 @@ class GlassDepositionInputForm(forms.ModelForm):
         self.fields['GlassDeposition_glass_type'].required = True
         self.fields['GlassDeposition_cleaning_step'].required = True
         self.fields['GlassDeposition_prebake_temp'].required = True
-        self.fields['GlassDeposition_prebake_time'].required = True
+        self.fields['GlassDeposition_prebake_duration'].required = True
         self.fields['GlassDeposition_amount_drops'].required = True
         self.fields['GlassDeposition_spin_rpm'].required = True
-        self.fields['GlassDeposition_spin_time'].required = True
+        self.fields['GlassDeposition_spin_duration'].required = True
         self.fields['GlassDeposition_bake_temp'].required = True
-        self.fields['GlassDeposition_bake_time'].required = True
+        self.fields['GlassDeposition_bake_duration'].required = True
         self.fields['GlassDeposition_metric_cracking'].required = True
         self.fields['GlassDeposition_metric_particles'].required = True
 
@@ -219,7 +219,7 @@ class DiffusionInputForm(forms.ModelForm):
         
         self.fields['chip_number'].required = True
         self.fields['Diffusion_temp'].required = True
-        self.fields['Diffusion_time'].required = True
+        self.fields['Diffusion_duration'].required = True
 
 class HFOxideEtchInputForm(forms.ModelForm):
     class Meta:
@@ -235,7 +235,7 @@ class HFOxideEtchInputForm(forms.ModelForm):
         
         self.fields['chip_number'].required = True
         self.fields['HFOxideEtch_temp'].required = True
-        self.fields['HFOxideEtch_time'].required = True
+        self.fields['HFOxideEtch_duration'].required = True
         self.fields['HFOxideEtch_metric_oxide_etch_depth'].required = True
 
 class PatterningInputForm(forms.ModelForm):
@@ -254,18 +254,18 @@ class PatterningInputForm(forms.ModelForm):
         self.fields['Patterning_underlying_material'].required = True
         self.fields['Patterning_cleaning_step'].required = True
         self.fields['Patterning_hdms_prebake_temp'].required = True
-        self.fields['Patterning_hdms_prebake_time'].required = True
+        self.fields['Patterning_hdms_prebake_duration'].required = True
         self.fields['Patterning_hdms_spin_rpm'].required = True
-        self.fields['Patterning_hdms_spin_time'].required = True
+        self.fields['Patterning_hdms_spin_duration'].required = True
         self.fields['Patterning_hdms_bake_temp'].required = True
-        self.fields['Patterning_hdms_bake_time'].required = True
+        self.fields['Patterning_hdms_bake_duration'].required = True
         self.fields['Patterning_photoresist_spin_rpm'].required = True
-        self.fields['Patterning_photoresist_spin_time'].required = True
+        self.fields['Patterning_photoresist_spin_duration'].required = True
         self.fields['Patterning_photoresist_bake_temp'].required = True
-        self.fields['Patterning_photoresist_bake_time'].required = True
+        self.fields['Patterning_photoresist_bake_duration'].required = True
         self.fields['Patterning_exposure_pattern'].required = True
-        self.fields['Patterning_exposure_time'].required = True
-        self.fields['Patterning_develop_time'].required = True
+        self.fields['Patterning_exposure_duration'].required = True
+        self.fields['Patterning_develop_duration'].required = True
         self.fields['Patterning_metric_pattern_quality'].required = True
         self.fields['Patterning_metric_development'].required = True
         self.fields['Patterning_metric_contaminants'].required = True
@@ -285,7 +285,7 @@ class PlasmaCleanInputForm(forms.ModelForm):
         self.fields['chip_number'].required = True
         self.fields['PlasmaClean_o2_flow'].required = True
         self.fields['PlasmaClean_rf_power'].required = True
-        self.fields['PlasmaClean_clean_time'].required = True
+        self.fields['PlasmaClean_clean_duration'].required = True
 
 class PlasmaEtchInputForm(forms.ModelForm):
     class Meta:
@@ -301,7 +301,7 @@ class PlasmaEtchInputForm(forms.ModelForm):
         
         self.fields['chip_number'].required = True
         self.fields['PlasmaEtch_rf_power'].required = True
-        self.fields['PlasmaEtch_etch_time'].required = True
+        self.fields['PlasmaEtch_etch_duration'].required = True
         self.fields['PlasmaEtch_etch_depth'].required = True
 
 
