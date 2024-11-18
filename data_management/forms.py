@@ -182,9 +182,6 @@ class AluminumEvaporationInputForm(forms.ModelForm):
         self.fields['AluminumEvaporation_pressure_before_evaporation'].initial = 6.4
 
 class ChipListForm(forms.ModelForm):
-    #university = forms.ChoiceField(choices = UNIVERSITY_CHOICES,
-    #                              label="University:", 
-    #                              required=False)
     class Meta:
         model = ChipList
         exclude = (
@@ -193,8 +190,15 @@ class ChipListForm(forms.ModelForm):
             'creation_time',
             'picture',
             'content_type',
-            #'uni'
         )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['university'].required = True
+        self.fields['starting_material'].required = True
+
+        self.fields['starting_material'].initial = "Lightly P-doped"
 
 
 class GlassDepositionInputForm(forms.ModelForm):
