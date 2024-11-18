@@ -80,6 +80,17 @@ class GlassDepositionSearchForm(forms.ModelForm):
             'chip_owner': "Enter Username",
         }
 
+class DiffusionSearchForm(forms.ModelForm):
+    class Meta:
+        model = Diffusion
+        exclude = (
+            'picture',
+            'content_type',
+        )
+        labels = {
+            'chip_owner': "Enter Username",
+        }
+
 class HFOxideEtchSearchForm(forms.ModelForm):
     class Meta:
         model = HFOxideEtch

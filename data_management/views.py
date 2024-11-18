@@ -17,7 +17,7 @@ import csv
 
 from data_management.forms import ProfileForm, IVCurveForm, LoginForm, RegisterForm, ChipListSearchForm, AluminumEtchInputForm, AluminumEvaporationInputForm, ChipListForm, GlassDepositionInputForm, DiffusionInputForm, HFOxideEtchInputForm, PatterningInputForm, PlasmaCleanInputForm, PlasmaEtchInputForm
 from data_management.models import Profile, SMU_capture, IVCurve, AluminumEtch, AluminumEvaporation, ChipList, GlassDeposition, Diffusion, HFOxideEtch, Patterning, PlasmaClean, PlasmaEtch
-from data_management.forms import AluminumEtchSearchForm, AluminumEvaporationSearchForm, GlassDepositionSearchForm, HFOxideEtchSearchForm, PatterningSearchForm, PlasmaCleanSearchForm, PlasmaEtchSearchForm
+from data_management.forms import AluminumEtchSearchForm, AluminumEvaporationSearchForm, GlassDepositionSearchForm, DiffusionSearchForm, HFOxideEtchSearchForm, PatterningSearchForm, PlasmaCleanSearchForm, PlasmaEtchSearchForm
 
 # gets a list of all processes from json file
 def get_processes():
@@ -66,6 +66,8 @@ def get_search_meas(processes):
             form = AluminumEvaporationSearchForm()
         elif process == "GlassDeposition":
             form = GlassDepositionSearchForm()
+        elif process == "Diffusion":
+            form = DiffusionSearchForm()
         elif process == "HFOxideEtch":
             form = HFOxideEtchSearchForm()
         elif process == "Patterning":
@@ -260,6 +262,8 @@ def parse_forms(used_processes, request):
             form = AluminumEvaporationSearchForm(request.POST, request.FILES)
         if process == "GlassDeposition":
             form = GlassDepositionSearchForm(request.POST, request.FILES)
+        if process == "Diffusion":
+            form = DiffusionSearchForm(request.POST, request.FILES)
         if process == "HFOxideEtch":
             form = HFOxideEtchSearchForm(request.POST, request.FILES)
         if process == "Patterning":
