@@ -1,0 +1,23 @@
+<form action="{% url 'chipnum' chip_id %}" method=POST enctype="multipart/form-data">
+    <table style="width:100%">
+        <tr>
+          <th>Creation Time (EST): </th>
+          <th>{{creation_time|date:"n/j/Y g:i A" }}</th>
+        </tr>
+        <tr>
+          <td>Chip Owner: </td>
+          <td> {{chip_owner}} </td>
+        </tr>
+        <tr>
+          <td>Chip Number: </td>
+          <td> {{chip_number}} </td>
+        </tr>
+      </table>
+    <table>
+        {{form}}
+    </table>
+    <button  id="id_update_profile_button">Submit</button>
+    <input type="hidden" name="status" value="updated">
+    <input type="hidden" name="chip_number" value={{chip_number}}>
+    {% csrf_token %}
+</form>

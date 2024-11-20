@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+{% extends "base.html" %}
+{% block content %}
+<head>
+    <meta charset="utf-8">
+    <title> Hacker Fab</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'data_management/css/data_management.css' %}">
+</head>
+<body>
+    <form class="chip" action="{% url 'chip' %}" method="POST">
+        <label for="chip_text">Enter Chip Number:</label>
+        <input id="chip_text" type="number" min="0" step="1" name="chip_number" required>
+        <button id="start_button">Submit</button>
+        <input type="hidden" name="status" value="Initial">
+    {% csrf_token %}
+    </form>
+    {% if chip_acquired %}
+    <form action="{% url 'chip' %}" method=POST enctype="multipart/form-data">
+        <table>
+            <tr>
+              <th>Creation Time (EST): </th>
+              <th>{{creation_time|date:"n/j/Y g:i A" }}</th>
+            </tr>
+            <tr>
+              <td>Chip Owner: </td>
+              <td> {{chip_owner}} </td>
+            </tr>
+            <tr>
+              <td>Chip Number: </td>
+              <td> {{chip_number}} </td>
+            </tr>
+          </table>
+        <table>
+            {{form}}
+        </table>
+        <button  id="id_update_profile_button">Submit</button>
+        <input type="hidden" name="status" value="updated">
+        <input type="hidden" name="chip_number" value={{chip_number}}>
+        {% csrf_token %}
+    </form>
+    {% endif %}
+</body>
+</html>
+{% endblock %}

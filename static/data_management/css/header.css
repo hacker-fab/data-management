@@ -1,0 +1,145 @@
+.header-container {
+    position: fixed; /* Fixed at the top */
+    top: 0;
+    left: 0;
+    width: 100%; /* Full width */
+    height: 80px; /* Standard header height */
+    background-color: #EAE4FA; /* Light purple background */
+    padding: 0 20px; /* Horizontal padding */
+    display: flex; /* Flexbox for layout */
+    justify-content: space-between; /* Space between the three sections */
+    align-items: center; /* Vertically center items */
+    border-bottom: 1px solid #ccc; /* Subtle border for separation */
+    z-index: 1000; /* Ensure it stays on top */
+    box-sizing: border-box; /* Include padding in height/width calculations */
+    overflow: hidden; /* Ensure no content overflows the container */
+}
+
+
+/* Header Left Section (Links) */
+.header-links {
+    display: flex;
+    justify-content: flex-start; /* Align links to the left */
+    gap: 15px; /* Space between buttons */
+    flex-wrap: wrap; /* Wrap links on smaller screens */
+}
+
+/* Center Section for Logo */
+.header-logo {
+    display: flex;
+    justify-content: center; /* Center logo horizontally */
+}
+
+.header-logo .logo {
+    height: 60px; /* Adjust logo size */
+    max-width: 100%; /* Prevent overflow */
+    transition: height 0.3s ease;
+}
+
+/* Right Section (User Info) */
+.header-user {
+    display: flex; /* Flexbox for layout */
+    align-items: center; /* Center items vertically */
+    gap: 10px; /* Space between user name and logout button */
+    max-width: 100%; /* Ensure it doesn't overflow */
+    flex-shrink: 1; /* Shrinks if space is limited */
+    white-space: nowrap; /* Prevents wrapping of text */
+}
+
+/* Logout Button */
+.logout-button {
+    background-color: white; /* Button color */
+    color: #b48adf; /* Purple text */
+    text-decoration: none; /* Remove underline */
+    padding: 8px 15px; /* Adjusted padding */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 24px; /* Standard font size */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    flex-shrink: 0; /* Prevent the button from shrinking */
+    margin-left: 5px;
+}
+
+.logout-button:hover {
+    background-color: #b48adf; /* Purple on hover */
+    color: white; /* White text on hover */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+}
+
+/* Resource Links */
+.header-button {
+    background-color: #d4b3f6; /* Light purple */
+    color: #000; /* Black text */
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 15px; /* Rounded buttons */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    font-size: clamp(14px, 2vw, 24px); /* Responsive font size */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.header-button:hover {
+    background-color: #b48adf; /* Darker purple on hover */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* User Name and Logout Button */
+.user-name {
+    font-size: clamp(14px, 2vw, 24px); /* Responsive font size */
+    color: black;
+    font-weight: bold;
+    text-align: center; /* Center-align on small screens */
+}
+
+
+/* Logo Container */
+.logo-container {
+    align-items: center;
+}
+
+/* Responsive Layout */
+@media screen and (max-width: 768px) {
+    .header-container {
+        grid-template-columns: 1fr; /* Single column layout */
+        height: auto; /* Dynamic height */
+        padding: 10px; /* Reduce padding */
+    }
+
+    .header-links {
+        justify-content: center; /* Center links */
+        gap: 10px; /* Reduce spacing */
+        margin-bottom: 10px; /* Add spacing between sections */
+    }
+
+    .header-logo {
+        margin: 10px 0; /* Add margin around the logo */
+    }
+
+    .header-user {
+        justify-content: center; /* Center-align user info */
+        gap: 10px;
+    }
+
+    .logout-button {
+        width: 100%; /* Full width button for small screens */
+        text-align: center; /* Center-align text */
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .header-button {
+        font-size: 12px; /* Smaller font size for resource links */
+        padding: 5px 10px; /* Reduce padding for buttons */
+    }
+
+    .logout-button {
+        font-size: 14px; /* Smaller font size for logout button */
+    }
+
+    .user-name {
+        font-size: 14px; /* Smaller font size for user name */
+    }
+
+    .logo-container .logo {
+        height: 50px; /* Smaller logo size */
+    }
+}
