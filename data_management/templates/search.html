@@ -26,7 +26,7 @@
     </form>
 
     {% if link_id %}
-    <form method="post" action="{% url 'csv_output_selected' link_id %}">
+    <form method="post" action="{% url 'csv_output' link_id %}">
       {% csrf_token %}
       <div class="csv"> 
         <button type="submit">Click to Download CSV</button>
