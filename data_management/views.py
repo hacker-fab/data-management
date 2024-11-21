@@ -363,14 +363,15 @@ def create_csv_include_process(array_of_array_of_dicts):
     try:
         with open(f'csvfiles/search{file_count}.csv', 'w') as file:
             for per_process_array in array_of_array_of_dicts:
-                writer = csv.DictWriter(file, fieldnames=per_process_array[0].keys())
-                writer.writeheader()
+                if len(per_process_array) > 0:
+                    writer = csv.DictWriter(file, fieldnames=per_process_array[0].keys())
+                    writer.writeheader()
 
-                for row in per_process_array:
-                    writer.writerow(row)
-                    
-                # Add a blank line between tables for clarity
-                file.write('\n')
+                    for row in per_process_array:
+                        writer.writerow(row)
+                        
+                    # Add a blank line between tables for clarity
+                    file.write('\n')
 
     except Exception as e:
         return 0, f"Failed to write to CSV: {str(e)}"
