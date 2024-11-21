@@ -15,7 +15,7 @@
 </head>
 <body>
     <form action="search" method="POST">
-        <div class = "process_sort" id="process_sort"> Select Processes to Sort By </div>
+        <div class = "process_sort" id="process_sort"> Select Processes to Display </div>
         {% for process in processes %}
             <input type="checkbox" id="{{process.id}}" name=" {{process.name}}" value=" {{process.name}}">
             <label for="{{process.id}}"> {{process.name}}</label><br>
