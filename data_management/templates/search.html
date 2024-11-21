@@ -32,66 +32,40 @@
         <button type="submit">Click to Download CSV</button>
       </div>
       
-      {% comment %} Initialize a variable to keep track of the number of columns in the first entry {% endcomment %}
-      {% with first_row_columns=output.0.items|length %}
-      
-      {% comment %} Start a new table {% endcomment %}
-      <table style="width:100%">
-        <tr>
-          <th>Select</th>
-          {% for column_name, value in output.0.items %} <!-- Header Row for Columns -->
-            <th>{{ column_name }}</th>
+      {% for process_list in output %}
+      {% if process_list %}
+        <h3>{{ process_list.0.process }}</h3> 
+        <table style="width:100%">
+          <tr>
+            <th>Select</th>
+            {% if process_list %}
+              {% for column_name, value in process_list.0.items %}
+                <th>{{ column_name }}</th>
+              {% endfor %}
+            {% endif %}
+          </tr>
+          {% for process_info in process_list %}
+            <tr>
+              <td>
+                <input type="checkbox" name="selected_items" value="{{ forloop.counter0 }}">
+              </td>
+              {% for column_name, value in process_info.items %}
+                {% if column_name == "picture" %}
+                  <td>
+                    <img src="{% url 'photo' process_info.process process_info.id %}" width="400" height="300" id="id_user_picture">
+                  </td>
+                {% else %}
+                  <td>{{ value }}</td>
+                {% endif %}
+              {% endfor %}
+            </tr>
           {% endfor %}
-        </tr>
+        </table>
+      {% endif %}
+      {% endfor %}
 
-        {% for process_info in output %}
-          {% comment %} Check if the current row has the same number of columns as the first row {% endcomment %}
-          {% if process_info.items|length == first_row_columns %}
-            <tr>
-              <td>
-                <input type="checkbox" name="selected_items" value="{{ forloop.counter0 }}">
-              </td>
-              {% for column_name, value in process_info.items %}
-                {% if column_name == "picture" %}
-                  <td>
-                    <img src="{% url 'photo' process_info.process process_info.id %}" width="400" height="300" id="id_user_picture">
-                  </td>
-                {% else %}
-                  <td>{{ value }}</td>
-                {% endif %}
-              {% endfor %}
-            </tr>
-          {% else %}
-            {% comment %} If columns are different, start a new table {% endcomment %}
-            </table>
-            <table style="width:100%">
-              <tr>
-                <th>Select</th>
-                {% for column_name, value in process_info.items %}
-                  <th>{{ column_name }}</th>
-                {% endfor %}
-              </tr>
-            <tr>
-              <td>
-                <input type="checkbox" name="selected_items" value="{{ forloop.counter0 }}">
-              </td>
-              {% for column_name, value in process_info.items %}
-                {% if column_name == "picture" %}
-                  <td>
-                    <img src="{% url 'photo' process_info.process process_info.id %}" width="400" height="300" id="id_user_picture">
-                  </td>
-                {% else %}
-                  <td>{{ value }}</td>
-                {% endif %}
-              {% endfor %}
-            </tr>
-          {% endif %}
-        {% endfor %}
-      </table>
-
-      {% endwith %}
     </form>
-{% endif %}
+    {% endif %}
 
     
     {% if used_process %}
@@ -106,8 +80,8 @@
         <input type="hidden" name="status" value="Secondary">
         <input type="hidden" name="used_process" value={{used_process}}>
         {% csrf_token %}
-    </form>
-  {% endif %}
+      </form>
+    {% endif %}
   
 </body>
 </html>

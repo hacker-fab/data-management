@@ -88,7 +88,7 @@ def get_search_meas(processes):
 
 # return http response of pictures
 @login_required
-def get_photo(request, process, chip_id):
+def get_photo(request, chip_id, process):
     if process == "Patterning":
         p = get_object_or_404(Patterning, id=chip_id)
     elif process == "AluminumEtch":
@@ -349,7 +349,7 @@ def create_csv(query_list):
     return file_count, None
 
 # Create a CSV file from an array of dictionaries
-def create_csv_include_process(array_of_dicts):
+def create_csv_include_process(array_of_array_of_dicts):
     if not os.path.exists("csvfiles"):
         try:
             # Create the 'csvfiles' directory
@@ -362,27 +362,15 @@ def create_csv_include_process(array_of_dicts):
 
     try:
         with open(f'csvfiles/search{file_count}.csv', 'w') as file:
-            writer = None
-            # Keep track of already written headers
-            written_headers = set()
-            
-            for record in array_of_dicts:
-                # Get the current keys
-                current_headers = set(record.keys())
-                
-                # If there's a new fieldname, write a new table
-                if current_headers != written_headers:
-                    if writer is not None:
-                        # Add a blank line between tables for clarity
-                        file.write('\n')
+            for per_process_array in array_of_array_of_dicts:
+                writer = csv.DictWriter(file, fieldnames=per_process_array[0].keys())
+                writer.writeheader()
+
+                for row in per_process_array:
+                    writer.writerow(row)
                     
-                    # Write the new headers
-                    writer = csv.DictWriter(file, fieldnames=sorted(current_headers))
-                    writer.writeheader()
-                    written_headers = current_headers
-                
-                # Write the row
-                writer.writerow(record)
+                # Add a blank line between tables for clarity
+                file.write('\n')
 
     except Exception as e:
         return 0, f"Failed to write to CSV: {str(e)}"
@@ -578,19 +566,25 @@ def search_page(request):
         context = {"message": "Invalid Data Input", "processes": processes, "forms": parsed[1], "used_process": used_processes}
         return render(request, "search.html", context)
     query_output = filter_form(parsed[0])
-    array_of_dicts = []
+    array_of_array_of_dicts = []
+    prev_process = None
+    per_process_array = []
     for i in query_output:
+        process_name = i[0]
+        per_process_array = []
         for x in i[1].values():
-            x["process"] = i[0]
-            array_of_dicts.append(x)
-    csv_link_id, err = create_csv_include_process(array_of_dicts)  
+            x["process"] = process_name
+            per_process_array.append(x)
+        array_of_array_of_dicts.append(per_process_array)
+
+    csv_link_id, err = create_csv_include_process(array_of_array_of_dicts)  
     if err != None:
         # Raise an error if creating the csv fails
         messages.error(request, err)  # Add error message to messages framework
         context = {"message": err}
         return render(request, "search.html", context)
     processes = get_processes()
-    context = {"message": "Data Searched!","processes": processes,"link_id":csv_link_id,"output":array_of_dicts}
+    context = {"message": "Data Searched!","processes": processes,"link_id":csv_link_id,"output":array_of_array_of_dicts}
     return render(request, "search.html", context)
 
 # display page for input
