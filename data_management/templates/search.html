@@ -32,35 +32,42 @@
         <button type="submit"> Click to Download CSV</button>
         <!-- <a href="{% url 'csv_output' link_id %}"> Click to Download CSV</a> -->
       </div>
-      <table style="width:100%">
-      {% for process_info in output %}
-        {% for column_name, value in process_info.items %}
-          {% if forloop.first %} <!-- Checkbox in the first row of each table -->
-            <tr>
-              <td rowspan="{{ process_info.items|length }}">
-                <input type="checkbox" name="selected_items" value="{{ forloop.parentloop.counter0 }}">
-              </td>
-          {% endif %}
-          {% if column_name == "picture" %}
-            <tr>
-              <th> {{ column_name }} </th>
-              <td> 
-                <img src="{% url 'photo' process_info.process process_info.id%}" width="400" height="300" id="id_user_picture">
-              </td>
-          </tr>
-          {% else %}
-            {% if column_name != "process" %}
-              <tr>
-                  <th> {{ column_name }} </th>
-                  <td> {{ value }} </td>
-              </tr>
+      
+      {% for process_list in output %}
+      {% if process_list %}
+        <h3>{{ process_list.0.process }}</h3> 
+        <table style="width:100%">
+          <tr>
+            <th>Select</th>
+            {% if process_list %}
+              {% for column_name, value in process_list.0.items %}
+                <th>{{ column_name }}</th>
+              {% endfor %}
             {% endif %}
-          {% endif %}
-        {% endfor %}
+          </tr>
+          {% for process_info in process_list %}
+            <tr>
+              <td>
+                <input type="checkbox" name="selected_items" value="{{ forloop.counter0 }}">
+              </td>
+              {% for column_name, value in process_info.items %}
+                {% if column_name == "picture" %}
+                  <td>
+                    <img src="{% url 'photo' process_info.process process_info.id %}" width="400" height="300" id="id_user_picture">
+                  </td>
+                {% else %}
+                  <td>{{ value }}</td>
+                {% endif %}
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </table>
+      {% endif %}
       {% endfor %}
-      </table>
+
     </form>
     {% endif %}
+
     
     {% if used_process %}
       <form action="search" method=POST enctype="multipart/form-data">
@@ -74,8 +81,8 @@
         <input type="hidden" name="status" value="Secondary">
         <input type="hidden" name="used_process" value={{used_process}}>
         {% csrf_token %}
-    </form>
-  {% endif %}
+      </form>
+    {% endif %}
   
 </body>
 </html>
