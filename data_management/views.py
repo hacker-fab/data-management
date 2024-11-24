@@ -296,7 +296,7 @@ def parse_forms(used_processes, request):
         return ["Invalid", forms]
     return [filters]
 
-# create list of results for search queries
+# create list of results for search queries (append "pattern" column)
 def filter_form(input_dict):
     q_list = []
     for proc in input_dict.keys():
@@ -304,24 +304,29 @@ def filter_form(input_dict):
         for j in input_dict[proc]:
             query &= Q((j[0], j[1]))
         if proc == "ChipList":
-            q_obj = (proc, ChipList.objects.filter(query).order_by('creation_time'))
-        if proc == "AluminumEtch":
-            q_obj = (proc, AluminumEtch.objects.filter(query).order_by('{0}_step_time'.format(proc)))
-        if proc == "AluminumEvaporation":
-            q_obj = (proc, AluminumEvaporation.objects.filter(query).order_by('{0}_step_time'.format(proc)))
-        if proc == "GlassDeposition_P504":
-            q_obj = (proc, GlassDeposition_P504.objects.filter(query).order_by('{0}_step_time'.format(proc)))
-        if proc == "GlassDeposition_700B":
-            q_obj = (proc, GlassDeposition_700B.objects.filter(query).order_by('{0}_step_time'.format(proc)))
-        if proc == "HFOxideEtch":
-            q_obj = (proc, HFOxideEtch.objects.filter(query).order_by('{0}_step_time'.format(proc)))
-        if proc == "Patterning":
-            q_obj = (proc, Patterning.objects.filter(query).order_by('{0}_step_time'.format(proc)))
-        if proc == "PlasmaClean":
-            q_obj = (proc, PlasmaClean.objects.filter(query).order_by('{0}_step_time'.format(proc)))
-        if proc == "PlasmaEtch":
-            q_obj = (proc, PlasmaEtch.objects.filter(query).order_by('{0}_step_time'.format(proc)))
-        q_list.append(q_obj)
+            queryset = ChipList.objects.filter(query).order_by('creation_time')
+        elif proc == "AluminumEtch":
+            queryset = AluminumEtch.objects.filter(query).order_by(f'{proc}_step_time')
+        elif proc == "AluminumEvaporation":
+            queryset = AluminumEvaporation.objects.filter(query).order_by(f'{proc}_step_time')
+        elif proc == "GlassDeposition_P504":
+            queryset = GlassDeposition_P504.objects.filter(query).order_by(f'{proc}_step_time')
+        elif proc == "GlassDeposition_700B":
+            queryset = GlassDeposition_700B.objects.filter(query).order_by(f'{proc}_step_time')
+        elif proc == "HFOxideEtch":
+            queryset = HFOxideEtch.objects.filter(query).order_by(f'{proc}_step_time')
+        elif proc == "Patterning":
+            queryset = Patterning.objects.filter(query).order_by(f'{proc}_step_time')
+        elif proc == "PlasmaClean":
+            queryset = PlasmaClean.objects.filter(query).order_by(f'{proc}_step_time')
+        elif proc == "PlasmaEtch":
+            queryset = PlasmaEtch.objects.filter(query).order_by(f'{proc}_step_time')
+
+        # Add 'process' column to each row
+        for row in queryset:
+            row.process = proc  # Add the process name as a new attribute
+
+        q_list.append((proc, queryset))
     return q_list
 
 # create csv and add values from query output to it
@@ -343,79 +348,173 @@ def create_csv(query_list):
             write.writerows(queryset.values_list())
     return file_count, None
 
-# create http response output for csv so people can click it to download
+# Create a CSV file from an array of arrays of dictionaries
+# Data is grouped by process
+def create_csv_include_process(array_of_array_of_dicts):
+    if not os.path.exists("csvfiles"):
+        try:
+            # Create the 'csvfiles' directory
+            os.makedirs("csvfiles")
+        except Exception as e:
+            return 0, f"Failed to generate CSV files: {str(e)}"
+
+    _, _, files = next(os.walk("csvfiles"))
+    file_count = len(files)+1
+
+    try:
+        with open(f'csvfiles/search{file_count}.csv', 'w') as file:
+            for per_process_array in array_of_array_of_dicts:
+                if len(per_process_array) > 0:
+                    writer = csv.DictWriter(file, fieldnames=per_process_array[0].keys())
+                    writer.writeheader()
+
+                    for row in per_process_array:
+                        writer.writerow(row)
+                        
+                    # Add a blank line between tables for clarity
+                    file.write('\n')
+
+    except Exception as e:
+        return 0, f"Failed to write to CSV: {str(e)}"
+
+    return file_count, None
+
+
+# Handles searching and downloading CSV from the search page
 @login_required
 def csv_output(request, csv_id):
-    with open(f'csvfiles/search{csv_id}.csv', 'r') as file:
-        # Read all lines and skip the first line because for some reason the parameter
-        # names were being printed twice before
-        lines = file.readlines()
+    action = request.POST.get('action')
+    if action == 'download_csv':
+        # Prepare and return CSV response
+        return download_csv(request, csv_id)
+    else:
+        return sort_search_output(request, csv_id)
 
-    headers = lines[0]
 
-    data_start_index = 0
-    found_data = False
-    for row_i, line in enumerate(lines):
-        # Keep track of rows and skip any duplicate headers
-        # If the row matches the header, skip it
-        for col_i in range(len(line)):
-            if headers[col_i] != line[col_i]:
-                data_start_index = row_i
-                found_data = True
-                break
-        if found_data:
-            break
-    
-    data_start_index = max(0, data_start_index-1)
-
-    lines = lines[data_start_index:]
-
+# create http response output for csv so people can click it to download
+@login_required
+def download_csv(request, csv_id):
+    # Create a CSV response with content type for CSV file download
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename=webscraping_dataset.csv'
-    response.writelines(lines)
+    response['Content-Disposition'] = f'attachment; filename="webscraping_dataset.csv"'
+    writer = csv.writer(response)
+    
+    selected_row_nums = request.POST.getlist('selected_items')
+    selected_row_nums = list(map(int, selected_row_nums))
+    num_selected_rows = len(selected_row_nums)
+
+    # Open the source CSV file for reading and a temporary CSV file for writing
+    with open(f'csvfiles/search{csv_id}.csv', mode='r') as data_src:
+        reader = csv.reader(data_src)
+
+        # write the headers
+        headers = next(reader)
+        writer.writerow(headers)
+
+        # Find the index of the necessary columns to get the photo url
+        chip_id_col_index = headers.index("id") if "id" in headers else -1
+        process_col_index = headers.index("process") if "process" in headers else -1
+        picture_col_index = headers.index("picture") if "picture" in headers else -1
+        
+        # Keep track of rows and skip any duplicate headers
+        for i, row in enumerate(reader):
+            # Skip data that hasn't been selected
+            if num_selected_rows > 0 and i not in selected_row_nums:
+                continue
+
+            if not row:  # A newline indicates that the next line is going to be headers
+                chip_id_col_index = -1
+                process_col_index = -1
+                picture_col_index = -1
+                writer.writerow('\n')
+                continue
+            
+            if "id" in row:
+                chip_id_col_index = row.index("id")
+            if "picture" in row:
+                picture_col_index = row.index("picture")
+            if "process" in row:
+                process_col_index = row.index("process")
+                
+            # Generate the photo URL
+            if picture_col_index != -1 and row[picture_col_index] != "picture" and row[picture_col_index] != "":
+                try:
+                    photo_url = reverse('photo', args=[row[process_col_index], row[chip_id_col_index]])
+                    row[picture_col_index] = request.build_absolute_uri(photo_url)  # Add the full URL
+                except Exception as e:
+                    print(f"Failed to get photo url: {e}")
+
+            writer.writerow(row)
+        
     return response
 
-def csv_output_selected(request, csv_id):
-    if request.method == 'POST':
-        selected_row_nums = request.POST.getlist('selected_items')
-        selected_row_nums = list(map(int, selected_row_nums))
-        if len(selected_row_nums) > 0:
-            # Open the source CSV file for reading and a temporary CSV file for writing
-            with open(f'csvfiles/search{csv_id}.csv', mode='r') as src:
-                reader = csv.reader(src)
 
-                # Read the first row (header)
-                headers = next(reader)  # Store the first row as headers
-                
-                # Create a CSV response with content type for CSV file download
-                response = HttpResponse(content_type='text/csv')
-                response['Content-Disposition'] = f'attachment; filename="webscraping_dataset.csv"'
-                
-                # Create a CSV writer object
-                writer = csv.writer(response)
-                
-                # Write the headers to the CSV response
-                writer.writerow(headers)
-                
-                # Keep track of rows and skip any duplicate headers
-                for result_counter, result in enumerate(reader):
-                    # If the row matches the header, skip it
-                    is_header = True
-                    for i in range(result):
-                        if headers[i] != result[i]:
-                            is_header = False
-                            break
-                    if is_header:
-                        continue
-                    
-                    # If the row is in the selected rows, write it to the response
-                    if result_counter in selected_row_nums:
-                        writer.writerow(result)
+# Sort the results of a search query based on process type or chip id
+@login_required
+def sort_search_output(request, csv_id):
+    sort_by = request.POST.get('sort_by', 'process')  # Default to 'process' if not set
 
-            return response
+    print(f"SORTING BY: {sort_by}")
+    sorted_data = {}
+
+    with open(f'csvfiles/search{csv_id}.csv', mode='r') as data_src:
+        reader = csv.reader(data_src)  # General CSV reader to process rows
+        current_headers = None  # Keep track of headers for each table
         
-    # If no items are selected save all the results to CSV
-    return csv_output(request, csv_id)
+        for row in reader:
+            # Skip empty rows (which separate different tables in the CSV files)
+            if not row:
+                current_headers = None
+                continue  
+
+            # Process the header row (only for the first row of each table)
+            if current_headers is None:
+                current_headers = row  # Set the headers for the first table
+                continue  # Skip adding the header row itself to the data
+
+            # Create a dictionary for the row using the current headers
+            row_dict = {current_headers[i]: row[i] for i in range(len(row))}
+            # Group the data based on the selected field ('process' or 'id')
+            # For some reason the chip number column is named 'chip_number' for the chiplist and named 
+            # 'chip_number_id' for the processes, which is jank, which is why we have to do this:
+            key = row_dict.get(sort_by, None)
+            if key is None and sort_by == "chip_number_id":
+                key = row_dict.get("chip_number")
+                if key is None:
+                    context = {"message": "Failed to sort by chip_id. Missing parameter chip_number_id or chip_number"}
+                    return render(request, "search.html", context)
+
+            if sort_by == "process":
+                if key not in sorted_data:
+                    sorted_data[key] = []
+                sorted_data[key].append(row_dict)
+            else:
+                if key not in sorted_data:
+                    sorted_data[key] = {}
+                process = row_dict.get("process")
+                if process not in sorted_data[key]:
+                    sorted_data[key][process] = []
+                sorted_data[key][process].append(row_dict)
+
+    # Save the sorted results to a csv
+    array_of_array_of_dicts_sorted = []
+    if sort_by == "process":
+        array_of_array_of_dicts_sorted = list(sorted_data.values())
+    else:
+        for chip_num in sorted_data.keys():
+            array_of_array_of_dicts_sorted.extend(list(sorted_data[chip_num].values()))
+
+    csv_link_id, err = create_csv_include_process(array_of_array_of_dicts_sorted)  
+    if err != None:
+        # Raise an error if creating the csv fails
+        messages.error(request, err)  # Add error message to messages framework
+        context = {"message": err}
+        return render(request, "search.html", context)
+    
+    # Render the page with the sorted data
+    processes = get_processes()
+    context = {"message": "Data Searched!","processes": processes,"link_id":csv_link_id,"output":array_of_array_of_dicts_sorted}
+    return render(request, "search.html", context)
     
     
 # start page, just displays  message now
@@ -526,12 +625,16 @@ def otherpfp_action(request, user_id): #request is us, user_id is profile to vie
 # display page to handle searches
 @login_required
 def search_page(request):
+    # Initial view of search page (select which processes to search by)
     if request.method == 'GET':
         processes = get_processes()
         context = {"message": "Search Data here", "processes": processes}
         return render(request, "search.html", context)
     status = request.POST["status"] #hidden field
-    if status == "Initial": #after search processes clicked
+    
+    # Input the parameters for each process type to filter by
+    # (after search processes(es) has been selected)
+    if status == "Initial": 
         processes = get_processes()
         rel_processes = process_search(request.POST)
         measurements = get_search_meas(rel_processes)
@@ -541,26 +644,35 @@ def search_page(request):
             return render(request, "search.html", context)
         context = {"message": "Search Data here", "processes": processes, "forms": measurements, "used_process": rel_processes}
         return render(request, "search.html", context)
-    used_processes = request.POST['used_process'] #after search values inputted
+    
+    # Dislay queried results
+    # (after search parameters have been inputted and submitted)
+    used_processes = request.POST['used_process'] 
     parsed = parse_forms(used_processes, request)
     if parsed[0] == "Invalid":
         processes = get_processes()
         context = {"message": "Invalid Data Input", "processes": processes, "forms": parsed[1], "used_process": used_processes}
         return render(request, "search.html", context)
     query_output = filter_form(parsed[0])
-    csv_link_id, err = create_csv(query_output)
+    array_of_array_of_dicts = []
+    prev_process = None
+    per_process_array = []
+    for i in query_output:
+        process_name = i[0]
+        per_process_array = []
+        for x in i[1].values():
+            x["process"] = process_name
+            per_process_array.append(x)
+        array_of_array_of_dicts.append(per_process_array)
+
+    csv_link_id, err = create_csv_include_process(array_of_array_of_dicts)  
     if err != None:
         # Raise an error if creating the csv fails
         messages.error(request, err)  # Add error message to messages framework
         context = {"message": err}
         return render(request, "search.html", context)
-    array_of_dicts = []
-    for i in query_output:
-        for x in i[1].values():
-            x["process"] = i[0]
-            array_of_dicts.append(x)
     processes = get_processes()
-    context = {"message": "Data Searched!","processes": processes,"link_id":csv_link_id,"output":array_of_dicts}
+    context = {"message": "Data Searched!","processes": processes,"link_id":csv_link_id,"output":array_of_array_of_dicts}
     return render(request, "search.html", context)
 
 # display page for input
