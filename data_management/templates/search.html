@@ -14,7 +14,7 @@
       </style>
 </head>
 <body>
-    <form action="search" method="POST">
+    <form action="{% url 'search' %}" method="POST">
         <div class = "process_sort" id="process_sort"> Select Processes to Display </div>
         {% for process in processes %}
             <input type="checkbox" id="{{process.id}}" name=" {{process.name}}" value=" {{process.name}}">
@@ -28,43 +28,75 @@
     {% if link_id %}
     <form method="post" action="{% url 'csv_output' link_id %}">
       {% csrf_token %}
-      <div class="csv"> 
-        <button type="submit"> Click to Download CSV</button>
-        <!-- <a href="{% url 'csv_output' link_id %}"> Click to Download CSV</a> -->
-      </div>
       
-      {% for process_list in output %}
-      {% if process_list %}
-        <h3>{{ process_list.0.process }}</h3> 
-        <table style="width:100%">
-          <tr>
-            <th>Select</th>
-            {% if process_list %}
-              {% for column_name, value in process_list.0.items %}
-                <th>{{ column_name }}</th>
-              {% endfor %}
-            {% endif %}
-          </tr>
-          {% for process_info in process_list %}
-            <tr>
-              <td>
-                <input type="checkbox" name="selected_items" value="{{ forloop.counter0 }}">
-              </td>
-              {% for column_name, value in process_info.items %}
-                {% if column_name == "picture" %}
-                  <td>
-                    <img src="{% url 'photo' process_info.process process_info.id %}" width="400" height="300" id="id_user_picture">
-                  </td>
-                {% else %}
-                  <td>{{ value }}</td>
-                {% endif %}
-              {% endfor %}
-            </tr>
-          {% endfor %}
-        </table>
-      {% endif %}
-      {% endfor %}
+      <!-- Sorting Radio Buttons -->
+      <div>
+        <label for="sort_by_process">
+          <input type="radio" name="sort_by" value="process" checked> Sort by Process
+        </label>
+        <label for="sort_by_chip_id">
+          <input type="radio" name="sort_by" value="chip_number_id"> Sort by Chip ID
+        </label>
+      </div>
 
+      <!-- Submit Button for Sorting -->
+      <div class="csv">
+        <button type="submit" name="action" value="sort">Apply Sort</button>
+      </div>
+
+      <!-- Submit Button for CSV Download -->
+      <div class="csv"> 
+        <button type="submit" name="action" value="download_csv">Click to Download CSV</button>
+      </div>
+
+      {% if output %}
+        {% if request.POST.action == 'download_csv' %}
+          <!-- Handle CSV download here -->
+          <p>Your CSV will be ready for download.</p>
+        {% else %}
+          {% for process_list in output %}
+            {% if process_list %}
+              {% if request.POST.sort_by == 'chip_number_id' %}
+                {% if process_list.0.chip_number %}
+                  <h3>Chip {{ process_list.0.chip_number }}: {{ process_list.0.process }}</h3>
+                {% elif process_list.0.chip_number_id %}
+                  <h3>Chip {{ process_list.0.chip_number_id }}: {{ process_list.0.process }}</h3>
+                {% elif process_list.0.id %}
+                  <h3>Chip {{ process_list.0.id }}: {{ process_list.0.process }}</h3>
+                {% else %}
+                  <h3>Unknown Chip Number: {{ process_list.0.process }}</h3>
+                {% endif %}
+              {% else %}
+                <h3>{{ process_list.0.process }}</h3> 
+              {% endif %}
+              <table style="width:100%">
+                <tr>
+                  <th>Select</th>
+                  {% for column_name, value in process_list.0.items %}
+                    <th>{{ column_name }}</th>
+                  {% endfor %}
+                </tr>
+                {% for process_info in process_list %}
+                  <tr>
+                    <td>
+                      <input type="checkbox" name="selected_items" value="{{ forloop.counter0 }}">
+                    </td>
+                    {% for column_name, value in process_info.items %}
+                      {% if column_name == "picture" %}
+                        <td>
+                          <img src="{% url 'photo' process_info.process process_info.id %}" width="400" height="300" id="id_user_picture">
+                        </td>
+                      {% else %}
+                        <td>{{ value }}</td>
+                      {% endif %}
+                    {% endfor %}
+                  </tr>
+                {% endfor %}
+              </table>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endif %}
     </form>
     {% endif %}
 
