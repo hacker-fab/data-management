@@ -625,12 +625,16 @@ def otherpfp_action(request, user_id): #request is us, user_id is profile to vie
 # display page to handle searches
 @login_required
 def search_page(request):
+    # Initial view of search page (select which processes to search by)
     if request.method == 'GET':
         processes = get_processes()
         context = {"message": "Search Data here", "processes": processes}
         return render(request, "search.html", context)
     status = request.POST["status"] #hidden field
-    if status == "Initial": #after search processes clicked
+    
+    # Input the parameters for each process type to filter by
+    # (after search processes(es) has been selected)
+    if status == "Initial": 
         processes = get_processes()
         rel_processes = process_search(request.POST)
         measurements = get_search_meas(rel_processes)
@@ -640,7 +644,10 @@ def search_page(request):
             return render(request, "search.html", context)
         context = {"message": "Search Data here", "processes": processes, "forms": measurements, "used_process": rel_processes}
         return render(request, "search.html", context)
-    used_processes = request.POST['used_process'] #after search values inputted
+    
+    # Dislay queried results
+    # (after search parameters have been inputted and submitted)
+    used_processes = request.POST['used_process'] 
     parsed = parse_forms(used_processes, request)
     if parsed[0] == "Invalid":
         processes = get_processes()
