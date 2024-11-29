@@ -73,26 +73,6 @@
     "Cracking": ["-1", "0", "1"],
     "Particle/Pinhole on Exposure": ["-1", "0", "1"]
 },
-"GlassDeposition_700B": {
-    "Chip #": [],
-    "Person": [],
-    "Date": [],
-    "Cleaning Step": ["Acetone + IPA"],
-    "Days of SOG at Room Temp": [],
-    "Prebake Temp": [],
-    "Prebake Time": [],
-    "# of Drops": ["1", "2"],
-    "Spin Coat RPM": [],
-    "Spin Coat Time": [],
-    "Post Bake Temp1": [],
-    "Post Bake Time1": [],
-    "Post Bake Temp2": [],
-    "Post Bake Time2": [],
-    "Room Humidity": [],
-    "Layer Thickness": [],
-    "Cracking": ["-1", "0", "1"],
-    "Particle/Pinhole on Exposure": ["-1", "0", "1"]
-},
 "AluminumEvaporation": {
     "Chip #": [],
     "Person": [],
