@@ -2,7 +2,7 @@ from django import forms
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from data_management.models import Profile, IVCurve, AluminumEtch, AluminumEvaporation, ChipList, ChipListSearch, GlassDeposition_P504, Diffusion, HFOxideEtch, Patterning, PlasmaClean, PlasmaEtch
+from data_management.models import Profile, IVCurve, AluminumEtch, AluminumEvaporation, ChipList, ChipListSearch, GlassDeposition_P504, HFOxideEtch, Patterning, PlasmaClean, PlasmaEtch
 
 UNIVERSITY_CHOICES =( 
     ("CMU", "Carnegie Mellon University"), 
@@ -72,17 +72,6 @@ class ChipListSearchForm(forms.ModelForm):
 class GlassDeposition_P504SearchForm(forms.ModelForm):
     class Meta:
         model = GlassDeposition_P504
-        exclude = (
-            'picture',
-            'content_type',
-        )
-        labels = {
-            'chip_owner': "Enter Username",
-        }
-
-class DiffusionSearchForm(forms.ModelForm):
-    class Meta:
-        model = Diffusion
         exclude = (
             'picture',
             'content_type',
@@ -177,25 +166,6 @@ class GlassDeposition_P504InputForm(forms.ModelForm):
             'GlassDeposition_P504_step_time',
             'content_type',
         )
-
-class DiffusionInputForm(forms.ModelForm):
-    class Meta:
-        model = Diffusion
-        exclude = (
-            'chip_owner',
-            'Diffusion_step_time',
-            'content_type',
-        )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        
-        self.fields['chip_number'].required = True
-        self.fields['Diffusion_temp'].required = True
-        self.fields['Diffusion_duration'].required = True
-
-        self.fields['Diffusion_temp'].initial = 1100
-        self.fields['Diffusion_duration'].initial = 1800
 
 class HFOxideEtchInputForm(forms.ModelForm):
     class Meta:

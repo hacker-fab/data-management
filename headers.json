@@ -73,13 +73,6 @@
     "Cracking": ["-1", "0", "1"],
     "Particle/Pinhole on Exposure": ["-1", "0", "1"]
 },
-"Diffusion": {
-    "Chip #": [],
-    "Person": [],
-    "Date": [],
-    "Diffusion Temp": [],
-    "Diffusion Time": []
-},
 "AluminumEvaporation": {
     "Chip #": [],
     "Person": [],

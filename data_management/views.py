@@ -17,9 +17,9 @@ import json
 import os
 import csv
 
-from data_management.forms import ProfileForm, IVCurveForm, LoginForm, RegisterForm, ChipListSearchForm, AluminumEtchInputForm, AluminumEvaporationInputForm, ChipListForm, GlassDeposition_P504InputForm, DiffusionInputForm, HFOxideEtchInputForm, PatterningInputForm, PlasmaCleanInputForm, PlasmaEtchInputForm
-from data_management.models import Profile, SMU_capture, IVCurve, AluminumEtch, AluminumEvaporation, ChipList, GlassDeposition_P504, Diffusion, HFOxideEtch, Patterning, PlasmaClean, PlasmaEtch
-from data_management.forms import AluminumEtchSearchForm, AluminumEvaporationSearchForm, GlassDeposition_P504SearchForm, DiffusionSearchForm, HFOxideEtchSearchForm, PatterningSearchForm, PlasmaCleanSearchForm, PlasmaEtchSearchForm
+from data_management.forms import ProfileForm, IVCurveForm, LoginForm, RegisterForm, ChipListSearchForm, AluminumEtchInputForm, AluminumEvaporationInputForm, ChipListForm, GlassDeposition_P504InputForm, HFOxideEtchInputForm, PatterningInputForm, PlasmaCleanInputForm, PlasmaEtchInputForm
+from data_management.models import Profile, SMU_capture, IVCurve, AluminumEtch, AluminumEvaporation, ChipList, GlassDeposition_P504, HFOxideEtch, Patterning, PlasmaClean, PlasmaEtch
+from data_management.forms import AluminumEtchSearchForm, AluminumEvaporationSearchForm, GlassDeposition_P504SearchForm, HFOxideEtchSearchForm, PatterningSearchForm, PlasmaCleanSearchForm, PlasmaEtchSearchForm
 
 # gets a list of all processes from json file
 def get_processes():
@@ -41,8 +41,6 @@ def get_input_meas(processes):
             form = AluminumEvaporationInputForm()
         elif process == "GlassDeposition_P504":
             form = GlassDeposition_P504InputForm()
-        elif process == "Diffusion":
-            form = DiffusionInputForm()
         elif process == "HFOxideEtch":
             form = HFOxideEtchInputForm()
         elif process == "Patterning":
@@ -68,8 +66,6 @@ def get_search_meas(processes):
             form = AluminumEvaporationSearchForm()
         elif process == "GlassDeposition_P504":
             form = GlassDeposition_P504SearchForm()
-        elif process == "Diffusion":
-            form = DiffusionSearchForm()
         elif process == "HFOxideEtch":
             form = HFOxideEtchSearchForm()
         elif process == "Patterning":
@@ -97,8 +93,6 @@ def get_photo(request, chip_id, process):
         p = get_object_or_404(AluminumEvaporation, id=chip_id)
     elif process == "GlassDeposition_P504":
         p = get_object_or_404(GlassDeposition_P504, id=chip_id)
-    elif process == "Diffusion":
-        p = get_object_or_404(Diffusion, id=chip_id)
     elif process == "HFOxideEtch":
         p = get_object_or_404(HFOxideEtch, id=chip_id)
     elif process == "PlasmaClean":
@@ -167,17 +161,6 @@ def save_form(processes, request):
                 GlassDeposition_P504_metric_particles=request.POST['GlassDeposition_P504_metric_particles'], 
                 GlassDeposition_P504_notes=request.POST['GlassDeposition_P504_notes'], 
                 chip_owner=request.user, GlassDeposition_P504_step_time=timezone.now()
-            )
-        if process == "Diffusion":
-            form = DiffusionInputForm(request.POST, request.FILES)
-            if not form.is_valid():
-                return ["Invalid", form]
-            new_model = Diffusion(
-                chip_number = ChipList.objects.get(chip_number=request.POST["chip_number"]),
-                Diffusion_temp=request.POST['Diffusion_temp'], 
-                Diffusion_duration=request.POST['Diffusion_duration'], 
-                Diffusion_notes=request.POST['Diffusion_notes'], 
-                chip_owner=request.user, Diffusion_step_time=timezone.now()
             )
         if process == "HFOxideEtch":
             form = HFOxideEtchInputForm(request.POST, request.FILES)
@@ -265,8 +248,6 @@ def parse_forms(used_processes, request):
             form = AluminumEvaporationSearchForm(request.POST, request.FILES)
         if process == "GlassDeposition_P504":
             form = GlassDeposition_P504SearchForm(request.POST, request.FILES)
-        if process == "Diffusion":
-            form = DiffusionSearchForm(request.POST, request.FILES)
         if process == "HFOxideEtch":
             form = HFOxideEtchSearchForm(request.POST, request.FILES)
         if process == "Patterning":
@@ -302,8 +283,6 @@ def filter_form(input_dict):
             q_obj = (proc, AluminumEvaporation.objects.filter(query).order_by('{0}_step_time'.format(proc)))
         if proc == "GlassDeposition_P504":
             q_obj = (proc, GlassDeposition_P504.objects.filter(query).order_by('{0}_step_time'.format(proc)))
-        if proc == "Diffusion":
-            q_obj = (proc, Diffusion.objects.filter(query).order_by('{0}_step_time'.format(proc)))
         if proc == "HFOxideEtch":
             q_obj = (proc, HFOxideEtch.objects.filter(query).order_by('{0}_step_time'.format(proc)))
         if proc == "Patterning":
