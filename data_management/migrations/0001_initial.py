@@ -190,20 +190,6 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='Diffusion',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('Diffusion_step_time', models.DateTimeField(blank=True)),
-                ('Diffusion_temp', models.DecimalField(blank=True, decimal_places=3, max_digits=10, null=True, verbose_name='Diffusion temp (°C) *')),
-                ('Diffusion_duration', models.PositiveIntegerField(blank=True, null=True, verbose_name='Diffusion duration (sec) *')),
-                ('picture', models.FileField(blank=True, upload_to='')),
-                ('content_type', models.CharField(blank=True, max_length=50)),
-                ('Diffusion_notes', models.CharField(blank=True, max_length=400, null=True, verbose_name='Notes')),
-                ('chip_number', models.ForeignKey(blank=True, on_delete=django.db.models.deletion.PROTECT, to='data_management.chiplist', verbose_name='Chip number *')),
-                ('chip_owner', models.ForeignKey(blank=True, on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
-            ],
-        ),
-        migrations.CreateModel(
             name='ChipListSearch',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),

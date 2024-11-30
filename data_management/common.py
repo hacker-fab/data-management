@@ -11,6 +11,11 @@ MATERIAL_CHOICES = (
     ("Aluminum", "Aluminum"),
 )
 
+GLASS_CHOICES = (
+    ("P504", "P504"),
+    ("700B", "700B"),
+)
+
 QUALITY_CHOICES = (
     ("1", "1 (Worst)"),
     ("2", "2"),

@@ -53,10 +53,11 @@
     "Photoresist Peeling": ["-1", "0", "1"],
     "Aluminum Peeling": ["-1", "0", "1"]
 },
-"GlassDeposition_P504": {
+"GlassDeposition": {
     "Chip #": [],
     "Person": [],
     "Date": [],
+    "Glass Type": [],
     "Cleaning Step": ["Acetone + IPA"],
     "Days of SOG at Room Temp": [],
     "Prebake Temp": [],
@@ -72,6 +73,13 @@
     "Layer Thickness": [],
     "Cracking": ["-1", "0", "1"],
     "Particle/Pinhole on Exposure": ["-1", "0", "1"]
+},
+"Diffusion": {
+    "Chip #": [],
+    "Person": [],
+    "Date": [],
+    "Diffusion Temp": [],
+    "Diffusion Time": []
 },
 "AluminumEvaporation": {
     "Chip #": [],
