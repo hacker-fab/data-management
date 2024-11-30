@@ -152,6 +152,7 @@ def save_form(processes, request):
                 return ["Invalid", form]
             new_model = GlassDeposition(
                 chip_number = ChipList.objects.get(chip_number=request.POST["chip_number"]),
+                GlassDeposition_glass_type=request.POST['GlassDeposition_glass_type'],
                 GlassDeposition_cleaning_step=request.POST['GlassDeposition_cleaning_step'], 
                 GlassDeposition_days_glass_at_room_temp=request.POST['GlassDeposition_days_glass_at_room_temp'], 
                 GlassDeposition_prebake_temp=request.POST['GlassDeposition_prebake_temp'], 

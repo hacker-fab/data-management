@@ -144,6 +144,20 @@ class AluminumEtchInputForm(forms.ModelForm):
             'content_type',
         )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['chip_number'].required = True
+        self.fields['AluminumEtch_temp'].required = True
+        self.fields['AluminumEtch_duration'].required = True
+        self.fields['AluminumEtch_stir_rpm'].required = True
+        self.fields['AluminumEtch_metric_alum_etch_depth'].required = True
+        self.fields['AluminumEtch_metric_photoresist_peeling'].required = True
+        self.fields['AluminumEtch_metric_aluminum_peeling'].required = True
+
+        self.fields['AluminumEtch_temp'].initial = 40
+        self.fields['AluminumEtch_stir_rpm'].initial = 350
+
 class AluminumEvaporationInputForm(forms.ModelForm):
     class Meta:
         model = AluminumEvaporation
@@ -152,6 +166,20 @@ class AluminumEvaporationInputForm(forms.ModelForm):
             'AluminumEvaporation_step_time',
             'content_type',
         )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['chip_number'].required = True
+        self.fields['AluminumEvaporation_duration'].required = True
+        self.fields['AluminumEvaporation_pressure_before_start_seq'].required = True
+        self.fields['AluminumEvaporation_pressure_before_evaporation'].required = True
+        self.fields['AluminumEvaporation_metric_layer_thickness'].required = True
+        self.fields['AluminumEvaporation_metric_layer_thick_qcm'].required = True
+        self.fields['AluminumEvaporation_metric_deposition_rate'].required = True
+
+        self.fields['AluminumEvaporation_pressure_before_start_seq'].initial = 1.5
+        self.fields['AluminumEvaporation_pressure_before_evaporation'].initial = 6.4
 
 class ChipListForm(forms.ModelForm):
     #university = forms.ChoiceField(choices = UNIVERSITY_CHOICES,
@@ -178,6 +206,30 @@ class GlassDepositionInputForm(forms.ModelForm):
             'content_type',
         )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['chip_number'].required = True
+        self.fields['GlassDeposition_glass_type'].required = True
+        self.fields['GlassDeposition_cleaning_step'].required = True
+        self.fields['GlassDeposition_prebake_temp'].required = True
+        self.fields['GlassDeposition_prebake_duration'].required = True
+        self.fields['GlassDeposition_amount_drops'].required = True
+        self.fields['GlassDeposition_spin_rpm'].required = True
+        self.fields['GlassDeposition_spin_duration'].required = True
+        self.fields['GlassDeposition_bake_temp'].required = True
+        self.fields['GlassDeposition_bake_duration'].required = True
+        self.fields['GlassDeposition_metric_cracking'].required = True
+        self.fields['GlassDeposition_metric_particles'].required = True
+
+        self.fields['GlassDeposition_glass_type'].initial = "P504"
+        self.fields['GlassDeposition_cleaning_step'].initial = "Acetone + IPA"
+        self.fields['GlassDeposition_prebake_temp'].initial = 100
+        self.fields['GlassDeposition_prebake_duration'].initial = 20
+        self.fields['GlassDeposition_amount_drops'].initial = 3
+        self.fields['GlassDeposition_spin_rpm'].initial = 4000
+        self.fields['GlassDeposition_spin_duration'].initial = 20
+
 class DiffusionInputForm(forms.ModelForm):
     class Meta:
         model = Diffusion
@@ -187,6 +239,16 @@ class DiffusionInputForm(forms.ModelForm):
             'content_type',
         )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['chip_number'].required = True
+        self.fields['Diffusion_temp'].required = True
+        self.fields['Diffusion_duration'].required = True
+
+        self.fields['Diffusion_temp'].initial = 1100
+        self.fields['Diffusion_duration'].initial = 1800
+
 class HFOxideEtchInputForm(forms.ModelForm):
     class Meta:
         model = HFOxideEtch
@@ -195,6 +257,14 @@ class HFOxideEtchInputForm(forms.ModelForm):
             'HFOxideEtch_step_time',
             'content_type',
         )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['chip_number'].required = True
+        self.fields['HFOxideEtch_temp'].required = True
+        self.fields['HFOxideEtch_duration'].required = True
+        self.fields['HFOxideEtch_metric_oxide_etch_depth'].required = True
 
 class PatterningInputForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -207,6 +277,44 @@ class PatterningInputForm(forms.ModelForm):
             'content_type',
         )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['chip_number'].required = True
+        self.fields['Patterning_underlying_material'].required = True
+        self.fields['Patterning_cleaning_step'].required = True
+        self.fields['Patterning_hdms_prebake_temp'].required = True
+        self.fields['Patterning_hdms_prebake_duration'].required = True
+        self.fields['Patterning_hdms_spin_rpm'].required = True
+        self.fields['Patterning_hdms_spin_duration'].required = True
+        self.fields['Patterning_hdms_bake_temp'].required = True
+        self.fields['Patterning_hdms_bake_duration'].required = True
+        self.fields['Patterning_photoresist_spin_rpm'].required = True
+        self.fields['Patterning_photoresist_spin_duration'].required = True
+        self.fields['Patterning_photoresist_bake_temp'].required = True
+        self.fields['Patterning_photoresist_bake_duration'].required = True
+        self.fields['Patterning_exposure_pattern'].required = True
+        self.fields['Patterning_exposure_duration'].required = True
+        self.fields['Patterning_develop_duration'].required = True
+        self.fields['Patterning_metric_pattern_quality'].required = True
+        self.fields['Patterning_metric_development'].required = True
+        self.fields['Patterning_metric_contaminants'].required = True
+
+        self.fields['Patterning_underlying_material'].initial = "PolySilicon"
+        self.fields['Patterning_cleaning_step'].initial = "Acetone + IPA"
+        self.fields['Patterning_hdms_prebake_temp'].initial = 100
+        self.fields['Patterning_hdms_prebake_duration'].initial = 60
+        self.fields['Patterning_hdms_spin_rpm'].initial = 3000
+        self.fields['Patterning_hdms_spin_duration'].initial = 20
+        self.fields['Patterning_hdms_bake_temp'].initial = 100
+        self.fields['Patterning_hdms_bake_duration'].initial = 20
+        self.fields['Patterning_photoresist_spin_rpm'].initial = 4000
+        self.fields['Patterning_photoresist_spin_duration'].initial = 30
+        self.fields['Patterning_photoresist_bake_temp'].initial = 100
+        self.fields['Patterning_photoresist_bake_duration'].initial = 90
+        self.fields['Patterning_exposure_duration'].initial = 8000
+        self.fields['Patterning_develop_duration'].initial = 60
+
 class PlasmaCleanInputForm(forms.ModelForm):
     class Meta:
         model = PlasmaClean
@@ -216,6 +324,17 @@ class PlasmaCleanInputForm(forms.ModelForm):
             'content_type',
         )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['chip_number'].required = True
+        self.fields['PlasmaClean_o2_flow'].required = True
+        self.fields['PlasmaClean_rf_power'].required = True
+        self.fields['PlasmaClean_clean_duration'].required = True
+
+        self.fields['PlasmaClean_o2_flow'].initial = 10
+        self.fields['PlasmaClean_rf_power'].initial = 100
+
 class PlasmaEtchInputForm(forms.ModelForm):
     class Meta:
         model = PlasmaEtch
@@ -224,6 +343,19 @@ class PlasmaEtchInputForm(forms.ModelForm):
             'PlasmaEtch_step_time',
             'content_type',
         )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['chip_number'].required = True
+        self.fields['PlasmaEtch_rf_power'].required = True
+        self.fields['PlasmaEtch_etch_duration'].required = True
+        self.fields['PlasmaEtch_etch_depth'].required = True
+
+        self.fields['PlasmaEtch_sf6_flow'].initial = 10
+        self.fields['PlasmaEtch_rf_power'].initial = 100
+        self.fields['PlasmaEtch_etch_duration'].initial = 100
+        self.fields['PlasmaEtch_etch_depth'].initial = 500
 
 
 class LoginForm(forms.Form):
