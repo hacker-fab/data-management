@@ -12,15 +12,15 @@ from data_management.common import *
 
 
 class ChipList(models.Model):
-    chip_number = models.IntegerField(primary_key=True, blank=False)
-    chip_owner    = models.ForeignKey(User, on_delete=models.PROTECT, blank=True)
-    creation_time = models.DateTimeField(blank=True)
-    # starting_material = models.CharField(max_length=400, blank=True, null=True, default="Lightly P-doped")
-    notes = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
-    IVCurrents_CSV = models.FileField(blank=True)
-    IVVoltages_CSV = models.FileField(blank=True)
-    content_type = models.CharField(max_length=50, blank=True)
-    #uni  = models.CharField(blank=True, max_length=300)
+    chip_number         = models.IntegerField(primary_key=True, blank=False)
+    chip_owner          = models.ForeignKey(User, on_delete=models.PROTECT, blank=True)
+    university          = models.CharField(max_length=400, blank=True, null=True, choices=UNIVERSITY_CHOICES)
+    creation_time       = models.DateTimeField(blank=True)
+    starting_material   = models.CharField(max_length=400, blank=True, null=True)
+    notes               = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
+    IVCurrents_CSV      = models.FileField(blank=True)
+    IVVoltages_CSV      = models.FileField(blank=True)
+    content_type        = models.CharField(max_length=50, blank=True)
 
 class Profile(models.Model):
     text  = models.CharField(blank=True, max_length=300)
@@ -91,8 +91,6 @@ class GlassDeposition_P504(models.Model):
     GlassDeposition_P504_spin_time               = models.PositiveIntegerField(blank=False, default="20", verbose_name="Spin time (sec) *")
     GlassDeposition_P504_bake_temp               = models.IntegerField(blank=False, null=True, verbose_name="Bake temp (°C) *")
     GlassDeposition_P504_bake_time               = models.PositiveIntegerField(blank=False, null=True, verbose_name="Bake time (sec) *")
-    GlassDeposition_P504_diffusion_temp          = models.CharField(max_length=400, blank=True, null=True, verbose_name="Diffusion temp (°C)")
-    GlassDeposition_P504_diffusion_time          = models.CharField(max_length=400, blank=True, null=True, verbose_name="Diffusion time (sec)")
     GlassDeposition_P504_humidity                = models.CharField(max_length=400, blank=True, null=True, verbose_name="Humidity")
     GlassDeposition_P504_metric_layer_thickness  = models.CharField(max_length=400, blank=True, null=True, verbose_name="Layer thickness (um)")
     GlassDeposition_P504_metric_cracking         = models.CharField(max_length=400, blank=True, null=True, choices=BINARY_CHOICES, verbose_name="Cracking?")
@@ -100,27 +98,6 @@ class GlassDeposition_P504(models.Model):
     picture                                      = models.FileField(blank=True)
     content_type                            = models.CharField(max_length=50, blank=True)
     GlassDeposition_P504_notes              = models.CharField(max_length=400, blank=True, null=True, verbose_name="Notes")
-
-class GlassDeposition_700B(models.Model):
-    chip_number                             = models.ForeignKey(ChipList, on_delete=models.PROTECT, blank=False, verbose_name="Chip number *")
-    chip_owner                              = models.ForeignKey(User, on_delete=models.PROTECT, blank=False)
-    GlassDeposition_700B_step_time               = models.DateTimeField(blank=False)
-    GlassDeposition_700B_cleaning_step           = models.CharField(max_length=400, blank=False, default="Acetone + IPA", verbose_name="Cleaning step *")
-    GlassDeposition_700B_days_glass_at_room_temp = models.CharField(max_length=400, blank=True, null=True, verbose_name="Days at room temp")
-    GlassDeposition_700B_prebake_temp            = models.IntegerField(blank=False, default="100", verbose_name="Prebake temp (°C) *")
-    GlassDeposition_700B_prebake_time            = models.PositiveIntegerField(blank=False, default="20", verbose_name="Prebake time (sec) *")
-    GlassDeposition_700B_amount_drops            = models.PositiveIntegerField(blank=False, default="1", verbose_name="Number of drops *")
-    GlassDeposition_700B_spin_rpm                = models.PositiveIntegerField(blank=False, default="4000", verbose_name="Spin speed (rpm) *")
-    GlassDeposition_700B_spin_time               = models.PositiveIntegerField(blank=False, default="20", verbose_name="Spin time (sec) *")
-    GlassDeposition_700B_bake_temp               = models.IntegerField(blank=False, default="350", verbose_name="Bake temp (°C) *")
-    GlassDeposition_700B_bake_time               = models.PositiveIntegerField(blank=False, default="1800", verbose_name="Bake time (sec) *")
-    GlassDeposition_700B_humidity                = models.CharField(max_length=400, blank=True, null=True, verbose_name="Humidity")
-    GlassDeposition_700B_metric_layer_thickness  = models.CharField(max_length=400, blank=True, null=True, verbose_name="Layer thickness (um)")
-    GlassDeposition_700B_metric_cracking         = models.CharField(max_length=400, blank=True, null=True, choices=BINARY_CHOICES, verbose_name="Cracking?")
-    GlassDeposition_700B_metric_particles        = models.CharField(max_length=400, blank=True, null=True, choices=BINARY_CHOICES, verbose_name="Particles?")
-    picture                                 = models.FileField(blank=True)
-    content_type                            = models.CharField(max_length=50, blank=True)
-    GlassDeposition_700B_notes                   = models.CharField(max_length=400, blank=True, null=True, verbose_name="Notes")
 
 class Diffusion(models.Model):
     chip_number                             = models.ForeignKey(ChipList, on_delete=models.PROTECT, blank=True, verbose_name="Chip number *")
