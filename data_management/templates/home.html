@@ -1,13 +1,24 @@
-<!doctype html>
-<html>
- {% extends "base.html" %}
-<head>
-    <meta charset="utf-8">
-    <title>Hacker Fab</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'data_management.css' %}">
-</head>
-<body>
-    <div class = "message" id="message"> {{ message }} </div>
-</body>
-</html>
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Welcome - Hacker Fab Database{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <h2>Welcome to the Hacker Fab Database</h2>
+    {% if user.is_authenticated %}
+        <p>Hello, {{ user.first_name }}! Explore the features available to you.</p>
+        <div class="quick-links">
+            <a href="{% url 'central' %}" class="btn-link">Chip Summary</a>
+            <a href="{% url 'input' %}" class="btn-link">Input</a>
+            <a href="{% url 'search' %}" class="btn-link">Search</a>
+        </div>
+    {% else %}
+        <p>Please <a href="{% url 'login' %}">log in</a> or <a href="{% url 'register' %}">register</a> to get started.</p>
+    {% endif %}
+</div>
+{% endblock %}

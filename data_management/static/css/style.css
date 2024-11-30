@@ -1,0 +1,166 @@
+/* General Header Styling */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #222; /* Dark background */
+    color: #fff; /* White text */
+    height: 60px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-img {
+    height: 40px;
+    margin-right: 10px;
+}
+
+.site-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.user-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-name {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.btn-logout {
+    background-color: #ff4d4d;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.btn-logout:hover {
+    background-color: #cc0000; /* Darker red on hover */
+}
+
+
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #EAE4FA; /* Light purple background */
+    color: #333; /* Dark text color */
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    height: 100vh; /* Full viewport height */
+}
+
+/* Home Page Container */
+.home-container {
+    background-color: #fff; /* White background for the content box */
+    padding: 30px 40px; /* Spacing inside the box */
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    text-align: center; /* Center-align text */
+    width: 600px; /* Fixed width for the container */
+    max-width: 90%; /* Ensure responsiveness */
+    font-size: 18px;
+}
+
+/* Header Styling */
+.home-container h2 {
+    font-size: 2vw; /* Scales with viewport */
+    font-weight: bold;
+    color: #B48ADF; /* Purple color for the header */
+    margin-bottom: 20px;
+}
+
+/* Paragraph Text */
+.home-container p {
+    font-size: 1.2vw; /* Scales with viewport */
+    color: #555; /* Subtle dark gray */
+    margin-bottom: 20px;
+}
+
+/* Quick Links Container */
+.quick-links {
+    display: flex;
+    justify-content: center; /* Center-align the links */
+    gap: 15px; /* Space between links */
+    flex-wrap: wrap; /* Ensure wrapping on smaller screens */
+    margin-top: 20px;
+}
+
+/* Button Links */
+.btn-link {
+    background-color: #B48ADF; /* Purple button background */
+    color: #fff; /* White text */
+    text-decoration: none; /* Remove underline */
+    padding: 10px 20px; /* Button padding */
+    border-radius: 8px; /* Rounded corners */
+    font-size: 1.2vw; /* Scales with viewport */
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effects */
+}
+
+/* Hover Effects for Links */
+.btn-link:hover {
+    background-color: #9D77C8; /* Darker purple on hover */
+    transform: translateY(-3px); /* Slight lift effect */
+}
+
+/* Links in Paragraph */
+.home-container a {
+    color: white;
+    text-decoration: none; /* Remove underline */
+    font-weight: bold;
+}
+
+.home-container a:hover {
+    text-decoration: underline; /* Underline on hover */
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .home-container {
+        padding: 20px 30px; /* Reduce padding */
+        font-size: 16px; /* Adjust text size */
+    }
+
+    .home-container h2 {
+        font-size: 3vw; /* Larger header on smaller screens */
+    }
+
+    .btn-link {
+        font-size: 1.5vw; /* Adjust button text size */
+        padding: 10px 15px; /* Adjust button padding */
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .home-container {
+        padding: 15px 20px; /* Further reduce padding */
+        font-size: 14px; /* Smaller text size */
+    }
+
+    .home-container h2 {
+        font-size: 4vw; /* Larger header for mobile */
+    }
+
+    .btn-link {
+        font-size: 2vw; /* Adjust button size for mobile */
+    }
+}

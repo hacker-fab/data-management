@@ -1,0 +1,156 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+    font-size: 1.2vw;
+}
+
+.form-group label {
+    display: block;
+    font-size: 1.2vw;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 1.2vw;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+
+
+.extras {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    font-size: 1.2vw;
+    color: #555;
+}
+
+.extras label {
+    display: flex;
+    align-items: center;
+    font-size: 1.2vw;
+    gap: 15px;
+}
+
+.forgot-password {
+    color: #B3A7D7;
+    text-decoration: none;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+.error-message {
+    color: red;
+    font-size: 1.2vw;
+    margin-top: 10px;
+}
+
+
+/* Full Page Background */
+body {
+    background: #EAE4FA;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Ensures full-page centering */
+}
+
+/* Login Card */
+.login-card {
+    background-color: #fff; /* White background for the card */
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 700px;
+    height: 550px;
+    border-radius: 13px;
+    justify-content: center;
+    font-size: 28px;
+}
+
+.login-card h2{
+    margin-bottom: 40px;
+}
+
+/* Logo Styling */
+.logo-container img {
+    width: 150px; /* Adjust logo size */
+    transform: scale(1.3); /* Make the logo slightly larger */
+}
+
+
+.logo-container img:hover {
+    transform: translate(0, 0) scale(1.5); /* Optional: Slight zoom on hover */
+}
+
+/* Form Styling */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+button.btn-login {
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 1.2vw;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-radius: 10px;
+    background: #B3A7D7;
+    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.btn-register {
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 1.2vw;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-radius: 10px;
+    background: #B3A7D7;
+    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.25);
+    text-decoration: none;
+}
+
+.btn-login:hover{
+    background-color: #9D77C8; /* Darker purple */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+.btn-register:hover{
+    background-color: #9D77C8; /* Darker purple */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+/* Centered Container for Login */
+.centered-container {
+    display: flex;
+    flex-direction: column; /* Stack the logo and login box vertically */
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    background: #EAE4FA;
+    padding: 20px;
+}

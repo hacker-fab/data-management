@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <title> Hacker Fab</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'data_management.css' %}">
+    <link rel="stylesheet" href="{% static 'css/data_management.css' %}">
     <style>
         table, th, td {
           border:1px solid black;
@@ -16,7 +16,7 @@
 
     {% if not profile.picture %}
         {% load static %}
-        <img src="{% static 'cmu.jpg' %}" width="400" height="300" id="id_user_picture">
+        <img src="{% static 'images/cmu.jpg' %}" width="400" height="300" id="id_user_picture">
     {% else %}
         <img src="{% url 'photo' 'Profile' profile.user_id %}" id="id_user_picture">
     {% endif %}

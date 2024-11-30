@@ -1,29 +1,36 @@
-{% extends "base_register.html" %}
+{% extends "base.html" %}
 
+{% load static %}
+
+{% block title %}Register - Hacker Fab Database{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/register.css' %}">
+{% endblock %}
 
 {% block content %}
-    <p id="id_page_name" >Register</p>
+    <div class="register-card">
+        <h2>Register</h2>
+        <form method="post" action="{% url 'register' %}">
+            <table>
+                {% for field in form.visible_fields %}
+                    <tr>
+                        <td>{{field.label_tag}}</td>
+                        <td>{{field}}</td>
+                        <td class="error">
+                            {% for error in field.errors %} {{error}} {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            {% csrf_token %}
+            <button id="id_register_button" type="submit">Submit</button>
+        </form>
 
-    <form method="post" action="{% url 'register' %}">
-        <table>
-            {% for field in form.visible_fields %}
-                <tr>
-                    <td>{{field.label_tag}}</td>
-                    <td>{{field}}</td>
-                    <td class="error">
-                        {% for error in field.errors %} {{error}} {% endfor %}
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
-        {% csrf_token %}
-        <button id="id_register_button" type="submit">Register</button>
-    </form>
-
-    {% for error in form.non_field_errors %}
-        <p class="errorlist">
-            {{ error }}
-        </p>
-    {% endfor %}
-
+        {% for error in form.non_field_errors %}
+            <p class="errorlist">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </div>
 {% endblock %}

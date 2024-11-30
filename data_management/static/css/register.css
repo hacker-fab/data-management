@@ -1,0 +1,150 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #EAE4FA; /* Light purple background */
+    color: #333; /* Dark text color */
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    height: 100vh; /* Full viewport height */
+    margin: 0;
+    overflow: hidden; /* Prevent scrolling issues */
+}
+
+/* Register Card */
+.register-card {
+    background-color: #fff; /* White background for the card */
+    padding: 40px 30px; /* Inner padding */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    width: 700px; /* Fixed width */
+    max-width: 90%; /* Ensure responsiveness */
+    text-align: center;
+    font-size: 28px;
+    overflow: hidden; /* Prevent overflow of inner elements */
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    gap: 20px; /* Space between elements */
+}
+
+.register-card h2 {
+    margin-bottom: 20px; /* Reduce spacing */
+}
+
+/* Title Styling */
+#id_page_name {
+    font-size: 2vw; /* Scales with viewport */
+    font-weight: bold;
+    text-align: center;
+    color: #B48ADF; /* Purple color for the title */
+    margin-bottom: 20px;
+}
+
+/* Table Styling */
+table {
+    width: 100%; /* Full width table */
+    border-collapse: collapse; /* Remove gaps between cells */
+    margin-bottom: 15px; /* Space below the table */
+}
+
+td {
+    padding: 10px 5px; /* Space inside table cells */
+    font-size: 1.2vw; /* Scale table text with viewport */
+    vertical-align: middle; /* Align labels and inputs */
+    color: #333;
+}
+
+td.error {
+    color: red; /* Red color for error messages */
+    font-size: 1vw; /* Slightly smaller for errors */
+}
+
+/* Input Fields */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+    width: 100%; /* Full width input */
+    padding: 10px;
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 1vw; /* Scales with viewport */
+    background-color: #F9F9F9; /* Light gray background */
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+select:focus {
+    outline: none;
+    border-color: #B48ADF; /* Highlight border on focus */
+    box-shadow: 0 0 5px rgba(180, 138, 223, 0.5); /* Subtle glow */
+}
+
+/* Submit Button */
+button#id_register_button {
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-radius: 10px;
+    background: #B3A7D7;
+    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+button#id_register_button:hover {
+    background-color: #9D77C8; /* Darker purple */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+/* Error Message Styling */
+p.errorlist {
+    color: red; /* Red text for non-field errors */
+    font-size: 1vw; /* Scales with viewport */
+    margin-top: 10px; /* Space above the error message */
+    text-align: center; /* Center-align errors */
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 768px) {
+    .register-card {
+        padding: 20px; /* Reduce padding */
+        width: 90%; /* Use most of the screen width */
+    }
+
+    td {
+        font-size: 1.5vw; /* Larger font size for smaller screens */
+    }
+
+    button#id_register_button {
+        font-size: 1.8vw; /* Adjust button font size */
+        padding: 10px 15px; /* Adjust padding */
+    }
+
+    #id_page_name {
+        font-size: 3vw; /* Larger title for smaller screens */
+    }
+}
+
+@media screen and (max-width: 480px) {
+    td {
+        font-size: 2vw; /* Larger font size for very small screens */
+    }
+
+    button#id_register_button {
+        font-size: 2vw; /* Adjust button font size */
+        padding: 8px 10px; /* Adjust padding */
+    }
+
+    #id_page_name {
+        font-size: 4vw; /* Larger title for mobile screens */
+    }
+}

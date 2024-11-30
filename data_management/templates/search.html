@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <title>Hacker Fab</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'data_management.css' %}">
+    <link rel="stylesheet" href="{% static 'css/data_management.css' %}">
     <style>
       table, th, td {
         border:1px solid black;
@@ -29,70 +29,38 @@
     <form method="post" action="{% url 'csv_output_selected' link_id %}">
       {% csrf_token %}
       <div class="csv"> 
-        <button type="submit">Click to Download CSV</button>
+        <button type="submit"> Click to Download CSV</button>
+        <!-- <a href="{% url 'csv_output' link_id %}"> Click to Download CSV</a> -->
       </div>
-      
-      {% comment %} Initialize a variable to keep track of the number of columns in the first entry {% endcomment %}
-      {% with first_row_columns=output.0.items|length %}
-      
-      {% comment %} Start a new table {% endcomment %}
       <table style="width:100%">
-        <tr>
-          <th>Select</th>
-          {% for column_name, value in output.0.items %} <!-- Header Row for Columns -->
-            <th>{{ column_name }}</th>
-          {% endfor %}
-        </tr>
-
-        {% for process_info in output %}
-          {% comment %} Check if the current row has the same number of columns as the first row {% endcomment %}
-          {% if process_info.items|length == first_row_columns %}
+      {% for process_info in output %}
+        {% for column_name, value in process_info.items %}
+          {% if forloop.first %} <!-- Checkbox in the first row of each table -->
             <tr>
-              <td>
-                <input type="checkbox" name="selected_items" value="{{ forloop.counter0 }}">
+              <td rowspan="{{ process_info.items|length }}">
+                <input type="checkbox" name="selected_items" value="{{ forloop.parentloop.counter0 }}">
               </td>
-              {% for column_name, value in process_info.items %}
-                {% if column_name == "picture" %}
-                  <td>
-                    <img src="{% url 'photo' process_info.process process_info.id %}" width="400" height="300" id="id_user_picture">
-                  </td>
-                {% else %}
-                  <td>{{ value }}</td>
-                {% endif %}
-              {% endfor %}
-            </tr>
+          {% endif %}
+          {% if column_name == "picture" %}
+            <tr>
+              <th> {{ column_name }} </th>
+              <td> 
+                <img src="{% url 'photo' process_info.process process_info.id%}" width="400" height="300" id="id_user_picture">
+              </td>
+          </tr>
           {% else %}
-            {% comment %} If columns are different, start a new table {% endcomment %}
-            </table>
-            <table style="width:100%">
+            {% if column_name != "process" %}
               <tr>
-                <th>Select</th>
-                {% for column_name, value in process_info.items %}
-                  <th>{{ column_name }}</th>
-                {% endfor %}
+                  <th> {{ column_name }} </th>
+                  <td> {{ value }} </td>
               </tr>
-            <tr>
-              <td>
-                <input type="checkbox" name="selected_items" value="{{ forloop.counter0 }}">
-              </td>
-              {% for column_name, value in process_info.items %}
-                {% if column_name == "picture" %}
-                  <td>
-                    <img src="{% url 'photo' process_info.process process_info.id %}" width="400" height="300" id="id_user_picture">
-                  </td>
-                {% else %}
-                  <td>{{ value }}</td>
-                {% endif %}
-              {% endfor %}
-            </tr>
+            {% endif %}
           {% endif %}
         {% endfor %}
+      {% endfor %}
       </table>
-
-      {% endwith %}
     </form>
-{% endif %}
-
+    {% endif %}
     
     {% if used_process %}
       <form action="search" method=POST enctype="multipart/form-data">
