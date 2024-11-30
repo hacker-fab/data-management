@@ -1,0 +1,212 @@
+/* General styling */
+.profile-page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #EAE4FA; /* Light purple background */
+    margin: 0;
+    min-height: 100vh;
+}
+
+/* Profile Header */
+.profile-header {
+    display: flex;
+    align-items: flex-start; /* Align items to the top */
+    justify-content: center; /* Center the image and info-card */
+    gap: 15px; /* Space between the image and info-card */
+    width: 70%;
+    margin-top: 10%;
+    margin-bottom: 20px;
+}
+
+/* Image container */
+.image-container {
+    position: relative;
+    width: 30%; /* Keep image prominent */
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chip-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    position: relative;
+    z-index: 1;
+    aspect-ratio: 1 / 1;
+}
+
+/* Profile image inside the chip */
+.chip-overlay {
+    position: absolute;
+    width: 38%;
+    height: 36%;
+    top: 57%; /* Adjust alignment */
+    left: 32%;
+    transform: translate(-50%, -50%) rotate(-10.5deg);
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid #B48ADF;
+    background-color: #ffffff;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 3px;
+}
+
+/* Info card styling */
+.info-card {
+    background-color: #fff;
+    border: 2px solid #B48ADF;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    width: 30%; /* Match bio and password sections */
+}
+
+.info-card p {
+    font-size: 18px;
+    line-height: 1.5;
+    color: #333;
+}
+
+/* Settings Section */
+.settings-container {
+    display: flex;
+    justify-content: center; /* Center the two sections */
+    align-items: flex-start; /* Aligns the top of the sections */
+    gap: 15px; /* Reduce the gap to bring them closer */
+    width: 70%; /* Keep consistent width */
+    margin-top: 10px; /* Adjust as needed */
+}
+
+
+/* Upload Form Styling */
+.upload-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; /* Keep consistent internal spacing */
+    background-color: #fff;
+    padding: 15px;
+    border: 2px solid #B48ADF;
+    border-radius: 10px;
+    width: 30%; /* Match width of the password section */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.upload-form label {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    text-align: left;
+    width: 100%;
+}
+
+.upload-form textarea {
+    width: 100%;
+    height: 80px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+}
+
+.upload-form input[type="file"] {
+    font-size: 14px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #EAE4FA;
+}
+
+.upload-form button {
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: white;
+    background-color: #B48ADF;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px;
+    cursor: pointer;
+    width: 100%;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.upload-form button:hover {
+    background-color: #9D77C8;
+}
+
+/* Change Password Section */
+.change-password {
+    background-color: #fff;
+    border: 2px solid #B48ADF;
+    border-radius: 10px;
+    padding: 15px; /* Match padding with bio section */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 30%; /* Match width of the bio section */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.change-password h3 {
+    color: #B48ADF;
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.change-password table {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal columns */
+    column-gap: 10px; /* Reduce gap between table columns */
+    row-gap: 8px; /* Reduce gap between table rows */
+    width: 100%;
+}
+
+.change-password table input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.change-password-btn {
+    background-color: #B48ADF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    margin-top: 10px;
+}
+
+.change-password-btn:hover {
+    background-color: #9D77C8;
+    transition: background-color 0.3s;
+}
+
+#picture{
+    width: 80%;
+}

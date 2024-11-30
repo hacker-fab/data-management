@@ -16,7 +16,7 @@
     <!-- right Section with user name and logout button -->
     <div class="header-user">
         {% if user.is_authenticated %}
-            <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+            <a href="{% url 'mypfp' %}" class="user-name">{{ user.first_name }} {{ user.last_name }}</a>
             <a href="{% url 'logout' %}" class="logout-button">Logout</a>
         {% endif %}
     </div>
