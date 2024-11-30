@@ -16,6 +16,10 @@ GLASS_CHOICES = (
     ("700B", "700B"),
 )
 
+NICKEL_PLATING_CHOICES = (
+    ("Nickelex", "Nickelex"),
+)
+
 QUALITY_CHOICES = (
     ("1", "1 (Worst)"),
     ("2", "2"),

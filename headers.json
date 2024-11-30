@@ -1,47 +1,5 @@
 {"ChipList": {
 },
-"Patterning": {
-    "Chip #": [],
-    "Person": [],
-    "Date": [],
-    "Underlying Material": [],
-    "Cleaning Step": [],
-    "HDMS Prebake": [],
-    "HDMS Spin Coat": [],
-    "Pattern Quality": ["-1", "0", "1"],
-    "Contaminants on Chip": ["-1", "0", "1"],
-    "Photoresist Leftover on Exposed Regions": ["yes", "no"],
-    "Photoresist Missing on Non-Exposed Regions": ["yes", "no"]
-},
-"PlasmaEtch": {
-    "Chip #": [],
-    "Person": [],
-    "Date": [],
-    "O2 Flow": [],
-    "SF6 Flow": [],
-    "RF Power": [],
-    "Etch Time": [],
-    "Etch Depth": []
-},
-"PlasmaClean": {
-    "Chip #": [],
-    "Person": [],
-    "Date": [],
-    "O2 Flow": [],
-    "RF Power": [],
-    "Clean Time": [],
-    "Contaminants on Surface": ["-1", "0", "1"]
-},
-"HFOxideEtch": {
-    "Chip #": [],
-    "Person": [],
-    "Date": [],
-    "Glass Type": [],
-    "Max Temp of Glass": [],
-    "Time": [],
-    "Room Temperature": [],
-    "Etch Depth": []
-},
 "AluminumEtch": {
     "Chip #": [],
     "Person": [],
@@ -52,6 +10,24 @@
     "Etch Depth": [],
     "Photoresist Peeling": ["-1", "0", "1"],
     "Aluminum Peeling": ["-1", "0", "1"]
+},
+"AluminumEvaporation": {
+    "Chip #": [],
+    "Person": [],
+    "Date": [],
+    "Temp Time Sequence": [],
+    "Pressure before Starting Sequence (hPa)": [],
+    "Pressure before Starting Evaportion (hPa)": [],
+    "Layer Thickness with Profilometer": [],
+    "Layer Thickness with QCM": [],
+    "Deposition Rate": []
+},
+"Diffusion": {
+    "Chip #": [],
+    "Person": [],
+    "Date": [],
+    "Diffusion Temp": [],
+    "Diffusion Time": []
 },
 "GlassDeposition": {
     "Chip #": [],
@@ -74,21 +50,65 @@
     "Cracking": ["-1", "0", "1"],
     "Particle/Pinhole on Exposure": ["-1", "0", "1"]
 },
-"Diffusion": {
+"HFOxideEtch": {
     "Chip #": [],
     "Person": [],
     "Date": [],
-    "Diffusion Temp": [],
-    "Diffusion Time": []
+    "Glass Type": [],
+    "Max Temp of Glass": [],
+    "Time": [],
+    "Room Temperature": [],
+    "Etch Depth": []
 },
-"AluminumEvaporation": {
+"KOHEtch": {
     "Chip #": [],
     "Person": [],
     "Date": [],
-    "Temp Time Sequence": [],
-    "Pressure before Starting Sequence (hPa)": [],
-    "Pressure before Starting Evaportion (hPa)": [],
-    "Layer Thickness with Profilometer": [],
-    "Layer Thickness with QCM": [],
-    "Deposition Rate": []
+    "Concentration": [],
+    "Etch Temp": [],
+    "Etch Duration": [],
+    "Spin Speed": []
+},
+"NickelPlating": {
+    "Chip #": [],
+    "Person": [],
+    "Date": [],
+    "Solution": [],
+    "Plating Temp": [],
+    "Plating Duration": [],
+    "Sensitizer": [],
+    "Activator": [],
+    "Surfactant": []
+},
+"Patterning": {
+    "Chip #": [],
+    "Person": [],
+    "Date": [],
+    "Underlying Material": [],
+    "Cleaning Step": [],
+    "HDMS Prebake": [],
+    "HDMS Spin Coat": [],
+    "Pattern Quality": ["-1", "0", "1"],
+    "Contaminants on Chip": ["-1", "0", "1"],
+    "Photoresist Leftover on Exposed Regions": ["yes", "no"],
+    "Photoresist Missing on Non-Exposed Regions": ["yes", "no"]
+},
+"PlasmaClean": {
+    "Chip #": [],
+    "Person": [],
+    "Date": [],
+    "O2 Flow": [],
+    "RF Power": [],
+    "Clean Time": [],
+    "Contaminants on Surface": ["-1", "0", "1"]
+},
+"PlasmaEtch": {
+    "Chip #": [],
+    "Person": [],
+    "Date": [],
+    "O2 Flow": [],
+    "SF6 Flow": [],
+    "RF Power": [],
+    "Etch Time": [],
+    "Etch Depth": []
 }}
