@@ -2,7 +2,7 @@ from django import forms
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from data_management.models import Profile, IVCurve, AluminumEtch, AluminumEvaporation, ChipList, ChipListSearch, GlassDeposition_P504, GlassDeposition_700B, HFOxideEtch, Patterning, PlasmaClean, PlasmaEtch
+from data_management.models import Profile, IVCurve, AluminumEtch, AluminumEvaporation, ChipList, ChipListSearch, GlassDeposition_P504, HFOxideEtch, Patterning, PlasmaClean, PlasmaEtch
 
 UNIVERSITY_CHOICES =( 
     ("CMU", "Carnegie Mellon University"), 
@@ -72,17 +72,6 @@ class ChipListSearchForm(forms.ModelForm):
 class GlassDeposition_P504SearchForm(forms.ModelForm):
     class Meta:
         model = GlassDeposition_P504
-        exclude = (
-            'picture',
-            'content_type',
-        )
-        labels = {
-            'chip_owner': "Enter Username",
-        }
-
-class GlassDeposition_700BSearchForm(forms.ModelForm):
-    class Meta:
-        model = GlassDeposition_700B
         exclude = (
             'picture',
             'content_type',
@@ -175,15 +164,6 @@ class GlassDeposition_P504InputForm(forms.ModelForm):
         exclude = (
             'chip_owner',
             'GlassDeposition_P504_step_time',
-            'content_type',
-        )
-
-class GlassDeposition_700BInputForm(forms.ModelForm):
-    class Meta:
-        model = GlassDeposition_700B
-        exclude = (
-            'chip_owner',
-            'GlassDeposition_700B_step_time',
             'content_type',
         )
 

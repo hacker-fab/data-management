@@ -73,7 +73,7 @@
     padding: 8px 15px;
     border-radius: 15px; /* Rounded buttons */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
-    font-size: clamp(14px, 2vw, 24px); /* Responsive font size */
+    font-size: clamp(16px, 2vw, 24px); /* Responsive font size */
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -84,7 +84,7 @@
 
 /* User Name and Logout Button */
 .user-name {
-    font-size: clamp(14px, 2vw, 24px); /* Responsive font size */
+    font-size: clamp(18px, 2vw, 24px); /* Responsive font size */
     color: black;
     font-weight: bold;
     text-align: center; /* Center-align on small screens */
