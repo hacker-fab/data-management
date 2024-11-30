@@ -33,11 +33,11 @@ class Migration(migrations.Migration):
             model_name='glassdeposition_p504',
             name='GlassDeposition_P504_diffusion_time',
         ),
-        migrations.AddField(
-            model_name='chiplist',
-            name='starting_material',
-            field=models.CharField(blank=True, max_length=400, null=True),
-        ),
+        # migrations.AddField(
+        #     model_name='chiplist',
+        #     name='starting_material',
+        #     field=models.CharField(blank=True, max_length=400, null=True),
+        # ),
         migrations.AddField(
             model_name='chiplist',
             name='university',
