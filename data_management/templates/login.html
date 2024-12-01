@@ -12,6 +12,7 @@
     <!-- Login card -->
     <div class="login-card">
         <h2>Welcome Back</h2>
+        <a href="{% url 'social:begin' 'google-oauth2' %}">Login with Google</a>
         <form method="post" action="{% url 'login' %}">
             {% csrf_token %}
 

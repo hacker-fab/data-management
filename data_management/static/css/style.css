@@ -124,7 +124,7 @@ body {
 
 /* Links in Paragraph */
 .home-container a {
-    color: white;
+    color: black;
     text-decoration: none; /* Remove underline */
     font-weight: bold;
 }

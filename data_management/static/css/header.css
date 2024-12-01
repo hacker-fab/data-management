@@ -88,6 +88,7 @@
     color: black;
     font-weight: bold;
     text-align: center; /* Center-align on small screens */
+    text-decoration: underline;
 }
 
 
