@@ -392,6 +392,12 @@ def csv_output(request, csv_id):
         # names were being printed twice before
         lines = file.readlines()
 
+    if len(lines) == 0:
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=webscraping_dataset.csv'
+        response.writelines(lines)
+        return response
+
     headers = lines[0]
 
     data_start_index = 0
