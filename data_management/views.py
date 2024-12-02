@@ -292,6 +292,8 @@ def parse_forms(used_processes, request):
 def filter_form(input_dict):
     q_list = []
     for proc in input_dict.keys():
+        if len(input_dict[proc]) == 0:
+            continue
         query = Q()
         for j in input_dict[proc]:
             query &= Q((j[0], j[1]))
