@@ -696,7 +696,7 @@ def login_action(request):
    
     login(request, new_user) #built in django function
     context = {"message": "Succesful Login! Welcome to the Hacker Fab Database"}
-    return render(request, 'home.html', context)
+    return redirect(reverse('home'))
 
 # page with list of all chips and data
 def central_action(request):
