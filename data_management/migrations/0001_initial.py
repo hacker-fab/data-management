@@ -19,6 +19,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('chip_number', models.IntegerField(primary_key=True, serialize=False)),
                 ('creation_time', models.DateTimeField(blank=True)),
+                ('starting_material', models.CharField(max_length=400, blank=True, null=True)),
                 ('notes', models.CharField(blank=True, max_length=400, null=True)),
                 ('IVCurrents_CSV', models.FileField(blank=True, upload_to='')),
                 ('IVVoltages_CSV', models.FileField(blank=True, upload_to='')),
