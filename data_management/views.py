@@ -17,9 +17,9 @@ import json
 import os
 import csv
 
-from data_management.forms import ProfileForm, IVCurveForm, LoginForm, RegisterForm, ChipListSearchForm, AluminumEtchInputForm, AluminumEvaporationInputForm, ChipListForm, GlassDepositionInputForm, DiffusionInputForm, HFOxideEtchInputForm, PatterningInputForm, PlasmaCleanInputForm, PlasmaEtchInputForm
-from data_management.models import Profile, SMU_capture, IVCurve, AluminumEtch, AluminumEvaporation, ChipList, GlassDeposition, Diffusion, HFOxideEtch, Patterning, PlasmaClean, PlasmaEtch
-from data_management.forms import AluminumEtchSearchForm, AluminumEvaporationSearchForm, GlassDepositionSearchForm, DiffusionSearchForm, HFOxideEtchSearchForm, PatterningSearchForm, PlasmaCleanSearchForm, PlasmaEtchSearchForm
+from data_management.forms import ProfileForm, IVCurveForm, LoginForm, RegisterForm, ChipListSearchForm, AluminumEtchInputForm, AluminumEvaporationInputForm, ChipListForm, GlassDepositionInputForm, DiffusionInputForm, HFOxideEtchInputForm, KOHEtchInputForm, NickelPlatingInputForm, PatterningInputForm, PlasmaCleanInputForm, PlasmaEtchInputForm
+from data_management.models import Profile, SMU_capture, IVCurve, AluminumEtch, AluminumEvaporation, ChipList, GlassDeposition, Diffusion, HFOxideEtch, KOHEtch, NickelPlating, Patterning, PlasmaClean, PlasmaEtch
+from data_management.forms import AluminumEtchSearchForm, AluminumEvaporationSearchForm, GlassDepositionSearchForm, DiffusionSearchForm, HFOxideEtchSearchForm, KOHEtchSearchForm, NickelPlatingSearchForm, PatterningSearchForm, PlasmaCleanSearchForm, PlasmaEtchSearchForm
 
 # gets a list of all processes from json file
 def get_processes():
@@ -45,6 +45,10 @@ def get_input_meas(processes):
             form = DiffusionInputForm()
         elif process == "HFOxideEtch":
             form = HFOxideEtchInputForm()
+        elif process == "KOHEtch":
+            form = KOHEtchInputForm()
+        elif process == "NickelPlating":
+            form = NickelPlatingInputForm()
         elif process == "Patterning":
             form = PatterningInputForm()
         elif process == "PlasmaClean":
@@ -72,6 +76,10 @@ def get_search_meas(processes):
             form = DiffusionSearchForm()
         elif process == "HFOxideEtch":
             form = HFOxideEtchSearchForm()
+        elif process == "KOHEtch":
+            form = KOHEtchSearchForm()
+        elif process == "NickelPlating":
+            form = NickelPlatingSearchForm()
         elif process == "Patterning":
             form = PatterningSearchForm()
         elif process == "PlasmaClean":
@@ -101,6 +109,10 @@ def get_photo(request, process, chip_id):
         p = get_object_or_404(Diffusion, id=chip_id)
     elif process == "HFOxideEtch":
         p = get_object_or_404(HFOxideEtch, id=chip_id)
+    elif process == "KOHEtch":
+        p = get_object_or_404(KOHEtch, id=chip_id)
+    elif process == "NickelPlating":
+        p = get_object_or_404(NickelPlating, id=chip_id)
     elif process == "PlasmaClean":
         p = get_object_or_404(PlasmaClean, id=chip_id)
     elif process == "PlasmaEtch":
@@ -190,7 +202,36 @@ def save_form(processes, request):
                 HFOxideEtch_temp=request.POST['HFOxideEtch_temp'], 
                 HFOxideEtch_metric_oxide_etch_depth=request.POST['HFOxideEtch_metric_oxide_etch_depth'], 
                 HFOxideEtch_notes=request.POST['HFOxideEtch_notes'], 
-                chip_owner=request.user, HFOxideEtch_step_time=timezone.now())
+                chip_owner=request.user, HFOxideEtch_step_time=timezone.now()
+            )
+        if process == "KOHEtch":
+            form = KOHEtchInputForm(request.POST, request.FILES)
+            if not form.is_valid():
+                return ["Invalid", form]
+            new_model = KOHEtch(
+                chip_number = ChipList.objects.get(chip_number=request.POST["chip_number"]),
+                KOHEtch_concentration=request.POST['KOHEtch_concentration'], 
+                KOHEtch_temp=request.POST['KOHEtch_temp'], 
+                KOHEtch_duration=request.POST['KOHEtch_duration'], 
+                KOHEtch_rpm=request.POST['KOHEtch_rpm'], 
+                KOHEtch_notes=request.POST['KOHEtch_notes'], 
+                chip_owner=request.user, KOHEtch_step_time=timezone.now()
+            )
+        if process == "NickelPlating":
+            form = NickelPlatingInputForm(request.POST, request.FILES)
+            if not form.is_valid():
+                return ["Invalid", form]
+            new_model = NickelPlating(
+                chip_number = ChipList.objects.get(chip_number=request.POST["chip_number"]),
+                NickelPlating_solution=request.POST['NickelPlating_solution'], 
+                NickelPlating_temp=request.POST['NickelPlating_temp'], 
+                NickelPlating_duration=request.POST['NickelPlating_duration'], 
+                NickelPlating_sensitizer=request.POST['NickelPlating_sensitizer'], 
+                NickelPlating_activator=request.POST['NickelPlating_activator'], 
+                NickelPlating_surfactant=request.POST['NickelPlating_surfactant'], 
+                NickelPlating_notes=request.POST['NickelPlating_notes'], 
+                chip_owner=request.user, NickelPlating_step_time=timezone.now()
+            )
         if process == "Patterning":
             form = PatterningInputForm(request.POST, request.FILES)
             if not form.is_valid():
@@ -270,6 +311,10 @@ def parse_forms(used_processes, request):
             form = DiffusionSearchForm(request.POST, request.FILES)
         if process == "HFOxideEtch":
             form = HFOxideEtchSearchForm(request.POST, request.FILES)
+        if process == "KOHEtch":
+            form = KOHEtchSearchForm(request.POST, request.FILES)
+        if process == "NickelPlating":
+            form = NickelPlatingSearchForm(request.POST, request.FILES)
         if process == "Patterning":
             form = PatterningSearchForm(request.POST, request.FILES)
         if process == "PlasmaClean":

@@ -2,7 +2,7 @@ from django import forms
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from data_management.models import Profile, IVCurve, AluminumEtch, AluminumEvaporation, ChipList, ChipListSearch, GlassDeposition, Diffusion, HFOxideEtch, Patterning, PlasmaClean, PlasmaEtch
+from data_management.models import Profile, IVCurve, AluminumEtch, AluminumEvaporation, ChipList, ChipListSearch, GlassDeposition, Diffusion, HFOxideEtch, KOHEtch, NickelPlating, Patterning, PlasmaClean, PlasmaEtch
 
 UNIVERSITY_CHOICES =( 
     ("CMU", "Carnegie Mellon University"), 
@@ -94,6 +94,28 @@ class DiffusionSearchForm(forms.ModelForm):
 class HFOxideEtchSearchForm(forms.ModelForm):
     class Meta:
         model = HFOxideEtch
+        exclude = (
+            'picture',
+            'content_type',
+        )
+        labels = {
+            'chip_owner': "Enter Username",
+        }
+
+class KOHEtchSearchForm(forms.ModelForm):
+    class Meta:
+        model = KOHEtch
+        exclude = (
+            'picture',
+            'content_type',
+        )
+        labels = {
+            'chip_owner': "Enter Username",
+        }
+
+class NickelPlatingSearchForm(forms.ModelForm):
+    class Meta:
+        model = NickelPlating
         exclude = (
             'picture',
             'content_type',
@@ -265,6 +287,45 @@ class HFOxideEtchInputForm(forms.ModelForm):
         self.fields['HFOxideEtch_temp'].required = True
         self.fields['HFOxideEtch_duration'].required = True
         self.fields['HFOxideEtch_metric_oxide_etch_depth'].required = True
+
+class KOHEtchInputForm(forms.ModelForm):
+    class Meta:
+        model = KOHEtch
+        exclude = (
+            'chip_owner',
+            'KOHEtch_step_time',
+            'content_type',
+        )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['chip_number'].required = True
+        self.fields['KOHEtch_concentration'].required = True
+        self.fields['KOHEtch_temp'].required = True
+        self.fields['KOHEtch_duration'].required = True
+        self.fields['KOHEtch_rpm'].required = True
+
+class NickelPlatingInputForm(forms.ModelForm):
+    class Meta:
+        model = NickelPlating
+        exclude = (
+            'chip_owner',
+            'NickelPlating_step_time',
+            'content_type',
+        )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['chip_number'].required = True
+        self.fields['NickelPlating_solution'].required = True
+        self.fields['NickelPlating_temp'].required = True
+        self.fields['NickelPlating_duration'].required = True
+
+        self.fields['NickelPlating_solution'].initial = "Nickelex"
+        self.fields['NickelPlating_duration'].initial = 300
+        self.fields['NickelPlating_temp'].initial = 290
 
 class PatterningInputForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

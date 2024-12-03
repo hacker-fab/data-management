@@ -131,6 +131,32 @@ class HFOxideEtch(models.Model):
     content_type                            = models.CharField(max_length=50, blank=True)
     HFOxideEtch_notes                       = models.CharField(max_length=400, blank=True, null=True, verbose_name="Notes")
 
+class KOHEtch(models.Model):
+    chip_number                             = models.ForeignKey(ChipList, on_delete=models.PROTECT, blank=True, verbose_name="Chip number *")
+    chip_owner                              = models.ForeignKey(User, on_delete=models.PROTECT, blank=True)
+    KOHEtch_step_time                       = models.DateTimeField(blank=True)
+    KOHEtch_concentration                   = models.PositiveIntegerField(blank=True, null=True, verbose_name="Concentration (%) *")
+    KOHEtch_temp                            = models.DecimalField(max_digits=10, decimal_places=3, blank=True, null=True, verbose_name="Etch temp (°C) *")
+    KOHEtch_duration                        = models.PositiveIntegerField(blank=True, null=True, verbose_name="Etch duration (sec) *")
+    KOHEtch_rpm                             = models.PositiveIntegerField(blank=True, null=True, verbose_name="Spin speed (rpm) *")
+    picture                                 = models.FileField(blank=True)
+    content_type                            = models.CharField(max_length=50, blank=True)
+    KOHEtch_notes                           = models.CharField(max_length=400, blank=True, null=True, verbose_name="Notes")
+
+class NickelPlating(models.Model):
+    chip_number                             = models.ForeignKey(ChipList, on_delete=models.PROTECT, blank=True, verbose_name="Chip number *")
+    chip_owner                              = models.ForeignKey(User, on_delete=models.PROTECT, blank=True)
+    NickelPlating_step_time                 = models.DateTimeField(blank=True)
+    NickelPlating_solution                  = models.CharField(max_length=400, blank=True, null=True, choices=NICKEL_PLATING_CHOICES, verbose_name="Solution *")
+    NickelPlating_temp                      = models.DecimalField(max_digits=10, decimal_places=3, blank=True, null=True, verbose_name="Plating temp (°C) *") 
+    NickelPlating_duration                  = models.PositiveIntegerField(blank=True, null=True, verbose_name="Plating duration (sec) *")
+    NickelPlating_sensitizer                = models.CharField(max_length=400, blank=True, null=True, verbose_name="Sensitizer")
+    NickelPlating_activator                 = models.CharField(max_length=400, blank=True, null=True, verbose_name="Activator")
+    NickelPlating_surfactant                = models.CharField(max_length=400, blank=True, null=True, verbose_name="Surfactant")
+    picture                                 = models.FileField(blank=True)
+    content_type                            = models.CharField(max_length=50, blank=True)
+    NickelPlating_notes                     = models.CharField(max_length=400, blank=True, null=True, verbose_name="Notes")
+
 class Patterning(models.Model):
     chip_number                             = models.ForeignKey(ChipList, on_delete=models.PROTECT, blank=True, verbose_name="Chip number *")
     chip_owner                              = models.ForeignKey(User, on_delete=models.PROTECT, blank=True)

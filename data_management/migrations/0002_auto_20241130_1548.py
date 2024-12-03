@@ -35,11 +35,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='chiplist',
-            name='starting_material',
-            field=models.CharField(blank=True, max_length=400, null=True),
-        ),
-        migrations.AddField(
-            model_name='chiplist',
             name='university',
             field=models.CharField(blank=True, choices=[('CMU', 'Carnegie Mellon University')], max_length=400, null=True),
         ),
