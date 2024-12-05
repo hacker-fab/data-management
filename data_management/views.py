@@ -11,7 +11,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-
+from django.forms.models import model_to_dict
 import re
 import json
 import os
@@ -334,7 +334,18 @@ def parse_forms(used_processes, request):
     return [filters]
 
 # create list of results for search queries (append "pattern" column)
+# returns an array of array dictionaries of the search queries
 def filter_form(input_dict):
+    """
+    return:
+    [
+        { process_name_1: [{dictionary_representing_col_value_pairs_of_this_entry}, {dictionary_representing_col_value_pairs_of_this_entry}, ...]
+        },
+        { process_name_2: [{dictionary_representing_col_value_pairs_of_this_entry}, {dictionary_representing_col_value_pairs_of_this_entry}, ...]
+        },
+        ...
+    ]
+    """
     q_list = []
     for proc in input_dict.keys():
         if len(input_dict[proc]) == 0:
@@ -381,10 +392,6 @@ def filter_form(input_dict):
             elif proc == "PlasmaEtch":
                 queryset = PlasmaEtch.objects.filter(query).order_by(f'-{proc}_step_time')
 
-        # Add 'process' column to each row
-        for row in queryset:
-            row.process = proc  # Add the process name as a new attribute
-
         q_list.append((proc, queryset))
     return q_list
 
@@ -422,19 +429,27 @@ def create_csv_include_process(array_of_array_of_dicts):
 
     try:
         with open(f'csvfiles/search{file_count}.csv', 'w') as file:
-            for per_process_array in array_of_array_of_dicts:
-                if len(per_process_array) > 0:
-                    writer = csv.DictWriter(file, fieldnames=per_process_array[0].keys())
-                    writer.writeheader()
 
-                    for row in per_process_array:
-                        writer.writerow(row)
-                        
-                    # Add a blank line between tables for clarity
+            last_process = None
+            for array_of_process_entries in array_of_array_of_dicts:
+                if len(array_of_process_entries) > 0:
+                    writer = csv.DictWriter(file, fieldnames=array_of_process_entries[0].keys())
                     file.write('\n')
+                    writer.writeheader()
+                    for row in array_of_process_entries:
+                        if last_process == None:
+                            last_process = row["process"]
+                        elif last_process != row["process"]:
+                            last_process = row["process"]
+                            file.write('\n')
+                            writer = csv.DictWriter(file, fieldnames=row.keys())
+                            writer.writeheader()
+                        writer.writerow(row)
+
+                    # Add a blank line between tables for clarity
 
     except Exception as e:
-        return 0, f"Failed to write to CSV: {str(e)}"
+        return 0, f"Failed to write to CSV: {e}"
 
     return file_count, None
 
@@ -706,19 +721,31 @@ def search_page(request):
         context = {"message": "Invalid Data Input", "processes": processes, "forms": parsed[1], "used_process": used_processes}
         return render(request, "search.html", context)
     query_output = filter_form(parsed[0])
+
     array_of_array_of_dicts = []
-    prev_process = None
-    per_process_array = []
+    # NOTE: see issue #61 on GitHub for why the below lines are like this
     for i in query_output:
-        process_name = i[0]
-        per_process_array = []
-        for x in i[1].values():
-            x["process"] = process_name
-            per_process_array.append(x)
-        array_of_array_of_dicts.append(per_process_array)
+        j = 0
+        j_max = i[1].count()
+        array_of_dicts = []
+        while True:
+            if j >= j_max:
+                break
+            try: 
+                entry = model_to_dict(i[1][j])
+                entry["process"] = i[0]
+                array_of_dicts.append(entry)
+                j+=1
+            except Exception as e:
+                # Ignore entries that have faulty formatting (raises err: argument must be int or float)
+                j+=1
+                continue
+        array_of_array_of_dicts.append(array_of_dicts)
+
 
     csv_link_id, err = create_csv_include_process(array_of_array_of_dicts)  
     if err != None:
+        print(f"\nerr:{err}\n")
         # Raise an error if creating the csv fails
         messages.error(request, err)  # Add error message to messages framework
         context = {"message": err}
