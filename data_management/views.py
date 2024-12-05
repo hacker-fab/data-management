@@ -597,14 +597,31 @@ def start_page(request):
     context = {"message": "Welcome to the Hacker Fab Database"}
     return render(request, "home.html", context)
 
-# get values from chip form to display but change soon
+# Page that displays information about a given chip_id
+# Lists all the processes that have been recorded for this chip
 def display_chip(request, chip_id):
+    processes = get_processes()
+    chip_id_filter = {}
+    for p in processes:
+        if "name" in p:
+            process_name = p["name"]
+        else:
+            process_name = p["id"]
+        chip_id_filter[process_name] = [('chip_number', chip_id)]
+            
+    query_results = filter_form(chip_id_filter)
+
+    # Processes that have been recorded for this chip_id
+    process_entries = remove_bad_query_results(query_results)
+    
     context = {}
     context["chip_id"] = chip_id
     chip = get_object_or_404(ChipList, chip_number=chip_id)
     context["creation_time"] = chip.creation_time
     context["chip_owner"] = chip.chip_owner
     context["chip_number"] = chip.chip_number
+    
+    context["process_entries"] = process_entries
     if request.method == 'GET':
         return render(request, "chipnum.html", context)
 
@@ -696,6 +713,29 @@ def otherpfp_action(request, user_id): #request is us, user_id is profile to vie
     context['loggedin'] = Profile.objects.get(id=request.user.id)
     return render(request, 'otherprofile.html', context)
 
+
+# NOTE: see issue #61 on GitHub for why the below lines are like this
+def remove_bad_query_results(query_output):
+    array_of_array_of_dicts = []
+    for i in query_output:
+        j = 0
+        j_max = i[1].count()
+        array_of_dicts = []
+        while True:
+            if j >= j_max:
+                break
+            try: 
+                entry = model_to_dict(i[1][j])
+                entry["process"] = i[0]
+                array_of_dicts.append(entry)
+                j+=1
+            except Exception as e:
+                # Ignore entries that have faulty formatting (raises err: argument must be int or float)
+                j+=1
+                continue
+        array_of_array_of_dicts.append(array_of_dicts)
+    return array_of_array_of_dicts
+
 # display page to handle searches
 @login_required
 def search_page(request):
@@ -720,28 +760,11 @@ def search_page(request):
         processes = get_processes()
         context = {"message": "Invalid Data Input", "processes": processes, "forms": parsed[1], "used_process": used_processes}
         return render(request, "search.html", context)
+
     query_output = filter_form(parsed[0])
 
-    array_of_array_of_dicts = []
     # NOTE: see issue #61 on GitHub for why the below lines are like this
-    for i in query_output:
-        j = 0
-        j_max = i[1].count()
-        array_of_dicts = []
-        while True:
-            if j >= j_max:
-                break
-            try: 
-                entry = model_to_dict(i[1][j])
-                entry["process"] = i[0]
-                array_of_dicts.append(entry)
-                j+=1
-            except Exception as e:
-                # Ignore entries that have faulty formatting (raises err: argument must be int or float)
-                j+=1
-                continue
-        array_of_array_of_dicts.append(array_of_dicts)
-
+    array_of_array_of_dicts = remove_bad_query_results(query_output)
 
     csv_link_id, err = create_csv_include_process(array_of_array_of_dicts)  
     if err != None:

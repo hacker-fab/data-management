@@ -1,23 +1,83 @@
-<form action="{% url 'chipnum' chip_id %}" method=POST enctype="multipart/form-data">
-  <table style="width:100%">
-      <tr>
-        <th>Creation Time (EST): </th>
-        <th>{{creation_time|date:"n/j/Y g:i A" }}</th>
-      </tr>
-      <tr>
-        <td>Chip Owner: </td>
-        <td> {{chip_owner}} </td>
-      </tr>
-      <tr>
-        <td>Chip Number: </td>
-        <td> {{chip_number}} </td>
-      </tr>
-    </table>
-  <table>
-      {{form}}
-  </table>
-  <button  id="id_update_profile_button">Submit</button>
-  <input type="hidden" name="status" value="updated">
-  <input type="hidden" name="chip_number" value={{chip_number}}>
-  {% csrf_token %}
-</form>
+<!doctype html>
+<html>
+{% extends "base.html" %}
+{% block content %}
+<head>
+    <meta charset="utf-8">
+    <title> Hacker Fab</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/data_management.css' %}">
+</head>
+<body>
+  <div><h1> Chip {{chip_id}} </h1></div>
+  
+  <div class="chip-summary">
+    <form action="{% url 'chipnum' chip_id %}" method=POST enctype="multipart/form-data">
+      <table style="width:100%">
+        <tr>
+          <th>Creation Time (EST): </th>
+          <th>{{creation_time|date:"n/j/Y g:i A" }}</th>
+        </tr>
+        <tr>
+          <td>Chip Owner: </td>
+          <td> {{chip_owner}} </td>
+        </tr>
+      </table>
+    </form>
+  </div>
+
+  {% if process_entries %}
+  <div class="chip-processes">
+    {% if request.POST.action == 'download_csv' %}
+      <!-- Handle CSV download here -->
+      <p>Your CSV will be ready for download.</p>
+    {% else %}
+      {% for process_list in process_entries %}
+        {% if process_list %}
+          {% if request.POST.sort_by == 'chip_number_id' %}
+            {% if process_list.0.chip_number %}
+              <h3>Chip {{ process_list.0.chip_number }}: {{ process_list.0.process }}</h3>
+            {% elif process_list.0.chip_number_id %}
+              <h3>Chip {{ process_list.0.chip_number_id }}: {{ process_list.0.process }}</h3>
+            {% elif process_list.0.id %}
+              <h3>Chip {{ process_list.0.id }}: {{ process_list.0.process }}</h3>
+            {% else %}
+              <h3>Unknown Chip Number: {{ process_list.0.process }}</h3>
+            {% endif %}
+          {% else %}
+            <h3>{{ process_list.0.process }}</h3> 
+          {% endif %}
+          <table style="width:100%">
+            <tr>
+              <th>Select</th>
+              {% for column_name, value in process_list.0.items %}
+                <th>{{ column_name }}</th>
+              {% endfor %}
+            </tr>
+            {% for process_info in process_list %}
+              <tr>
+                <td>
+                  <input type="checkbox" name="selected_items" value="{{ forloop.counter0 }}">
+                </td>
+                {% for column_name, value in process_info.items %}
+                  {% if column_name == "picture" %}
+                    <td>
+                      <img src="{% url 'photo' process_info.process process_info.id %}" width="400" height="300" id="id_user_picture">
+                    </td>
+                  {% else %}
+                    <td>{{ value }}</td>
+                  {% endif %}
+                {% endfor %}
+              </tr>
+            {% endfor %}
+          </table>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  </div>
+  {% endif %}
+       
+</body>
+</html>
+{% endblock %}
+
