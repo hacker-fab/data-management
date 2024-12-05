@@ -338,28 +338,48 @@ def filter_form(input_dict):
     q_list = []
     for proc in input_dict.keys():
         if len(input_dict[proc]) == 0:
-            continue
-        query = Q()
-        for j in input_dict[proc]:
-            query &= Q((j[0], j[1]))
-        if proc == "ChipList":
-            queryset = ChipList.objects.filter(query).order_by('creation_time')
-        elif proc == "AluminumEtch":
-            queryset = AluminumEtch.objects.filter(query).order_by(f'{proc}_step_time')
-        elif proc == "AluminumEvaporation":
-            queryset = AluminumEvaporation.objects.filter(query).order_by(f'{proc}_step_time')
-        elif proc == "GlassDeposition":
-            queryset = GlassDeposition.objects.filter(query).order_by(f'{proc}_step_time')
-        elif proc == "Diffusion":
-            queryset = Diffusion.objects.filter(query).order_by(f'{proc}_step_time')
-        elif proc == "HFOxideEtch":
-            queryset = HFOxideEtch.objects.filter(query).order_by(f'{proc}_step_time')
-        elif proc == "Patterning":
-            queryset = Patterning.objects.filter(query).order_by(f'{proc}_step_time')
-        elif proc == "PlasmaClean":
-            queryset = PlasmaClean.objects.filter(query).order_by(f'{proc}_step_time')
-        elif proc == "PlasmaEtch":
-            queryset = PlasmaEtch.objects.filter(query).order_by(f'{proc}_step_time')
+            # Retrieve all results with this process type
+            if proc == "ChipList":
+                queryset = ChipList.objects.all().order_by('-creation_time')
+            elif proc == "AluminumEtch":
+                queryset = AluminumEtch.objects.all().order_by(f'-{proc}_step_time')
+            elif proc == "AluminumEvaporation":
+                queryset = AluminumEvaporation.objects.all().order_by(f'-{proc}_step_time')
+            elif proc == "GlassDeposition":
+                queryset = GlassDeposition.objects.all().order_by(f'-{proc}_step_time')
+            elif proc == "Diffusion":
+                queryset = Diffusion.objects.all().order_by(f'-{proc}_step_time')
+            elif proc == "HFOxideEtch":
+                queryset = HFOxideEtch.objects.all().order_by(f'-{proc}_step_time')
+            elif proc == "Patterning":
+                queryset = Patterning.objects.all().order_by(f'-{proc}_step_time')
+            elif proc == "PlasmaClean":
+                queryset = PlasmaClean.objects.all().order_by(f'-{proc}_step_time')
+            elif proc == "PlasmaEtch":
+                queryset = PlasmaEtch.objects.all().order_by(f'-{proc}_step_time')
+
+        else:
+            query = Q()
+            for j in input_dict[proc]:
+                query &= Q((j[0], j[1]))
+            if proc == "ChipList":
+                queryset = ChipList.objects.filter(query).order_by('-creation_time')
+            elif proc == "AluminumEtch":
+                queryset = AluminumEtch.objects.filter(query).order_by(f'-{proc}_step_time')
+            elif proc == "AluminumEvaporation":
+                queryset = AluminumEvaporation.objects.filter(query).order_by(f'-{proc}_step_time')
+            elif proc == "GlassDeposition":
+                queryset = GlassDeposition.objects.filter(query).order_by(f'-{proc}_step_time')
+            elif proc == "Diffusion":
+                queryset = Diffusion.objects.filter(query).order_by(f'-{proc}_step_time')
+            elif proc == "HFOxideEtch":
+                queryset = HFOxideEtch.objects.filter(query).order_by(f'-{proc}_step_time')
+            elif proc == "Patterning":
+                queryset = Patterning.objects.filter(query).order_by(f'-{proc}_step_time')
+            elif proc == "PlasmaClean":
+                queryset = PlasmaClean.objects.filter(query).order_by(f'-{proc}_step_time')
+            elif proc == "PlasmaEtch":
+                queryset = PlasmaEtch.objects.filter(query).order_by(f'-{proc}_step_time')
 
         # Add 'process' column to each row
         for row in queryset:
