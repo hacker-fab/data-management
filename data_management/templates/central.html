@@ -1,16 +1,23 @@
+<!doctype html>
+<html>
 {% extends "base.html" %}
-
-{% load static %}
-
-{% block title %}My Profile Page - Hacker Fab Database{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{% static css/header.css}">
-<link rel="stylesheet" href="{% static 'css/my_profile.css' %}">
-{% endblock %}
-
 {% block content %}
-<div class="chip-summary">
+<head>
+    <meta charset="utf-8">
+    <title> Hacker Fab</title>
+    {% load static %}
+    <!-- <link rel="stylesheet" href="{% static 'css/data_management.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css/header.css' %}">
+    <style>
+        table, th, td {
+            border:1px solid black;
+        }
+        body {
+            padding-top: 100px;
+        }
+    </style>
+</head>
+<body>
     <div> Chip Summary </div>
     <table>
         <tr>
@@ -21,7 +28,14 @@
         </tr>
         {% for a in all_entries %}
             <tr>
-                <th>{{a.chip_number}}</th>
+                <th>
+                    <!-- Only insert link to the chip page for this chip if it has a positive chipnum; otherwise the path does not exist -->
+                    {% if a.chip_number >= 0 %}
+                        <a href="{% url 'chipnum' a.chip_number %}">{{a.chip_number}}</a>
+                    {% else %}
+                        {{a.chip_number}}
+                    {% endif %}
+                </th>
                 <td>
                     {% if a.chip_owner.id == request.user.id %}
                     <a href="{% url 'mypfp' %}">{{a.chip_owner}}</a>
@@ -35,5 +49,6 @@
             </tr>
         {% endfor %}
     </table>
-</div>
+</body>
+</html>
 {% endblock %}

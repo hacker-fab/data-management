@@ -1,14 +1,23 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}Login - Hacker Fab Database{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/login.css' %}">
-{% endblock %}
-
+<!doctype html>
+<html>
+{% extends "base.html" %}
 {% block content %}
-<div class="search">
+<head>
+    <meta charset="utf-8">
+    <title>Hacker Fab</title>
+    {% load static %}
+    <!-- <link rel="stylesheet" href="{% static 'css/data_management.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css/header.css' %}">
+    <style>
+      table, th, td {
+        border:1px solid black;
+      }
+      body {
+        padding-top: 100px;
+      }
+      </style>
+</head>
+<body>
     <form action="{% url 'search' %}" method="POST">
         <div class = "process_sort" id="process_sort"> Select Processes to Display </div>
         {% for process in processes %}
@@ -92,6 +101,7 @@
           {% endfor %}
         {% endif %}
       {% endif %}
+      
     </form>
     {% endif %}
 
@@ -111,5 +121,6 @@
       </form>
     {% endif %}
   
-</div>
+</body>
+</html>
 {% endblock %}

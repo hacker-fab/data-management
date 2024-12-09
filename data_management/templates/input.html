@@ -1,15 +1,23 @@
 {% extends "base.html" %}
 
-{% load static %}
-
-{% block title %}My Profile Page - Hacker Fab Database{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{% static css/header.css}">
-<link rel="stylesheet" href="{% static 'css/my_profile.css' %}">
-{% endblock %}
-
+<!doctype html>
+<html>
 {% block content %}
+<head>
+    <meta charset="utf-8">
+    <title>Hacker Fab</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static css/header.css}">
+    <link rel="stylesheet" href="{% static 'css/my_profile.css' %}">
+    <style>
+      table, th, td {
+        border:1px solid black;
+      }
+      body {
+        padding-top: 100px; /* Push the body content down */
+      }
+      </style>
+</head>
   <a href="{% url 'chip' %}" id="id_nav_global_stream">
     <button>Create/Edit Chip</button>
   </a>
