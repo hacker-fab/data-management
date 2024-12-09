@@ -39,7 +39,6 @@
     aspect-ratio: 1 / 1;
 }
 
-/* Profile image inside the chip */
 .chip-overlay {
     position: absolute;
     width: 38%;
@@ -55,6 +54,27 @@
     background-color: #ffffff;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
+    overflow: hidden; /* Ensures the grid stays within the chip */
+}
+
+.chip-overlay::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(
+        rgba(192, 192, 192, 0.45) 1px,
+        transparent 1px
+    ), linear-gradient(
+        to right,
+        rgba(192, 192, 192, 0.45) 1px, 
+        transparent 1px
+    );
+    background-size: 10px 10px;
+    pointer-events: none;
+    z-index: 3;
 }
 
 .profile-image {
