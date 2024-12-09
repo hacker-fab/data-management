@@ -7,6 +7,13 @@
         {% load static %}
         <link rel="stylesheet" href="{% static 'css/header.css' %}">
         {% block extra_css %}{% endblock %}
+        <style>
+            body {
+                margin: 0;
+                padding-top: 100px; /* Shift the body down so it's not under the header */
+                box-sizing: border-box; /* Ensures padding doesn't affect layout */
+            }
+        </style>
     </head>
     <body>
         {% include 'header.html' %}
