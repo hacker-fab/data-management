@@ -25,7 +25,14 @@
         </tr>
         <tr>
           <td>Chip Owner: </td>
-          <td> {{chip_owner}} </td>
+          <td>
+            {% if chip_owner.id == request.user.id %}
+            <a href="{% url 'mypfp' %}">{{chip_owner}}</a>
+            {% else %}
+            <a href="{% url 'otherpfp' chip_owner.id %}"  class="id_post_profile"
+            id="id_post_profile_{{post.id}}"> {{chip_owner}}</a>
+            {% endif %}
+          </td>
         </tr>
         <tr>
           <td>Starting Material: </td>
