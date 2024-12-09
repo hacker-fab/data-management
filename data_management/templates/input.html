@@ -1,43 +1,42 @@
-<!doctype html>
-<html>
 {% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}My Profile Page - Hacker Fab Database{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static css/header.css}">
+<link rel="stylesheet" href="{% static 'css/my_profile.css' %}">
+{% endblock %}
+
 {% block content %}
-<head>
-    <meta charset="utf-8">
-    <title> Hacker Fab</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/data_management.css' %}">
-</head>
-<body>
-    <a href="{% url 'chip' %}" id="id_nav_global_stream">
-      <button>Create/Edit Chip</button>
-    </a>
-    <div> OR IF INITIAL CHIP IS CREATED: </div>
-    <form name="form1" id="form1" action="/input" method="POST">
-        <select name="Process" id="process" name="new_process">
-          <option value="" selected="selected">Select Process</option>
-          {% for process in processes %}
-            <option value="{{process.id}}"> {{process.name}}</option>
-          {% endfor %}
-        </select>
-        <input type="submit" value="Submit">
-        <input type="hidden" name="status" value="Initial">
-        {% csrf_token %}
-    </form>
-    {% if used_process %}
-      <form action="/input" method=POST enctype="multipart/form-data">
-        {% for f in forms %}
-          {{f.name}}
-          <table>
-              {{f.form}}
-          </table>
+  <a href="{% url 'chip' %}" id="id_nav_global_stream">
+    <button>Create/Edit Chip</button>
+  </a>
+  <div> OR IF INITIAL CHIP IS CREATED: </div>
+  <form name="form1" id="form1" action="/input" method="POST">
+      <select name="Process" id="process" name="new_process">
+        <option value="" selected="selected">Select Process</option>
+        {% for process in processes %}
+          <option value="{{process.id}}"> {{process.name}}</option>
         {% endfor %}
-        <button  id="id_update_profile_button">Submit</button>
-        <input type="hidden" name="status" value="Secondary">
-        <input type="hidden" name="used_process" value={{used_process}}>
-        {% csrf_token %}
-    </form>
-  {% endif %}
-</body>
-</html>
+      </select>
+      <input type="submit" value="Submit">
+      <input type="hidden" name="status" value="Initial">
+      {% csrf_token %}
+  </form>
+  {% if used_process %}
+    <form action="/input" method=POST enctype="multipart/form-data">
+      {% for f in forms %}
+        {{f.name}}
+        <table>
+            {{f.form}}
+        </table>
+      {% endfor %}
+      <button  id="id_update_profile_button">Submit</button>
+      <input type="hidden" name="status" value="Secondary">
+      <input type="hidden" name="used_process" value={{used_process}}>
+      {% csrf_token %}
+  </form>
+{% endif %}
 {% endblock %}

@@ -1,19 +1,16 @@
-<!doctype html>
-<html>
 {% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}My Profile Page - Hacker Fab Database{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static css/header.css}">
+<link rel="stylesheet" href="{% static 'css/my_profile.css' %}">
+{% endblock %}
+
 {% block content %}
-<head>
-    <meta charset="utf-8">
-    <title> Hacker Fab</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/data_management.css' %}">
-    <style>
-        table, th, td {
-          border:1px solid black;
-        }
-        </style>
-</head>
-<body>
+<div class="chip-summary">
     <div> Chip Summary </div>
     <table>
         <tr>
@@ -38,6 +35,5 @@
             </tr>
         {% endfor %}
     </table>
-</body>
-</html>
+</div>
 {% endblock %}
