@@ -24,7 +24,14 @@
         </tr>
         {% for a in all_entries %}
             <tr>
-                <th>{{a.chip_number}}</th>
+                <th>
+                    <!-- Only insert link to the chip page for this chip if it has a positive chipnum; otherwise the path does not exist -->
+                    {% if a.chip_number >= 0 %}
+                        <a href="{% url 'chipnum' a.chip_number %}">{{a.chip_number}}</a>
+                    {% else %}
+                        {{a.chip_number}}
+                    {% endif %}
+                </th>
                 <td>
                     {% if a.chip_owner.id == request.user.id %}
                     <a href="{% url 'mypfp' %}">{{a.chip_owner}}</a>
