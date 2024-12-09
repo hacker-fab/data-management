@@ -41,6 +41,12 @@ class IVCurveForm(forms.ModelForm):
         ))
 
 class AluminumEtchSearchForm(forms.ModelForm):
+    AluminumEtch_step_time_max                  = forms.DateTimeField(required=False, label="Max AluminumEtch step time")
+    AluminumEtch_temp_max                       = forms.DecimalField(required=False, decimal_places=3, label="Max Etch temp (°C) *")
+    AluminumEtch_duration_max                   = forms.IntegerField(required=False, label="Max Etch duration (sec) *")
+    AluminumEtch_stir_rpm_max                   = forms.IntegerField(required=False, label="Max Stir speed (rpm) *")
+    AluminumEtch_metric_alum_etch_depth_max     = forms.IntegerField(required=False, label="Max Etch depth (nm) *")
+
     class Meta:
         model = AluminumEtch
         exclude = (
@@ -49,9 +55,22 @@ class AluminumEtchSearchForm(forms.ModelForm):
         )
         labels = {
             'chip_owner': "Enter Username",
+            'AluminumEtch_step_time': "Min "+AluminumEtch._meta.get_field('AluminumEtch_step_time').verbose_name, 
+            'AluminumEtch_temp': "Min "+AluminumEtch._meta.get_field('AluminumEtch_temp').verbose_name, 
+            'AluminumEtch_duration': "Min "+AluminumEtch._meta.get_field('AluminumEtch_duration').verbose_name, 
+            'AluminumEtch_stir_rpm': "Min "+AluminumEtch._meta.get_field('AluminumEtch_stir_rpm').verbose_name, 
+            'AluminumEtch_metric_alum_etch_depth': "Min "+AluminumEtch._meta.get_field('AluminumEtch_metric_alum_etch_depth').verbose_name, 
         }
 
 class AluminumEvaporationSearchForm(forms.ModelForm):
+    AluminumEvaporation_step_time_max                   = forms.DateTimeField(required=False,label="Max AluminumEvaporation step time")
+    AluminumEvaporation_duration_max                    = forms.IntegerField(required=False, label="Max Evaporation duration (sec) *")
+    AluminumEvaporation_pressure_before_start_seq_max   = forms.DecimalField(required=False, decimal_places=3, label="Max Pressure before start (torr E-6) *")
+    AluminumEvaporation_pressure_before_evaporation_max = forms.DecimalField(required=False, decimal_places=3, label="Max Pressure before evaporation (torr E-6) *")
+    AluminumEvaporation_metric_layer_thickness_max      = forms.DecimalField(required=False, decimal_places=3, label="Max Layer thickness by profilometer (Å) *")
+    AluminumEvaporation_metric_layer_thick_qcm_max      = forms.DecimalField(required=False, decimal_places=3, label="Max Layer thickness by QCM (Å) *")
+    AluminumEvaporation_metric_deposition_rate_max      = forms.DecimalField(required=False, decimal_places=3, label="Max Deposition rate (Å/sec) *")
+
     class Meta:
         model = AluminumEvaporation
         exclude = (
@@ -60,6 +79,13 @@ class AluminumEvaporationSearchForm(forms.ModelForm):
         )
         labels = {
             'chip_owner': "Enter Username",
+            'AluminumEvaporation_step_time': "Min "+AluminumEvaporation._meta.get_field('AluminumEvaporation_step_time').verbose_name,
+            'AluminumEvaporation_duration': "Min "+AluminumEvaporation._meta.get_field('AluminumEvaporation_duration').verbose_name,
+            'AluminumEvaporation_pressure_before_start_seq': "Min "+AluminumEvaporation._meta.get_field('AluminumEvaporation_pressure_before_start_seq').verbose_name,
+            'AluminumEvaporation_pressure_before_evaporation': "Min "+AluminumEvaporation._meta.get_field('AluminumEvaporation_pressure_before_evaporation').verbose_name,
+            'AluminumEvaporation_metric_layer_thickness': "Min "+AluminumEvaporation._meta.get_field('AluminumEvaporation_metric_layer_thickness').verbose_name,
+            'AluminumEvaporation_metric_layer_thick_qcm': "Min "+AluminumEvaporation._meta.get_field('AluminumEvaporation_metric_layer_thick_qcm').verbose_name,
+            'AluminumEvaporation_metric_deposition_rate': "Min "+AluminumEvaporation._meta.get_field('AluminumEvaporation_metric_deposition_rate').verbose_name,
         }
 
 class ChipListSearchForm(forms.ModelForm):
@@ -70,6 +96,15 @@ class ChipListSearchForm(forms.ModelForm):
         }
 
 class GlassDepositionSearchForm(forms.ModelForm):
+    GlassDeposition_step_time_max               = forms.DateTimeField(required=False, label="Max GlassDeposition step time")
+    GlassDeposition_prebake_temp_max            = forms.DecimalField(required=False, decimal_places=3, label="Max Prebake temp (°C) *")
+    GlassDeposition_prebake_duration_max        = forms.IntegerField(required=False,  label="Max Prebake duration (sec) *")
+    GlassDeposition_amount_drops_max            = forms.IntegerField(required=False,  label="Max Number of drops *")
+    GlassDeposition_spin_rpm_max                = forms.IntegerField(required=False,  label="Max Spin speed (rpm) *")
+    GlassDeposition_spin_duration_max           = forms.IntegerField(required=False,  label="Max Spin duration (sec) *")
+    GlassDeposition_bake_temp_max               = forms.DecimalField(required=False, decimal_places=3, label="Max Bake temp (°C) *")
+    GlassDeposition_bake_duration_max           = forms.IntegerField(required=False,  label="Max Bake duration (sec) *")
+
     class Meta:
         model = GlassDeposition
         exclude = (
@@ -78,6 +113,14 @@ class GlassDepositionSearchForm(forms.ModelForm):
         )
         labels = {
             'chip_owner': "Enter Username",
+            'GlassDeposition_step_time': "Min " + GlassDeposition._meta.get_field('GlassDeposition_step_time').verbose_name,
+            'GlassDeposition_prebake_temp': "Min " + GlassDeposition._meta.get_field('GlassDeposition_prebake_temp').verbose_name,
+            'GlassDeposition_prebake_duration': "Min " + GlassDeposition._meta.get_field('GlassDeposition_prebake_duration').verbose_name,
+            'GlassDeposition_amount_drops': "Min " + GlassDeposition._meta.get_field('GlassDeposition_amount_drops').verbose_name,
+            'GlassDeposition_spin_rpm': "Min " + GlassDeposition._meta.get_field('GlassDeposition_spin_rpm').verbose_name,
+            'GlassDeposition_spin_duration': "Min " + GlassDeposition._meta.get_field('GlassDeposition_spin_duration').verbose_name,
+            'GlassDeposition_bake_temp': "Min " + GlassDeposition._meta.get_field('GlassDeposition_bake_temp').verbose_name,
+            'GlassDeposition_bake_duration': "Min " + GlassDeposition._meta.get_field('GlassDeposition_bake_duration').verbose_name,
         }
 
 class DiffusionSearchForm(forms.ModelForm):

@@ -333,6 +333,27 @@ def parse_forms(used_processes, request):
         return ["Invalid", forms]
     return [filters]
 
+# Helper function to format range searches based on the input search form parameters
+def format_range_filters(unformatted_filters):
+    result = []
+    max_fields = {key: value for key, value in unformatted_filters if key.endswith('_max')}
+    base_fields = {key: value for key, value in unformatted_filters if not key.endswith('_max')}
+    
+    # Process _max fields and their corresponding base fields
+    for key, value in max_fields.items():
+        base_key = key[:-4]  # Remove the '_max' suffix to get the base key
+        if base_key in base_fields:
+            result.append((base_key, (base_fields[base_key], value)))  # Pair base with max
+            del base_fields[base_key]  # Remove the used base field
+        else:
+            result.append((base_key, value))  # Add the max field as a regular field
+    
+    # Add remaining base fields (those without corresponding _max) to the result
+    for key, value in base_fields.items():
+        result.append((key, value))
+    
+    return result
+
 # create list of results for search queries (append "pattern" column)
 # returns an array of array dictionaries of the search queries
 def filter_form(input_dict):
@@ -371,8 +392,24 @@ def filter_form(input_dict):
 
         else:
             query = Q()
-            for j in input_dict[proc]:
-                query &= Q((j[0], j[1]))
+            print("input_dict")
+            print(input_dict)
+            filter_list = format_range_filters(input_dict[proc])
+            print("filter_list")
+            print(filter_list)
+            # filter_list = input_dict[proc]
+            for j in filter_list:
+                print("j")
+                print(j)
+                if isinstance(j[1], tuple):
+                    # Handle search by range queries
+                    # search_param_range is a tuple (min_val, max_val)
+                    search_param_range = (j[1][0], j[1][1])
+                    search_param = j[0]
+                    query &= Q(**{f"{search_param}__range": search_param_range})
+                else:
+                    query &= Q((j[0], j[1]))
+
             if proc == "ChipList":
                 queryset = ChipList.objects.filter(query).order_by('-creation_time')
             elif proc == "AluminumEtch":
