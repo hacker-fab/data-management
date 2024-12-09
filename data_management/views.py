@@ -607,21 +607,34 @@ def display_chip(request, chip_id):
             process_name = p["name"]
         else:
             process_name = p["id"]
+        # Don't display ChipList because it's technically not a process. 
+        # It's just a summary of this chip's information.
+        if process_name == "ChipList":
+            continue
         chip_id_filter[process_name] = [('chip_number', chip_id)]
             
     query_results = filter_form(chip_id_filter)
 
     # Processes that have been recorded for this chip_id
     process_entries = remove_bad_query_results(query_results)
-    
+    print(process_entries)
     context = {}
     context["chip_id"] = chip_id
     chip = get_object_or_404(ChipList, chip_number=chip_id)
     context["creation_time"] = chip.creation_time
     context["chip_owner"] = chip.chip_owner
     context["chip_number"] = chip.chip_number
-    
+    context["starting_material"] = chip.starting_material
+    context["notes"] = chip.notes
     context["process_entries"] = process_entries
+    # Figure out if any processes have been recorded for this chip
+    has_processes = False
+    for p in process_entries:
+        if len(p) > 0:
+            has_processes = True
+            break
+    context["has_processes"] = has_processes
+
     if request.method == 'GET':
         return render(request, "chipnum.html", context)
 

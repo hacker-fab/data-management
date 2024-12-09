@@ -27,10 +27,19 @@
           <td>Chip Owner: </td>
           <td> {{chip_owner}} </td>
         </tr>
+        <tr>
+          <td>Starting Material: </td>
+          <td> {{starting_material}} </td>
+        </tr>
+        <tr>
+          <td>Notes: </td>
+          <td> {{notes}} </td>
+        </tr>
       </table>
     </form>
   </div>
 
+  
   {% if process_entries %}
   <div class="chip-processes">
     {% if request.POST.action == 'download_csv' %}
@@ -81,7 +90,12 @@
     {% endif %}
   </div>
   {% endif %}
-       
+  {% if not has_processes %}
+  <div class="chip-processes">
+    <p>No processes recorded for this chip.</p>
+  </div>
+  {% endif %}
+  
 </body>
 </html>
 {% endblock %}
