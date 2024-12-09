@@ -84,7 +84,7 @@
 
 /* User Name and Logout Button */
 .user-name {
-    font-size: clamp(18px, 2vw, 24px); /* Responsive font size */
+    font-size: 1.5vw; /* Responsive font size */
     color: black;
     font-weight: bold;
     text-align: center; /* Center-align on small screens */

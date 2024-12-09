@@ -58,7 +58,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'webapps.urls'
 STATIC_URL = 'static/'
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = ''
+LOGIN_REDIRECT_URL = 'home'
 
 TEMPLATES = [
     {
