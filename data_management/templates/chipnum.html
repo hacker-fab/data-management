@@ -63,22 +63,22 @@
           {% endif %}
           <table style="width:100%">
             <tr>
-              <th>Select</th>
               {% for column_name, value in process_list.0.items %}
-                <th>{{ column_name }}</th>
+              <!-- Do not display chipnum and chipowner here. It is redundant -->
+                {% if column_name != "chip_number" and column_name != "chip_owner" %}
+                  <th>{{ column_name }}</th>
+                {% endif %}
               {% endfor %}
             </tr>
             {% for process_info in process_list %}
               <tr>
-                <td>
-                  <input type="checkbox" name="selected_items" value="{{ forloop.counter0 }}">
-                </td>
                 {% for column_name, value in process_info.items %}
                   {% if column_name == "picture" %}
                     <td>
                       <img src="{% url 'photo' process_info.process process_info.id %}" width="400" height="300" id="id_user_picture">
                     </td>
-                  {% else %}
+                  {% elif column_name != "chip_number" and column_name != "chip_owner" %}
+                    <!-- Do not display chipnum and chipowner here. It is redundant -->
                     <td>{{ value }}</td>
                   {% endif %}
                 {% endfor %}

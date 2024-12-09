@@ -617,7 +617,6 @@ def display_chip(request, chip_id):
 
     # Processes that have been recorded for this chip_id
     process_entries = remove_bad_query_results(query_results)
-    print(process_entries)
     context = {}
     context["chip_id"] = chip_id
     chip = get_object_or_404(ChipList, chip_number=chip_id)
