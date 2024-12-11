@@ -124,6 +124,10 @@ class GlassDepositionSearchForm(forms.ModelForm):
         }
 
 class DiffusionSearchForm(forms.ModelForm):
+    Diffusion_step_time_max                     = forms.DateTimeField(required=False, label="Max Diffusion step time")
+    Diffusion_temp_max                          = forms.DecimalField(required=False, decimal_places=3, null=True, label="Max Diffusion temp (°C) *")
+    Diffusion_duration_max                      = forms.IntegerField(required=False, label="Max Diffusion duration (sec) *")
+
     class Meta:
         model = Diffusion
         exclude = (
@@ -132,6 +136,9 @@ class DiffusionSearchForm(forms.ModelForm):
         )
         labels = {
             'chip_owner': "Enter Username",
+            'Diffusion_step_time': "Min" + Diffusion._meta.get_field('Diffusion_step_time').verbose_name,
+            'Diffusion_temp': "Min" + Diffusion._meta.get_field('Diffusion_temp').verbose_name,
+            'Diffusion_duration': "Min" + Diffusion._meta.get_field('Diffusion_duration').verbose_name,
         }
 
 class HFOxideEtchSearchForm(forms.ModelForm):
@@ -168,6 +175,20 @@ class NickelPlatingSearchForm(forms.ModelForm):
         }
 
 class PatterningSearchForm(forms.ModelForm):
+    Patterning_step_time_max                    = forms.DateTimeField(required=False, label="Max Patterning step time")
+    Patterning_hdms_prebake_temp_max            = forms.DecimalField(decimal_places=3, required=False,label="Max HMDS prebake temp (°C) *")
+    Patterning_hdms_prebake_duration_max        = forms.IntegerField(required=False,label="Max HMDS prebake duration (sec) *")
+    Patterning_hdms_spin_rpm_max                = forms.IntegerField(required=False,label="Max HMDS spin speed (rpm) *")
+    Patterning_hdms_spin_duration_max           = forms.IntegerField(required=False,label="Max HMDS spin duration (sec) *")
+    Patterning_hdms_bake_temp_max               = forms.DecimalField(decimal_places=3, required=False,label="Max HMDS bake temp (°C) *")
+    Patterning_hdms_bake_duration_max           = forms.IntegerField(required=False,label="Max HMDS bake duration (sec) *")
+    Patterning_photoresist_spin_rpm_max         = forms.IntegerField(required=False,label="Max PR spin speed (rpm) *")
+    Patterning_photoresist_spin_duration_max    = forms.IntegerField(required=False,label="Max PR spin duration (sec) *")
+    Patterning_photoresist_bake_temp_max        = forms.DecimalField(decimal_places=3, required=False,label="Max PR bake temp (°C) *")
+    Patterning_photoresist_bake_duration_max    = forms.IntegerField(required=False,label="Max PR bake duration (sec) *")
+    Patterning_exposure_duration_max            = forms.IntegerField(required=False,label="Max Exposure duration (ms) *")
+    Patterning_develop_duration_max             = forms.IntegerField(required=False,label="Max Develop duration (sec) *")
+    
     class Meta:
         model = Patterning
         exclude = (
@@ -176,6 +197,19 @@ class PatterningSearchForm(forms.ModelForm):
         )
         labels = {
             'chip_owner': "Enter Username",
+            'Patterning_step_time': "Min" + Patterning._meta.get_field('Patterning_step_time').verbose_name,
+            'Patterning_hdms_prebake_temp': "Min" + Patterning._meta.get_field('Patterning_hdms_prebake_temp').verbose_name,
+            'Patterning_hdms_prebake_duration': "Min" + Patterning._meta.get_field('Patterning_hdms_prebake_duration').verbose_name,
+            'Patterning_hdms_spin_rpm': "Min" + Patterning._meta.get_field('Patterning_hdms_spin_rpm').verbose_name,
+            'Patterning_hdms_spin_duration': "Min" + Patterning._meta.get_field('Patterning_hdms_spin_duration').verbose_name,
+            'Patterning_hdms_bake_temp': "Min" + Patterning._meta.get_field('Patterning_hdms_bake_temp').verbose_name,
+            'Patterning_hdms_bake_duration': "Min" + Patterning._meta.get_field('Patterning_hdms_bake_duration').verbose_name,
+            'Patterning_photoresist_spin_rpm': "Min" + Patterning._meta.get_field('Patterning_photoresist_spin_rpm').verbose_name,
+            'Patterning_photoresist_spin_duration': "Min" + Patterning._meta.get_field('Patterning_photoresist_spin_duration').verbose_name,
+            'Patterning_photoresist_bake_temp': "Min" + Patterning._meta.get_field('Patterning_photoresist_bake_temp').verbose_name,
+            'Patterning_photoresist_bake_duration': "Min" + Patterning._meta.get_field('Patterning_photoresist_bake_duration').verbose_name,
+            'Patterning_exposure_duration': "Min" + Patterning._meta.get_field('Patterning_exposure_duration').verbose_name,
+            'Patterning_develop_duration': "Min" + Patterning._meta.get_field('Patterning_develop_duration').verbose_name,
         }
 
 class PlasmaCleanSearchForm(forms.ModelForm):
