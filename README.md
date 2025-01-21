@@ -27,7 +27,7 @@ Before the first run, you should initialize the database:
 ```
 python manage.py migrate
 ```
-Note that now there is file named  at the root of the repo. 
+Note that now there is file named `db.sqlite3` at the root of the repo. 
 That is the database.
 If you ever want to transfer the data in a database from a computer to another or to backup them to some other places, just copy `db.sqlite3`.
 
