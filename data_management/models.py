@@ -49,6 +49,7 @@ class IVCurve(models.Model):
     device_id = models.CharField(max_length=50, blank=False)
     gate_voltages = models.CharField(max_length=500, blank=False)
     captures = models.ManyToManyField(SMU_capture)
+
 class AluminumEtch(models.Model):
     chip_number                             = models.ForeignKey(ChipList, on_delete=models.PROTECT, blank=True, verbose_name="Chip number *")
     chip_owner                              = models.ForeignKey(User, on_delete=models.PROTECT, blank=True)
@@ -99,16 +100,6 @@ class GlassDeposition(models.Model):
     picture                                 = models.FileField(blank=True)
     content_type                            = models.CharField(max_length=50, blank=True)
     GlassDeposition_notes                   = models.CharField(max_length=400, blank=True, null=True, verbose_name="Notes")
-
-class Diffusion(models.Model):
-    chip_number                             = models.ForeignKey(ChipList, on_delete=models.PROTECT, blank=True, verbose_name="Chip number *")
-    chip_owner                              = models.ForeignKey(User, on_delete=models.PROTECT, blank=True)
-    Diffusion_step_time                     = models.DateTimeField(blank=True)
-    Diffusion_temp                          = models.DecimalField(max_digits=10, decimal_places=3, blank=True, null=True, verbose_name="Diffusion temp (°C) *")
-    Diffusion_duration                      = models.PositiveIntegerField(blank=True, null=True, verbose_name="Diffusion duration (sec) *")
-    picture                                 = models.FileField(blank=True)
-    content_type                            = models.CharField(max_length=50, blank=True)
-    Diffusion_notes                         = models.CharField(max_length=400, blank=True, null=True, verbose_name="Notes")
 
 class Diffusion(models.Model):
     chip_number                             = models.ForeignKey(ChipList, on_delete=models.PROTECT, blank=True, verbose_name="Chip number *")
