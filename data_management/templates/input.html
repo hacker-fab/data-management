@@ -13,7 +13,7 @@
       <button>Create/Edit Chip</button>
     </a>
     <div> OR IF INITIAL CHIP IS CREATED: </div>
-    <form name="form1" id="form1" action="/input" method="POST">
+    <form name="form1" id="form1" action="/input/" method="POST">
         <select name="Process" id="process" name="new_process">
           <option value="" selected="selected">Select Process</option>
           {% for process in processes %}
@@ -25,7 +25,7 @@
         {% csrf_token %}
     </form>
     {% if used_process %}
-      <form action="/input" method=POST enctype="multipart/form-data">
+      <form action="/input/" method=POST enctype="multipart/form-data">
         {% for f in forms %}
           {{f.name}}
           <table>

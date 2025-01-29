@@ -16,7 +16,7 @@ class ChipList(models.Model):
     chip_owner          = models.ForeignKey(User, on_delete=models.PROTECT, blank=True)
     university          = models.CharField(max_length=400, blank=True, null=True, choices=UNIVERSITY_CHOICES)
     creation_time       = models.DateTimeField(blank=True)
-    starting_material   = models.CharField(max_length=400, blank=True, null=True)
+    starting_material   = models.CharField(max_length=400, blank=True, null=True, default="Lightly P-doped")
     notes               = models.CharField(max_length=400, blank=True, null=True)  # This field type is a guess.
     IVCurrents_CSV      = models.FileField(blank=True)
     IVVoltages_CSV      = models.FileField(blank=True)
