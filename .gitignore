@@ -75,3 +75,7 @@ __pycache__/
 .DS_Store
 **/.DS_Store
 *.png
+
+# PyCharm
+.idea/
+.venv/
