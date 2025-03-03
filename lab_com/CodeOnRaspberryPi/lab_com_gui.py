@@ -4,6 +4,7 @@ import requests
 import threading
 import tkinter as tk
 from tkinter import ttk
+import serial
 
 IO_PIN = 17  # Change to your GPIO pin number
 chip = gpiod.Chip('gpiochip4')
@@ -13,6 +14,40 @@ line = chip.get_line(IO_PIN)
 line.request(consumer="gpio_test", type=gpiod.LINE_REQ_DIR_OUT)
 
 BASE_URL = "https://fbc4oam2we.execute-api.us-east-2.amazonaws.com/prod"
+
+
+########################## PERIPHERAL CONFIGURATION ##########################
+#### UART OVER USB SERIAL TO ARDUINO ####
+# This may be different on a different RPI
+USB_PORT = "/dev/ttyACM0"  # Adjust this based on your device
+BAUD_RATE = 115200  # Must match Arduino
+
+# Open Serial Connection
+try:
+    ser = serial.Serial(USB_PORT, BAUD_RATE, timeout=1)
+    time.sleep(2)  # Allow time for connection to stabilize
+    print("Connected to Arduino over USB Serial!")
+
+except serial.SerialException:
+    print("ERROR: Could not open serial port. Check USB connection!")
+    exit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###################################################################################
+
+
 
 def get_next_job():
     """Fetch the next job from the queue."""
@@ -136,7 +171,7 @@ class JobGUI:
         ##############################
         # Run the job in a new thread
         
-        threading.Thread(target=self.run_led, args=(job_input_parameters,), daemon=True).start()
+        threading.Thread(target=self.run_spincoater, args=(job_input_parameters,), daemon=True).start()
 
 
 
@@ -233,6 +268,38 @@ class JobGUI:
         self.submit_completed_response_to_server(final_output_parameters)
 
 
+    def run_spincoater(self, job_input_parameters):
+        
+        ### This is where you write the firmware code to run the job. ##
+        duration = job_input_parameters.get("time", 5)
+        
+        command = f"LED:{duration}\n"
+        print(f"Sending: {command.strip()}")
+
+        ser.write(command.encode())  # Send data over USB Serial
+
+        # Read response from Arduino
+        while True:
+            response = ser.readline().decode('utf-8').strip()
+            if response:
+                print(f"Arduino: {response}")
+            else:
+                break  # Stop reading when no more data
+
+        ### End of firmware code. ###
+
+
+        ## Gather the user response [Optional]##
+        self.set_job_status_label("Job Status: GPIO: OFF. Please type in response.")
+
+        self.get_user_output_response()
+
+        ## Submit the data back to the server ##
+        final_output_parameters = {"response": self.output_text}
+
+        self.submit_completed_response_to_server(final_output_parameters)
+
+
     ###########################################################################
 
 
@@ -244,4 +311,10 @@ if __name__ == "__main__":
         root.mainloop()
     except KeyboardInterrupt:
         gui.stop()
+
+        ##### CLEAN UP RESOURCES #####
+        ser.close()
+        line.release()  
+
+
         print("Exiting program")
