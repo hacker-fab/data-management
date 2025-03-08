@@ -1,9 +1,14 @@
-import boto3
+"""AWS Lambda handler module.
+
+This module contains the Lambda function that runs the API endpoints
+for the job queue system in AWS.
+"""
 import json
 import uuid
 import time
 import logging
 from decimal import Decimal
+import boto3
 
 ### This code runs on the AWS instance as a lambda function for managing the API requests ###
 
@@ -30,26 +35,31 @@ def lambda_handler(event, context):
     # Routing based on the request
     if route == "GET /jobs/next" and method == "GET":
         return get_next_job()
-    elif route == "POST /job_completion" and method == "POST":   # Ensure correct endpoint
+    if route == "POST /job_completion" and method == "POST":   # Ensure correct endpoint
         return update_job_completion(body)
-    elif route == "POST /jobs" and method == "POST":
+    if route == "POST /jobs" and method == "POST":
         return enqueue_job(body)
-    elif route == "GET /jobs_by_id" and method == "GET":
+    if route == "GET /jobs_by_id" and method == "GET":
         return get_jobs_by_id(event)
-    elif route == "GET /jobs_by_machine" and method == "GET":
+    if route == "GET /jobs_by_machine" and method == "GET":
         return get_jobs_by_machine(event)
-    else:
-        logger.warning("Invalid request received: %s", route)
-        return {"statusCode": 400, "body": json.dumps({"message": "Invalid request"})}
+    logger.warning("Invalid request received: %s", route)
+    return {"statusCode": 400, "body": json.dumps({"message": "Invalid request"})}
 
 # **Helper Function to Convert Decimal to Native Python Types**
 def decimal_serializer(obj):
+    """
+    Convert Decimal to native Python types.
+    """
     if isinstance(obj, Decimal):
         return int(obj) if obj % 1 == 0 else float(obj)
     raise TypeError(f"Object of type {obj.__class__.__name__} is not JSON serializable")
 
-# **1️⃣ Function to Update Job Completion (Completed or Failed)**
+# **Function to Update Job Completion (Completed or Failed)**
 def update_job_completion(body):
+    """
+    Update job completion status.
+    """
     job_id = body.get("job_id", "-1")
     logger.info("Received job completion request: %s", body)
 
@@ -66,10 +76,11 @@ def update_job_completion(body):
 
     output_parameters = body.get("output_parameters", {})
     status = body.get("status", "").capitalize()
- 
+
     if status not in ["Completed", "Failed"]:
         logger.error("Invalid status received: %s", status)
-        return {"statusCode": 400, "body": json.dumps({"message": "Invalid status, must be 'Completed' or 'Failed'"})}
+        return {"statusCode": 400, "body":
+                json.dumps({"message": "Invalid status, must be 'Completed' or 'Failed'"})}
 
     timestamp = int(time.time())
     table.update_item(
@@ -82,8 +93,11 @@ def update_job_completion(body):
     logger.info("Job %s updated to %s", job_id, status)
     return {"statusCode": 200, "body": json.dumps({"message": f"Job {job_id} marked as {status}."})}
 
-# **2️⃣ Function to Add a New Job**
+# **Function to Add a New Job**
 def enqueue_job(body):
+    """
+    Add a new job to the queue.
+    """
     job_id = str(uuid.uuid4())
     machine = body.get("machine", "unknown")
     input_parameters = body.get("input_parameters", {})
@@ -103,8 +117,11 @@ def enqueue_job(body):
 
     return {"statusCode": 200, "body": json.dumps({"message": "Job added", "job_id": job_id})}
 
-# **3️⃣ Function to Get the Next Pending Job and Mark It "In Progress", Then Return Updated Data**
+# **Function to Get the Next Pending Job and Mark It "In Progress", Then Return Updated Data**
 def get_next_job():
+    """
+    Get the next pending job and mark it as "In Progress".
+    """
     logger.info("Fetching next job from queue")
     response = table.scan(
         FilterExpression="#s = :s",
@@ -133,45 +150,41 @@ def get_next_job():
 
     return {"statusCode": 200, "body": json.dumps(updated_job, default=decimal_serializer)}
 
+# **Function to Fetch a Job by Its ID**
 def get_jobs_by_id(event):
     """
     Fetch a job by its ID.
     """
     job_id = event.get("queryStringParameters", {}).get("job_id")
-    
+
     if not job_id:
         return {"statusCode": 400, "body": json.dumps({"message": "Missing job_id parameter"})}
-    
+
     response = table.get_item(Key={"job_id": job_id})
-    
+
     if "Item" not in response:
         return {"statusCode": 404, "body": json.dumps({"message": "Job not found"})}
-    
+
     return {"statusCode": 200, "body": json.dumps(response["Item"], default=decimal_serializer)}
 
+# **Function to Fetch Jobs by Machine name. This is needed for interface w/web application.**
 def get_jobs_by_machine(event):
     """
     Fetch jobs by machine.
     """
     machine = event.get("queryStringParameters", {}).get("machine")
-    
     if not machine:
         return {"statusCode": 400, "body": json.dumps({"message": "Missing machine parameter"})}
-    
+
     response = table.scan(
         FilterExpression="#m = :m",
         ExpressionAttributeNames={"#m": "machine"},
         ExpressionAttributeValues={":m": machine}
     )
-    
+
     jobs = response.get("Items", [])
     if not jobs:
-        return {"statusCode": 404, "body": json.dumps({"message": "No jobs found for the specified machine"})}
-    
-    return {"statusCode": 200, "body": json.dumps(jobs, default=decimal_serializer)}
+        return {"statusCode": 404, "body":
+                json.dumps({"message": "No jobs found for the specified machine"})}
 
-# **Helper Function to Convert Decimal to Native Python Types**
-def decimal_serializer(obj):
-    if isinstance(obj, Decimal):
-        return int(obj) if obj % 1 == 0 else float(obj)
-    raise TypeError(f"Object of type {obj.__class__.__name__} is not JSON serializable")
+    return {"statusCode": 200, "body": json.dumps(jobs, default=decimal_serializer)}
