@@ -1,3 +1,7 @@
+// This is test arduino code to control LED on Arduino board using Raspberry Pi over USB UART //
+// This code will soon be deprecated and replaced with the new code that fully controls the spincoater //
+
+
 #define LED_PIN 13  // Built-in LED
 
 void setup() {
