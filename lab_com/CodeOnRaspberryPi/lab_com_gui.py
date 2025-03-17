@@ -275,10 +275,25 @@ class JobGUI:
         """Run the spincoater job."""
 
         ### This is where you write the firmware code to run the job. ##
+        rpm = job_input_parameters.get("rpm", 1000)
         duration = job_input_parameters.get("time", 5)
-        command = f"LED:{duration}\n"
-        print(f"Sending: {command.strip()}")
-        ser.write(command.encode())  # Send data over USB Serial
+
+        # Send RPM command
+        rpm_command = f"RPM:{rpm}\n"
+        print(f"Sending: {rpm_command.strip()}")
+        ser.write(rpm_command.encode())
+        time.sleep(0.5)  # Small delay to ensure command is processed
+
+        # Send Time command
+        time_command = f"TIME:{duration}\n"
+        print(f"Sending: {time_command.strip()}")
+        ser.write(time_command.encode())
+        time.sleep(0.5)  # Small delay to ensure command is processed
+
+        # Send Start command
+        start_command = "START\n"
+        print(f"Sending: {start_command.strip()}")
+        ser.write(start_command.encode())
 
         # Read response from Arduino
         while True:
