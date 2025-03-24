@@ -2,6 +2,7 @@
 This module contains the GUI for the job queue system.
 """
 
+import uuid
 import time
 import threading
 import tkinter as tk
@@ -39,6 +40,10 @@ except serial.SerialException:
 
 
 
+
+
+
+
 def get_next_job():
     """Fetch the next job from the queue."""
     endpoint = f"{BASE_URL}/jobs/next"
@@ -67,7 +72,7 @@ def send_job_completion(job_id, output_parameters):
 
 class JobGUI:
     """Class to manage the GUI for the job queue system."""
-    def __init__(self, root):
+    def __init__(self, root, job_function):
         """Initialize the JobGUI class."""
 
         # Google code guidelines recommend fewer class variables
@@ -76,6 +81,7 @@ class JobGUI:
         # efficient way to manage the GUI
 
         self.root = root
+        self.job_function = job_function  # Store the function pointer
         self.root.title("Job Monitor")
 
         self.auto_run = tk.BooleanVar(value=True)
@@ -125,6 +131,38 @@ class JobGUI:
         self.input_label.pack_forget()
         self.input_entry.pack_forget()
         self.submit_button.pack_forget()
+
+
+        
+
+
+        # create GUI elements for manually entering job parameters based on JOB_PARAM_TEMPLATE
+        self.job_param_entries = {}
+        for param_name, param_value in JOB_PARAM_TEMPLATE.items():
+            label = ttk.Label(root, text=f"{param_name}:")
+            label.pack()
+            label.pack_forget()
+            entry = ttk.Entry(root) 
+            entry.insert(0, str(param_value))
+            entry.pack()
+            entry.pack_forget()
+            self.job_param_entries[param_name] = {"label" : label, "entry" : entry}
+
+
+        self.create_new_job_button = ttk.Button(root, text="Create New Job",
+                                        command=self.create_new_job)
+        
+        self.create_new_job_button.pack()
+
+        self.create_new_job_submit = ttk.Button(root, text="Submit New Job",
+                                        command=self.submit_new_job)
+        
+        self.create_new_job_submit.pack()
+        self.create_new_job_submit.pack_forget()
+
+
+
+
 
         self.job = None
         self.job_running_on_machine = False
@@ -180,8 +218,9 @@ class JobGUI:
         self.system_status_label.config(text="System Status: Running job...")
         self.job_running_on_machine = True
 
-        threading.Thread(target=self.run_spincoater,
-                         args=(job_input_parameters,), daemon=True).start()
+        # Use the function pointer to run the job
+        threading.Thread(target=self.job_function,
+                         args=(self, job_input_parameters,), daemon=True).start()
 
     def deny_job(self):
         """Deny the current job."""
@@ -205,6 +244,70 @@ class JobGUI:
         self.system_status_label.config(text="System Status: Text submitted...")
         self.output_text = user_input
         self.output_text_avail_semaphore.release()
+
+    def create_new_job(self):
+        """Handles the button click to bring up the option to create a new job."""
+        self.system_status_label.config(text="System Status: Enter new job parameters...")
+
+        # Show the job parameter entries
+        for entry in self.job_param_entries.values():
+            entry["label"].pack()
+            entry["entry"].pack()
+
+        self.create_new_job_button.pack_forget()
+        self.create_new_job_submit.pack()
+
+    def submit_new_job(self):
+        """Submit the new job after the user has entered the parameters."""
+        self.system_status_label.config(text="System Status: Submitting new job...")
+
+        # Hide the job parameter entries
+        for entry in self.job_param_entries.values():
+            entry["label"].pack_forget()
+            entry["entry"].pack_forget()
+
+        self.create_new_job_button.pack()
+        self.create_new_job_submit.pack_forget()
+
+        # Get the job parameters from the entries
+        job_input_parameters = {}
+        for param_name, entry in self.job_param_entries.items():
+            job_input_parameters[param_name] = entry["entry"].get()
+
+        # Submit the job to the server
+        endpoint = f"{BASE_URL}/jobs"
+        data = {
+            "job_type": JOB_NAME,
+            "input_parameters": job_input_parameters
+        }
+
+        print("Submitting job:", data)
+
+        try:
+            response = requests.post(endpoint, json=data)
+            response.raise_for_status()
+            print("Job posted successfully.")
+            self.system_status_label.config(text="System Status: Job submitted.")
+        except requests.exceptions.RequestException as err:
+            print(f"Error posting job: {err}")
+            self.system_status_label.config(text="System Status: Error submitting. Now running job locally.")
+            
+            self.job = {"input_parameters": job_input_parameters, "machine": JOB_NAME, "status": "In Progress", "timestamp": 0, "output_parameters": {}, "priority": "1", "job_id": str(uuid.uuid4()) + "-local"}
+            self.job_id_label.config(
+                text=f"Current Job ID: {self.job.get('job_id', 'unknown')}")
+            self.job_id_label.pack()
+            self.input_param_label.config(
+                text=f"Input Params: {self.job.get('input_parameters', {})}")
+            self.input_param_label.pack()
+            if self.auto_run.get():
+                self.run_job()
+            else:
+                self.system_status_label.config(
+                    text="System Status: Job available. Approve or Deny?")
+                self.approve_button.pack()
+                self.deny_button.pack()
+
+        
 
     def submit_completed_response_to_server(self, output_parameters):
         """Submit the completed job response to the server."""
@@ -274,6 +377,8 @@ class JobGUI:
     def run_spincoater(self, job_input_parameters):
         """Run the spincoater job."""
 
+        print("Job input parameters:", job_input_parameters)
+
         ### This is where you write the firmware code to run the job. ##
         rpm = job_input_parameters.get("rpm", 1000)
         duration = job_input_parameters.get("time", 5)
@@ -320,10 +425,41 @@ class JobGUI:
     ###########################################################################
 
 
+########################## JOB OBJECT FORMAT ######################################
+#### It is imperative that the job object format matches the server's object format ####
+
+
+# LIST OF ALL JOB PARAMETER TEMPLATES
+# Each job type should have its own parameter template
+# This is to ensure that the GUI can handle different job types
+
+#### SPINCOATER JOB ####
+SPINCOATER_JOB_PARAM_TEMPLATE = { "time": 12, "rpm": 1100 }
+SPINCOATER_JOB_NAME = "spincoater"
+SPINCOATER_FUNCTION = JobGUI.run_spincoater
+
+
+#### LED JOB ####
+LED_JOB_PARAM_TEMPLATE = { "time": 5 }
+LED_JOB_NAME = "led"
+LED_FUNCTION = JobGUI.run_led
+
+
+
+### Edit the following variables to match the job type you are integrating ###
+# These variables are used to configure the GUI for the specific job type
+JOB_PARAM_TEMPLATE = SPINCOATER_JOB_PARAM_TEMPLATE
+JOB_NAME = SPINCOATER_JOB_NAME
+JOB_FUNCTION = SPINCOATER_FUNCTION
+
+###################################################################################
+
+
+
 
 if __name__ == "__main__":
     root = tk.Tk()
-    gui = JobGUI(root)
+    gui = JobGUI(root, JOB_FUNCTION)  # Pass JOB_FUNCTION to the GUI
     try:
         root.mainloop()
     except KeyboardInterrupt:
