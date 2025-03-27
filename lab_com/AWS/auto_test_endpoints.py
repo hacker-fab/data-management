@@ -32,7 +32,7 @@ def test_jobqueue_api():
     print("Job found under machine")
 
     # Step 4: GET /jobs/next - Fetch job from queue
-    response = requests.get(f"{BASE_URL}/jobs/next")
+    response = requests.get(f"{BASE_URL}/jobs/next?machine=test_machine")
     assert response.status_code == 200, "Failed to fetch next job"
     assert response.json().get("job_id") == job_id, "Fetched wrong job"
     print("Job fetched successfully")

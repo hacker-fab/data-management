@@ -34,7 +34,7 @@ def lambda_handler(event, context):
 
     # Routing based on the request
     if route == "GET /jobs/next" and method == "GET":
-        return get_next_job()
+        return get_next_job(event)
     if route == "POST /job_completion" and method == "POST":   # Ensure correct endpoint
         return update_job_completion(body)
     if route == "POST /jobs" and method == "POST":
@@ -105,11 +105,23 @@ def enqueue_job(body):
     timestamp = int(time.time())
     logger.info("Adding new job with ID: %s", job_id)
 
+    # Ensure input_parameters are serialized properly (convert floats to Decimal for DynamoDB)
+    def serialize_input_parameters(params):
+        if isinstance(params, dict):
+            return {k: serialize_input_parameters(v) for k, v in params.items()}
+        elif isinstance(params, list):
+            return [serialize_input_parameters(v) for v in params]
+        elif isinstance(params, float):
+            return Decimal(str(params))  # Convert float to Decimal
+        return params
+
+    serialized_input_parameters = serialize_input_parameters(input_parameters)
+
     table.put_item(Item={
         "job_id": job_id,
         "machine": machine,
         "status": "Pending",
-        "input_parameters": input_parameters,
+        "input_parameters": serialized_input_parameters,
         "output_parameters": {},
         "timestamp": timestamp,
         "priority": priority
@@ -117,26 +129,31 @@ def enqueue_job(body):
 
     return {"statusCode": 200, "body": json.dumps({"message": "Job added", "job_id": job_id})}
 
-# **Function to Get the Next Pending Job and Mark It "In Progress", Then Return Updated Data**
-def get_next_job():
+# **Function to Get the Next Pending Job for a Specific Machine and Mark It "In Progress", Then Return Updated Data**
+def get_next_job(event):
     """
-    Get the next pending job and mark it as "In Progress".
+    Get the next pending job for a specific machine and mark it as "In Progress".
     """
-    logger.info("Fetching next job from queue")
+    machine = event.get("queryStringParameters", {}).get("machine")
+    if not machine:
+        return {"statusCode": 400, "body": json.dumps({"message": "Missing machine parameter"})}
+
+    logger.info("Fetching next job for machine: %s", machine)
     response = table.scan(
-        FilterExpression="#s = :s",
-        ExpressionAttributeNames={"#s": "status"},
-        ExpressionAttributeValues={":s": "Pending"}
+        FilterExpression="#s = :s AND #m = :m",
+        ExpressionAttributeNames={"#s": "status", "#m": "machine"},
+        ExpressionAttributeValues={":s": "Pending", ":m": machine}
     )
 
     jobs = response.get("Items", [])
     if not jobs:
-        logger.warning("No pending jobs found")
-        return {"statusCode": 404, "body": json.dumps({"message": "No pending jobs found"})}
+        logger.warning("No pending jobs found for machine: %s", machine)
+        return {"statusCode": 404, "body": json.dumps({"message": "No pending jobs found for the specified machine"})}
 
-    jobs.sort(key=lambda x: x.get("priority", 1), reverse=True)
+    # Sort jobs by timestamp (oldest job first)
+    jobs.sort(key=lambda x: x.get("timestamp", float('inf')))
     next_job = jobs[0]
-    logger.info("Next job selected: %s", next_job["job_id"])
+    logger.info("Next job selected for machine %s: %s", machine, next_job["job_id"])
 
     table.update_item(
         Key={"job_id": next_job["job_id"]},
