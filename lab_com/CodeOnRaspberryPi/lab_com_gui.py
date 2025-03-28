@@ -47,8 +47,9 @@ except serial.SerialException:
 def get_next_job():
     """Fetch the next job from the queue."""
     endpoint = f"{BASE_URL}/jobs/next"
+    params = {"machine": JOB_NAME}
     try:
-        response = requests.get(endpoint)
+        response = requests.get(endpoint, params=params)
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as err:
@@ -277,7 +278,7 @@ class JobGUI:
         # Submit the job to the server
         endpoint = f"{BASE_URL}/jobs"
         data = {
-            "job_type": JOB_NAME,
+            "machine": JOB_NAME,
             "input_parameters": job_input_parameters
         }
 
@@ -400,11 +401,15 @@ class JobGUI:
         print(f"Sending: {start_command.strip()}")
         ser.write(start_command.encode())
 
+        run_result = "JOB FAILED"
+
         # Read response from Arduino
         while True:
             response = ser.readline().decode('utf-8').strip()
             if response:
                 print(f"Arduino: {response}")
+                if ("**SPIN JOB COMPLETED SUCCESSFULLY**" in response):
+                    run_result = "JOB COMPLETED"
             else:
                 break  # Stop reading when no more data
 
@@ -412,12 +417,12 @@ class JobGUI:
 
 
         ## Gather the user response [Optional]##
-        self.set_job_status_label("Job Status: GPIO: OFF. Please type in response.")
+        # self.set_job_status_label("Job Status: GPIO: OFF. Please type in response.")
 
-        self.get_user_output_response()
+        # self.get_user_output_response()
 
         ## Submit the data back to the server ##
-        final_output_parameters = {"response": self.output_text}
+        final_output_parameters = {"response": run_result}
 
         self.submit_completed_response_to_server(final_output_parameters)
 

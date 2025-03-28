@@ -129,6 +129,9 @@ void loop() {
           Serial.print("[DEBUG] Parsed RPM: ");
           Serial.print(rpm);
           Serial.println(" RPM.");
+
+          // we need to parse all the info before we modify the state.
+          continue;
         } 
         else if (command.startsWith("TIME:")) {
           duration = command.substring(5).toInt();  // Extract the integer
@@ -136,10 +139,14 @@ void loop() {
           Serial.print("[DEBUG] Parsed Duration: ");
           Serial.print(duration);
           Serial.println(" seconds.");
+
+          // we need to parse all the info before we modify the state.
+          continue;
         } 
         else if (command.startsWith("START")) {
           start_time = millis();
           spinning = true;
+          delay(100);
 
           Serial.println("[DEBUG] Starting the spin...");
         } 
@@ -153,6 +160,10 @@ void loop() {
     memcpy(prev_button_states, button_states, sizeof(button_states));
 
     if (prev_spinning != spinning || prev_progress != progress || prev_rpm != rpm || prev_duration != duration) {
+      if (prev_spinning && !spinning) {
+        Serial.println("**SPIN JOB COMPLETED SUCCESSFULLY**");
+      }
+      
       prev_spinning = spinning;
       prev_rpm = rpm;
       prev_duration = duration;
@@ -161,9 +172,22 @@ void loop() {
       if (spinning) {
         lcd.clear();
         lcd.setCursor(0, 0); lcd.print("Spinning...");
+
+        Serial.println("Spinning...!!");
+        
         lcd.setCursor(0, 1); lcd.print(progress); lcd.print(" / "); lcd.print(duration); lcd.print(" s");
+        
+        Serial.println("Spinning more...!!");
+
+        Serial.println(progress); Serial.print(" / "); Serial.print(duration); Serial.println(" s");
+
         period = map(rpm, 0, 12000, 1000, 2000);
+
+        Serial.println("period mapped...!!");
+
         servo.writeMicroseconds(period);
+
+        Serial.println("Servo write microseconds complete...!!");
       } 
       else {
         lcd.clear();
