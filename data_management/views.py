@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.forms.models import model_to_dict
+import requests
 import re
 import json
 import os
@@ -20,6 +21,8 @@ import csv
 from data_management.forms import ProfileForm, IVCurveForm, LoginForm, RegisterForm, ChipListSearchForm, AluminumEtchInputForm, AluminumEvaporationInputForm, ChipListForm, GlassDepositionInputForm, DiffusionInputForm, HFOxideEtchInputForm, KOHEtchInputForm, NickelPlatingInputForm, PatterningInputForm, PlasmaCleanInputForm, PlasmaEtchInputForm
 from data_management.models import Profile, SMU_capture, IVCurve, AluminumEtch, AluminumEvaporation, ChipList, GlassDeposition, Diffusion, HFOxideEtch, KOHEtch, NickelPlating, Patterning, PlasmaClean, PlasmaEtch
 from data_management.forms import AluminumEtchSearchForm, AluminumEvaporationSearchForm, GlassDepositionSearchForm, DiffusionSearchForm, HFOxideEtchSearchForm, KOHEtchSearchForm, NickelPlatingSearchForm, PatterningSearchForm, PlasmaCleanSearchForm, PlasmaEtchSearchForm
+
+JOB_QUEUE_BASE_URL = "https://fbc4oam2we.execute-api.us-east-2.amazonaws.com/prod"
 
 # gets a list of all processes from json file
 def get_processes():
@@ -940,3 +943,32 @@ def register_action(request):
     login(request, new_user)
     context = {"message": "Succesful Registration! Welcome to the Hacker Fab Database"}
     return render(request, "home.html", context)
+
+@login_required
+def spincoater_page(request):
+    """
+    Handles the Spincoater page.
+    """
+    if request.method == "POST":
+        rpm = request.POST.get("rpm")
+        time = request.POST.get("time")
+        
+        if not rpm or not time:
+            return HttpResponse("Invalid input. Please provide both RPM and time.")
+        
+        # Step 1: POST /jobs - Enqueue a new job
+        job_data = {
+            "machine": "spincoater",
+            "input_parameters": {"time": time, "rpm": rpm},
+            "priority": 2
+        }
+        response = requests.post(f"{JOB_QUEUE_BASE_URL}/jobs", json=job_data)
+        assert response.status_code == 200, "Failed to enqueue job"
+        job_id = response.json().get("job_id")
+
+        # Process the submitted data (e.g., send to hardware, save to database, etc.)
+        # For now, just return a success message
+        return HttpResponse(f"Spincoater started with RPM: {rpm} and Time: {time} seconds.")
+    
+    # Render the form for GET requests
+    return render(request, "spincoater.html")
