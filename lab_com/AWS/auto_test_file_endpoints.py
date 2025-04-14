@@ -6,28 +6,7 @@ import requests
 # Constants
 BASE_URL = "https://fbc4oam2we.execute-api.us-east-2.amazonaws.com/prod"
 
-def test_jobqueue_api_no_file():
-    """
-    Test the job queue API endpoints.
-    """
-    # Step 1: POST /jobs - Enqueue a new job
-    job_data = {
-        "machine": "lithographer",
-        "input_parameters": {"x": 100.0, "y": 200.0, "image": "foo.png"},
-        "priority": 2
-    }
-    response = requests.post(f"{BASE_URL}/jobs", json=job_data)
-    assert response.status_code == 200, "Failed to enqueue job"
-    job_id = response.json().get("job_id")
-    print(f"Job enqueued: {job_id}")
-
-   
-
-    # Step 4: GET /jobs/next - Fetch job from queue
-    response = requests.get(f"{BASE_URL}/jobs/next", params={"machine": "lithographer"})
-    assert response.status_code == 200, "Failed to fetch next job"
-    assert response.json().get("job_id") == job_id, "Fetched wrong job"
-    print("Job fetched successfully")
+TEST_FILE_NAME = "Test_image.jpg"  # Replace with the path to your test file
 
 
 def get_file_upload_url_and_key(job_id):
@@ -100,8 +79,7 @@ def test_upload_and_download_file():
     print(f"S3 Key: {s3_key}")
 
     # Step 2: Upload a file
-    file_name = "The_Hacker.jpg"  # Replace with the path to your test file
-    upload_file(file_name, upload_url)
+    upload_file(TEST_FILE_NAME, upload_url)
     print(f"File uploaded successfully to S3 key: {s3_key}")
 
     # Step 3: Enqueue a job with the S3 key as a parameter
@@ -125,5 +103,4 @@ def test_upload_and_download_file():
     print("File downloaded successfully.")
 
 if __name__ == "__main__":
-    #test_jobqueue_api_no_file()
     test_upload_and_download_file()
