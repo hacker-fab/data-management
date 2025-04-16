@@ -6,7 +6,7 @@ import requests
 # Constants
 BASE_URL = "https://fbc4oam2we.execute-api.us-east-2.amazonaws.com/prod"
 
-TEST_FILE_NAME = "Test_image.jpg"  # Replace with the path to your test file
+TEST_FILE_NAME = "PNG_test.png"  # Replace with the path to your test file
 
 
 def get_file_upload_url_and_key(job_id):
@@ -26,7 +26,7 @@ def upload_file(file_name, upload_url):
     Upload a file to the presigned URL.
     """
     with open(file_name, "rb") as f:
-        response = requests.put(upload_url, data=f, headers={"Content-Type": "image/jpeg"})
+        response = requests.put(upload_url, data=f)
     if response.status_code != 200:
         print(f"Upload failed. Status code: {response.status_code}, response: {response.text}")
     assert response.status_code == 200, "Upload failed"
@@ -65,7 +65,7 @@ def download_file(s3_key):
     if response.status_code != 200:
         print(f"Failed to download file. Status code: {response.status_code}, Response text: {response.text}")
     assert response.status_code == 200, "Failed to download file"
-    with open("downloaded_file_123.jpg", "wb") as f:
+    with open("downloaded-" + TEST_FILE_NAME, "wb") as f:
         f.write(response.content)
 
 def test_upload_and_download_file():

@@ -211,16 +211,21 @@ def get_jobs_by_machine(event):
     return {"statusCode": 200, "body": json.dumps(jobs, default=decimal_serializer)}
 
 def generate_presigned_upload_url(body):
+    """
+    Generate a presigned URL for uploading a file to S3.
+    """
     s3 = boto3.client("s3")
-    BUCKET = "job-queue-files"  
+    BUCKET = "job-queue-files"
 
-    filename = body.get("filename", f"{uuid.uuid4()}.jpg")
+    # Use the provided filename or generate a unique one
+    filename = body.get("filename", f"{uuid.uuid4()}")
     key = f"uploads/{filename}"
 
     try:
+        # Generate a presigned URL without restricting the ContentType
         presigned_url = s3.generate_presigned_url(
             "put_object",
-            Params={"Bucket": BUCKET, "Key": key, "ContentType": "image/jpeg"},
+            Params={"Bucket": BUCKET, "Key": key},
             ExpiresIn=600  # 10 minutes
         )
         return {
