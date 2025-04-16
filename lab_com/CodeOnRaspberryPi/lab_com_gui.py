@@ -404,7 +404,7 @@ class JobGUI:
         # Turn on the compressor and give it time to stabilize
         line.set_value(1)  # Turn on GPIO
         print("Compressor turned on.")
-        time.sleep(2)  # Allow time for the compressor to stabilize
+        time.sleep(10)  # Allow time for the compressor to stabilize
 
         # Send Start command
         start_command = "START\n"
@@ -420,10 +420,12 @@ class JobGUI:
                 print(f"Arduino: {response}")
                 if ("**SPIN JOB COMPLETED SUCCESSFULLY**" in response):
                     run_result = "JOB COMPLETED"
-            else:
-                break  # Stop reading when no more data
+                    break
+            # else:
+            #     break  # Stop reading when no more data
 
         # Turn off the compressor
+        time.sleep(5)  # Wait a couple seconds before turning off the compressor
         line.set_value(0)  # Turn off GPIO
         print("Compressor turned off.")
 
