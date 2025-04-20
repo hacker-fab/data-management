@@ -21,6 +21,7 @@ import csv
 from data_management.forms import ProfileForm, IVCurveForm, LoginForm, RegisterForm, ChipListSearchForm, AluminumEtchInputForm, AluminumEvaporationInputForm, ChipListForm, GlassDepositionInputForm, DiffusionInputForm, HFOxideEtchInputForm, KOHEtchInputForm, NickelPlatingInputForm, PatterningInputForm, PlasmaCleanInputForm, PlasmaEtchInputForm
 from data_management.models import Profile, SMU_capture, IVCurve, AluminumEtch, AluminumEvaporation, ChipList, GlassDeposition, Diffusion, HFOxideEtch, KOHEtch, NickelPlating, Patterning, PlasmaClean, PlasmaEtch
 from data_management.forms import AluminumEtchSearchForm, AluminumEvaporationSearchForm, GlassDepositionSearchForm, DiffusionSearchForm, HFOxideEtchSearchForm, KOHEtchSearchForm, NickelPlatingSearchForm, PatterningSearchForm, PlasmaCleanSearchForm, PlasmaEtchSearchForm
+from .utils import get_file_upload_url_and_key, enqueue_job, upload_file
 
 JOB_QUEUE_BASE_URL = "https://fbc4oam2we.execute-api.us-east-2.amazonaws.com/prod"
 
@@ -955,16 +956,12 @@ def spincoater_page(request):
         
         if not rpm or not time:
             return HttpResponse("Invalid input. Please provide both RPM and time.")
-        
-        # Step 1: POST /jobs - Enqueue a new job
-        job_data = {
-            "machine": "spincoater",
-            "input_parameters": {"time": time, "rpm": rpm},
-            "priority": 2
-        }
-        response = requests.post(f"{JOB_QUEUE_BASE_URL}/jobs", json=job_data)
-        assert response.status_code == 200, "Failed to enqueue job"
-        job_id = response.json().get("job_id")
+
+        response, job_id = enqueue_job(
+            machine="stepper",
+            input_parameters={"time": time, "rpm": rpm},
+            priority=2
+        )
 
         # Process the submitted data (e.g., send to hardware, save to database, etc.)
         # For now, just return a success message
@@ -972,3 +969,47 @@ def spincoater_page(request):
     
     # Render the form for GET requests
     return render(request, "spincoater.html")
+
+
+@login_required
+def stepper_page(request):
+    """
+    Handles the Stepper page.
+    """
+    if request.method == "POST":
+        x_pos = request.POST.get("x_pos")
+        y_pos = request.POST.get("y_pos")
+        pattern_image = request.FILES.get("pattern_image")
+        
+        # Validate inputs
+        if not x_pos or not y_pos or not pattern_image:
+            if not pattern_image:
+                return HttpResponse("Invalid input. Pattern image is missing.")
+            else:
+                print(f"Debug: Received pattern image with name {pattern_image.name} and size {pattern_image.size} bytes.")
+                return HttpResponse(f"Invalid input. Please provide x position, y position, and pattern image. Debug: X_pos: {x_pos}, Y_pos: {y_pos}. Pattern image name: {pattern_image.name}, size: {pattern_image.size} bytes.")
+        
+        # Step 1: Generate a presigned upload URL and S3 key
+        upload_url, s3_key = get_file_upload_url_and_key(None)  # Passing None as job_id since it's not required here
+
+        # Step 2: Upload the user-specified file
+        try:
+            upload_file(pattern_image, upload_url)  # Pass the file object directly
+        except Exception as e:
+            return HttpResponse(f"Failed to upload the file: {str(e)}")
+
+        # Step 3: Enqueue a job with the S3 key as a parameter
+        try:
+            response, job_id = enqueue_job(
+                machine="stepper",
+                input_parameters={"x": x_pos, "y": y_pos, "image_s3_key": s3_key},
+                priority=2
+            )
+        except Exception as e:
+            return HttpResponse(f"Failed to enqueue the job: {str(e)}")
+
+        # Return a success message
+        return HttpResponse(f"Stepper started with x_pos {x_pos}, y_pos {y_pos}, and image uploaded successfully.")
+    
+    # Render the form for GET requests
+    return render(request, "stepper.html")

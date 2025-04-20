@@ -17,6 +17,7 @@ def get_file_upload_url_and_key(job_id):
     assert response.status_code == 200, "Failed to generate upload URL"
     upload_url = response.json().get("upload_url")
     s3_key = response.json().get("s3_key")
+    
     print(f"Upload URL: {upload_url}")
     return upload_url, s3_key
 
