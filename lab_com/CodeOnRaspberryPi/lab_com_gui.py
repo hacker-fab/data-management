@@ -21,7 +21,10 @@ line.request(consumer="gpio_test", type=gpiod.LINE_REQ_DIR_OUT)
 
 BASE_URL = "https://fbc4oam2we.execute-api.us-east-2.amazonaws.com/prod"
 
-########################## PERIPHERAL CONFIGURATION ##########################
+########################## EDIT HERE: PERIPHERAL CONFIGURATION ##########################
+#### INSTRUCTIONS: ######
+### Add whatever code you need here to inintialize your peripherals so that they can begin to accept jobs. ###
+
 #### UART OVER USB SERIAL TO ARDUINO ####
 # This may be different on a different RPI
 USB_PORT = "/dev/ttyACM0"  # Adjust this based on your device
@@ -36,12 +39,7 @@ except serial.SerialException:
     print("ERROR: Could not open serial port. Check USB connection!")
     sys.exit()
 
-###################################################################################
-
-
-
-
-
+#########################################################################################
 
 
 def get_next_job():
@@ -77,7 +75,7 @@ class JobGUI:
         """Initialize the JobGUI class."""
 
         # Google code guidelines recommend fewer class variables
-        # (I have 17, they recommend 7 or fewer)
+        # (I have 17+, they recommend 7 or fewer)
         # However, I believe this is the most
         # efficient way to manage the GUI
 
@@ -134,9 +132,6 @@ class JobGUI:
         self.submit_button.pack_forget()
 
 
-        
-
-
         # create GUI elements for manually entering job parameters based on JOB_PARAM_TEMPLATE
         self.job_param_entries = {}
         for param_name, param_value in JOB_PARAM_TEMPLATE.items():
@@ -160,9 +155,6 @@ class JobGUI:
         
         self.create_new_job_submit.pack()
         self.create_new_job_submit.pack_forget()
-
-
-
 
 
         self.job = None
@@ -349,12 +341,25 @@ class JobGUI:
         self.output_text_avail_semaphore.acquire()
 
 
-    ##### ONLY EDIT THIS FUNCTION IF INTEGRATING A NEW TOOL ##################
+    ########################## EDIT HERE: PERIPHERAL CONFIGURATION ##########################
+    ##### INSTRUCTIONS #######
+
+    ### Write a function in this locaiton that will run the job. ###
+    ### This function will be called when the job is approved. ###
+    ### The function will be passed the job input parameters. ###
+
+    ### to get started, copy the run_led function and edit it to run your job. ###
+    ### only edit the code in between FIRMWARE START and FIRMWARE END ###
+    ### This is where you will write the code to run your job. ###
+
+    ### If you want the user to type in a response, leave the following two lines for gathering the response. ###
+    ### If you don't want the user to type in a response, remove the two lines. ###
+
     #### This is the function that will be edited to integrate new tools #####
     def run_led(self, job_input_parameters):
         """Run the LED job."""
 
-        ### This is where you write the firmware code to run the job. ##
+        ### FIRMWARE START: This is where you write the firmware code to run the job. ##
         line.set_value(1)  # Turn on GPIO
         self.set_job_status_label("Job Status: GPIO: ON")
 
@@ -365,9 +370,9 @@ class JobGUI:
 
         line.set_value(0)  # Turn off GPIO
 
-        ### End of firmware code. ###
+        ### FIRMWARE END ###
 
-        ## Gather the user response [Optional]##
+        ## Gather the user response [Optional, you can remove]##
         self.set_job_status_label("Job Status: GPIO: OFF. Please type in response.")
         self.get_user_output_response()
 
@@ -396,6 +401,11 @@ class JobGUI:
         ser.write(time_command.encode())
         time.sleep(0.5)  # Small delay to ensure command is processed
 
+        # Turn on the compressor and give it time to stabilize
+        line.set_value(1)  # Turn on GPIO
+        print("Compressor turned on.")
+        time.sleep(10)  # Allow time for the compressor to stabilize
+
         # Send Start command
         start_command = "START\n"
         print(f"Sending: {start_command.strip()}")
@@ -410,16 +420,16 @@ class JobGUI:
                 print(f"Arduino: {response}")
                 if ("**SPIN JOB COMPLETED SUCCESSFULLY**" in response):
                     run_result = "JOB COMPLETED"
-            else:
-                break  # Stop reading when no more data
+                    break
+            # else:
+            #     break  # Stop reading when no more data
+
+        # Turn off the compressor
+        time.sleep(5)  # Wait a couple seconds before turning off the compressor
+        line.set_value(0)  # Turn off GPIO
+        print("Compressor turned off.")
 
         ### End of firmware code. ###
-
-
-        ## Gather the user response [Optional]##
-        # self.set_job_status_label("Job Status: GPIO: OFF. Please type in response.")
-
-        # self.get_user_output_response()
 
         ## Submit the data back to the server ##
         final_output_parameters = {"response": run_result}
@@ -427,16 +437,24 @@ class JobGUI:
         self.submit_completed_response_to_server(final_output_parameters)
 
 
-    ###########################################################################
+    ##########################################################################################
 
 
-########################## JOB OBJECT FORMAT ######################################
+########################## EDIT HERE: JOB OBJECT FORMAT ######################################
+#### INSTRUCTIONS: ####
+### In this section, to integrate a new tool, you must create three new variables ###
+### These will be used to know which function to call when the job is run. ###
+### The variables are: ###
+### 1. JOB_PARAM_TEMPLATE: This is the template for the job parameters. ###
+###    It should be a dictionary with the same keys as the job parameters. ###
+###    The values should be the default values for the job parameters. ###
+### 2. JOB_NAME: This is the name of the job. ###
+###    It should be the same as the name of the job in the server. ###
+###    It will be used to identify which jobs to fetch from the server###
+### 3. JOB_FUNCTION: This is the function that will be called to run the job. ###
+###    It should be the function that you wrote to run the job. ###
+
 #### It is imperative that the job object format matches the server's object format ####
-
-
-# LIST OF ALL JOB PARAMETER TEMPLATES
-# Each job type should have its own parameter template
-# This is to ensure that the GUI can handle different job types
 
 #### SPINCOATER JOB ####
 SPINCOATER_JOB_PARAM_TEMPLATE = { "time": 12, "rpm": 1100 }
@@ -450,16 +468,12 @@ LED_JOB_NAME = "led"
 LED_FUNCTION = JobGUI.run_led
 
 
-
 ### Edit the following variables to match the job type you are integrating ###
-# These variables are used to configure the GUI for the specific job type
 JOB_PARAM_TEMPLATE = SPINCOATER_JOB_PARAM_TEMPLATE
 JOB_NAME = SPINCOATER_JOB_NAME
 JOB_FUNCTION = SPINCOATER_FUNCTION
 
-###################################################################################
-
-
+###########################################################################################
 
 
 if __name__ == "__main__":

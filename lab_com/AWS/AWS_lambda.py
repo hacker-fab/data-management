@@ -43,6 +43,10 @@ def lambda_handler(event, context):
         return get_jobs_by_id(event)
     if route == "GET /jobs_by_machine" and method == "GET":
         return get_jobs_by_machine(event)
+    if route == "POST /generate_upload_url" and method == "POST":
+        return generate_presigned_upload_url(body)
+    if route == "POST /generate_download_url" and method == "POST":
+        return generate_presigned_download_url(body)
     logger.warning("Invalid request received: %s", route)
     return {"statusCode": 400, "body": json.dumps({"message": "Invalid request"})}
 
@@ -205,3 +209,57 @@ def get_jobs_by_machine(event):
                 json.dumps({"message": "No jobs found for the specified machine"})}
 
     return {"statusCode": 200, "body": json.dumps(jobs, default=decimal_serializer)}
+
+def generate_presigned_upload_url(body):
+    """
+    Generate a presigned URL for uploading a file to S3.
+    """
+    s3 = boto3.client("s3")
+    BUCKET = "job-queue-files"
+
+    # Use the provided filename or generate a unique one
+    filename = body.get("filename", f"{uuid.uuid4()}")
+    key = f"uploads/{filename}"
+
+    try:
+        # Generate a presigned URL without restricting the ContentType
+        presigned_url = s3.generate_presigned_url(
+            "put_object",
+            Params={"Bucket": BUCKET, "Key": key},
+            ExpiresIn=600  # 10 minutes
+        )
+        return {
+            "statusCode": 200,
+            "body": json.dumps({
+                "upload_url": presigned_url,
+                "s3_key": key
+            })
+        }
+    except Exception as e:
+        logger.error("Failed to generate pre-signed URL: %s", str(e))
+        return {
+            "statusCode": 500,
+            "body": json.dumps({"message": "Failed to generate upload URL"})
+        }
+
+def generate_presigned_download_url(body):
+    s3 = boto3.client("s3")
+    BUCKET = "job-queue-files"
+    key = body.get("s3_key")
+
+    if not key:
+        return {"statusCode": 400, "body": json.dumps({"message": "Missing s3_key"})}
+
+    try:
+        url = s3.generate_presigned_url(
+            "get_object",
+            Params={"Bucket": BUCKET, "Key": key},
+            ExpiresIn=600  # 10 minutes
+        )
+        return {"statusCode": 200, "body": json.dumps({"download_url": url})}
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "body": json.dumps({"message": "Failed to generate download URL"})
+        }
+

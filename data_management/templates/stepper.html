@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+{% extends "base.html" %}
+{% block content %}
+<head>
+    <meta charset="utf-8">
+    <title>Stepper Control</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/data_management.css' %}">
+</head>
+<body>
+    <h2>Stepper Control</h2>
+    <form action="{% url 'stepper' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="x_pos">Enter X position:</label>
+        <input type="number" id="x_pos" name="x_pos" required>
+        <br><br>
+        <label for="y_pos">Enter Y position:</label>
+        <input type="number" id="y_pos" name="y_pos" required>
+        <br><br>
+        <label for="pattern_image">Select Image for Patterning:</label>
+        <input type="file" id="pattern_image" name="pattern_image" accept="image/*">
+        <br><br>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
+{% endblock %}
