@@ -23,7 +23,8 @@ BASE_URL = "https://fbc4oam2we.execute-api.us-east-2.amazonaws.com/prod"
 
 ########################## EDIT HERE: PERIPHERAL CONFIGURATION ##########################
 #### INSTRUCTIONS: ######
-### Add whatever code you need here to inintialize your peripherals so that they can begin to accept jobs. ###
+### Add whatever code you need here to inintialize your peripherals so that they     ####
+###        can begin to accept jobs.                                                  ###
 
 #### UART OVER USB SERIAL TO ARDUINO ####
 # This may be different on a different RPI
@@ -75,7 +76,7 @@ class JobGUI:
         """Initialize the JobGUI class."""
 
         # Google code guidelines recommend fewer class variables
-        # (I have 17+, they recommend 7 or fewer)
+        # (I have 21+, they recommend 7 or fewer)
         # However, I believe this is the most
         # efficient way to manage the GUI
 
@@ -138,7 +139,7 @@ class JobGUI:
             label = ttk.Label(root, text=f"{param_name}:")
             label.pack()
             label.pack_forget()
-            entry = ttk.Entry(root) 
+            entry = ttk.Entry(root)
             entry.insert(0, str(param_value))
             entry.pack()
             entry.pack_forget()
@@ -147,12 +148,12 @@ class JobGUI:
 
         self.create_new_job_button = ttk.Button(root, text="Create New Job",
                                         command=self.create_new_job)
-        
+
         self.create_new_job_button.pack()
 
         self.create_new_job_submit = ttk.Button(root, text="Submit New Job",
                                         command=self.submit_new_job)
-        
+
         self.create_new_job_submit.pack()
         self.create_new_job_submit.pack_forget()
 
@@ -283,9 +284,12 @@ class JobGUI:
             self.system_status_label.config(text="System Status: Job submitted.")
         except requests.exceptions.RequestException as err:
             print(f"Error posting job: {err}")
-            self.system_status_label.config(text="System Status: Error submitting. Now running job locally.")
-            
-            self.job = {"input_parameters": job_input_parameters, "machine": JOB_NAME, "status": "In Progress", "timestamp": 0, "output_parameters": {}, "priority": "1", "job_id": str(uuid.uuid4()) + "-local"}
+            self.system_status_label.config(
+                text="System Status: Error submitting. Now running job locally.")
+
+            self.job = {"input_parameters": job_input_parameters, "machine": JOB_NAME,
+                        "status": "In Progress", "timestamp": 0, "output_parameters": {},
+                        "priority": "1", "job_id": str(uuid.uuid4()) + "-local"}
             self.job_id_label.config(
                 text=f"Current Job ID: {self.job.get('job_id', 'unknown')}")
             self.job_id_label.pack()
@@ -300,7 +304,7 @@ class JobGUI:
                 self.approve_button.pack()
                 self.deny_button.pack()
 
-        
+
 
     def submit_completed_response_to_server(self, output_parameters):
         """Submit the completed job response to the server."""
@@ -352,7 +356,7 @@ class JobGUI:
     ### only edit the code in between FIRMWARE START and FIRMWARE END ###
     ### This is where you will write the code to run your job. ###
 
-    ### If you want the user to type in a response, leave the following two lines for gathering the response. ###
+    ### If you want the user to type in a response, leave the following two lines. ###
     ### If you don't want the user to type in a response, remove the two lines. ###
 
     #### This is the function that will be edited to integrate new tools #####
@@ -418,7 +422,7 @@ class JobGUI:
             response = ser.readline().decode('utf-8').strip()
             if response:
                 print(f"Arduino: {response}")
-                if ("**SPIN JOB COMPLETED SUCCESSFULLY**" in response):
+                if "**SPIN JOB COMPLETED SUCCESSFULLY**" in response:
                     run_result = "JOB COMPLETED"
                     break
             # else:
