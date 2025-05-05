@@ -17,7 +17,7 @@ def get_file_upload_url_and_key(job_id):
     assert response.status_code == 200, "Failed to generate upload URL"
     upload_url = response.json().get("upload_url")
     s3_key = response.json().get("s3_key")
-    
+
     print(f"Upload URL: {upload_url}")
     return upload_url, s3_key
 
@@ -26,8 +26,8 @@ def upload_file(file_name, upload_url):
     """
     Upload a file to the presigned URL.
     """
-    with open(file_name, "rb") as f:
-        response = requests.put(upload_url, data=f)
+    with open(file_name, "rb") as file:
+        response = requests.put(upload_url, data=file)
     if response.status_code != 200:
         print(f"Upload failed. Status code: {response.status_code}, response: {response.text}")
     assert response.status_code == 200, "Upload failed"
@@ -64,10 +64,11 @@ def download_file(s3_key):
     # download the file using the presigned URL
     response = requests.get(download_url)
     if response.status_code != 200:
-        print(f"Failed to download file. Status code: {response.status_code}, Response text: {response.text}")
+        print(f"Failed to download file. Status code: \
+              {response.status_code}, Response text: {response.text}")
     assert response.status_code == 200, "Failed to download file"
-    with open("downloaded-" + TEST_FILE_NAME, "wb") as f:
-        f.write(response.content)
+    with open("downloaded-" + TEST_FILE_NAME, "wb") as file:
+        file.write(response.content)
 
 def test_upload_and_download_file():
     """
@@ -75,7 +76,8 @@ def test_upload_and_download_file():
     and then downloading the file using the presigned URLs.
     """
     # Step 1: Generate a presigned upload URL and S3 key
-    upload_url, s3_key = get_file_upload_url_and_key(None)  # Passing None as job_id since it's not required here
+    # Passing None as job_id since it's not required here
+    upload_url, s3_key = get_file_upload_url_and_key(None)
     print(f"Generated upload URL: {upload_url}")
     print(f"S3 Key: {s3_key}")
 

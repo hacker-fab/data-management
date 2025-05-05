@@ -31,24 +31,26 @@ def lambda_handler(event, context):
     body = json.loads(event.get("body", "{}"))  # Parse JSON body safely
 
     logger.info("Processing route: %s with method: %s", route, method)
-
+    result = None
     # Routing based on the request
     if route == "GET /jobs/next" and method == "GET":
-        return get_next_job(event)
+        result = get_next_job(event)
     if route == "POST /job_completion" and method == "POST":   # Ensure correct endpoint
-        return update_job_completion(body)
+        result = update_job_completion(body)
     if route == "POST /jobs" and method == "POST":
-        return enqueue_job(body)
+        result = enqueue_job(body)
     if route == "GET /jobs_by_id" and method == "GET":
-        return get_jobs_by_id(event)
+        result = get_jobs_by_id(event)
     if route == "GET /jobs_by_machine" and method == "GET":
-        return get_jobs_by_machine(event)
+        result = get_jobs_by_machine(event)
     if route == "POST /generate_upload_url" and method == "POST":
-        return generate_presigned_upload_url(body)
+        result = generate_presigned_upload_url(body)
     if route == "POST /generate_download_url" and method == "POST":
-        return generate_presigned_download_url(body)
+        result = generate_presigned_download_url(body)
     logger.warning("Invalid request received: %s", route)
-    return {"statusCode": 400, "body": json.dumps({"message": "Invalid request"})}
+    result = {"statusCode": 400, "body": json.dumps({"message": "Invalid request"})}
+
+    return result
 
 # **Helper Function to Convert Decimal to Native Python Types**
 def decimal_serializer(obj):
@@ -113,9 +115,9 @@ def enqueue_job(body):
     def serialize_input_parameters(params):
         if isinstance(params, dict):
             return {k: serialize_input_parameters(v) for k, v in params.items()}
-        elif isinstance(params, list):
+        if isinstance(params, list):
             return [serialize_input_parameters(v) for v in params]
-        elif isinstance(params, float):
+        if isinstance(params, float):
             return Decimal(str(params))  # Convert float to Decimal
         return params
 
@@ -133,7 +135,8 @@ def enqueue_job(body):
 
     return {"statusCode": 200, "body": json.dumps({"message": "Job added", "job_id": job_id})}
 
-# **Function to Get the Next Pending Job for a Specific Machine and Mark It "In Progress", Then Return Updated Data**
+# **Function to Get the Next Pending Job for a Specific Machine
+# and Mark It "In Progress", Then Return Updated Data**
 def get_next_job(event):
     """
     Get the next pending job for a specific machine and mark it as "In Progress".
@@ -152,7 +155,8 @@ def get_next_job(event):
     jobs = response.get("Items", [])
     if not jobs:
         logger.warning("No pending jobs found for machine: %s", machine)
-        return {"statusCode": 404, "body": json.dumps({"message": "No pending jobs found for the specified machine"})}
+        return {"statusCode": 404, "body": json.dumps(
+            {"message": "No pending jobs found for the specified machine"})}
 
     # Sort jobs by timestamp (oldest job first)
     jobs.sort(key=lambda x: x.get("timestamp", float('inf')))
@@ -214,8 +218,8 @@ def generate_presigned_upload_url(body):
     """
     Generate a presigned URL for uploading a file to S3.
     """
-    s3 = boto3.client("s3")
-    BUCKET = "job-queue-files"
+    s_3 = boto3.client("s3")
+    bucket = "job-queue-files"
 
     # Use the provided filename or generate a unique one
     filename = body.get("filename", f"{uuid.uuid4()}")
@@ -223,9 +227,9 @@ def generate_presigned_upload_url(body):
 
     try:
         # Generate a presigned URL without restricting the ContentType
-        presigned_url = s3.generate_presigned_url(
+        presigned_url = s_3.generate_presigned_url(
             "put_object",
-            Params={"Bucket": BUCKET, "Key": key},
+            Params={"Bucket": bucket, "Key": key},
             ExpiresIn=600  # 10 minutes
         )
         return {
@@ -235,31 +239,34 @@ def generate_presigned_upload_url(body):
                 "s3_key": key
             })
         }
-    except Exception as e:
-        logger.error("Failed to generate pre-signed URL: %s", str(e))
+    ## We want to catch all exception, even though this introduces a pylint error. 
+    except Exception as exception:
+        logger.error("Failed to generate pre-signed URL: %s", str(exception))
         return {
             "statusCode": 500,
             "body": json.dumps({"message": "Failed to generate upload URL"})
         }
 
 def generate_presigned_download_url(body):
-    s3 = boto3.client("s3")
-    BUCKET = "job-queue-files"
+    """
+    Generate a presigned URL for downloading a file from S3.
+    """
+    s_3 = boto3.client("s3")
+    bucket = "job-queue-files"
     key = body.get("s3_key")
 
     if not key:
         return {"statusCode": 400, "body": json.dumps({"message": "Missing s3_key"})}
 
     try:
-        url = s3.generate_presigned_url(
+        url = s_3.generate_presigned_url(
             "get_object",
-            Params={"Bucket": BUCKET, "Key": key},
+            Params={"Bucket": bucket, "Key": key},
             ExpiresIn=600  # 10 minutes
         )
         return {"statusCode": 200, "body": json.dumps({"download_url": url})}
-    except Exception as e:
+    except:
         return {
             "statusCode": 500,
             "body": json.dumps({"message": "Failed to generate download URL"})
         }
-
